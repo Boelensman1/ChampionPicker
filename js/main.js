@@ -16,7 +16,7 @@ $(function () {
         //make some big champion names responsive
         for (index = 0; index < largeNames.length; ++index) {
             $label=$('#champ'+largeNames[index]+' .championLabel')
-            $label.fitText(0.55*($label.html().length)/11);
+            $label.fitText(0.6*($label.html().length)/11);
         }
 
         //load free2play
