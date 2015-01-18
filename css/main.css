@@ -22,7 +22,7 @@
 
 .championLabel
 {
-    min-height:16px;
+    height:16px;
 }
 
 /*
@@ -39,4 +39,9 @@
 
 @media(min-width:1200px){
     .championLabel{font-size:10px;}
+}
+
+#champions li{
+    white-space: nowrap;
+    overflow: hidden;
 }

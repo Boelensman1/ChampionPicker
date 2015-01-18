@@ -13,11 +13,8 @@ $(function () {
             $('#champions').append(html);
         }
 
-        //make some big champion names responsive
-        for (index = 0; index < largeNames.length; ++index) {
-            $label=$('#champ'+largeNames[index]+' .championLabel')
-            $label.fitText(0.6*($label.html().length)/11);
-        }
+        //make some big champion names smaller on big scree
+        champTextFit();
 
         //load free2play
         $.getJSON("data/freeToPlay.json", function (free2playJSON) {
@@ -95,6 +92,25 @@ function reloadActive() {
 }
 
 function updateShowHide() {
-    $('.toShow').show();
-    $('.toHide').hide();
+    $('.toShow').show('fast');
+    $('.toHide').hide('fast');
 }
+function champTextFit() {
+
+    if ($(window).width() > 992) {
+        for (index = 0; index < largeNames.length; ++index) {
+            $label = $('#champ' + largeNames[index] + ' .championLabel')
+            $label.fitText(0.6 * ($label.html().length) / 11);
+        }
+    }
+    else
+    {
+        for (index = 0; index < largeNames.length; ++index) {
+            $label = $('#champ' + largeNames[index] + ' .championLabel')
+            $label.removeAttr( 'style' );
+        }
+    }
+}
+$(window).on("debouncedresize", function( event ) {
+    champTextFit();
+});
