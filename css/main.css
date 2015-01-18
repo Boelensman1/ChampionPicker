@@ -1,0 +1,42 @@
+#champions {
+                  padding:0 0 0 0;
+                  margin:0 0 0 0;
+              }
+#champions li {
+    list-style:none;
+    margin-bottom:25px;
+}
+#champions li img {
+    cursor: pointer;
+}
+
+.roles .btn:focus {
+    outline: none;
+}
+
+#champions li.disabled
+{
+    opacity: 0.1;
+    filter: alpha(opacity=10); /* For IE8 and earlier */
+}
+
+.championLabel
+{
+    min-height:16px;
+}
+
+/*
+@media(max-width:767px){
+    .champion{font-size:20px;}
+}
+@media(min-width:768px){
+    .champion{font-size:10px;}
+}
+*/
+@media(min-width:992px){
+    .championLabel{font-size:9px;}
+}
+
+@media(min-width:1200px){
+    .championLabel{font-size:10px;}
+}
