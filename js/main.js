@@ -1,7 +1,7 @@
 var roles = [true, true, true, true, true];
 var champions = [];
 var free2play = [];
-var largeNames=['MissFortune','TwistedFate','Mordekaiser','Tryndamere','Cassiopeia','DrMundo'];
+var largeNames=['MissFortune','TwistedFate','Mordekaiser','Tryndamere','Cassiopeia','DrMundo','Heimerdinger','Fiddlesticks'];
 $(function () {
     //load the champion data
     $.getJSON("data/champions.json", function (championsJSON) {
@@ -47,7 +47,30 @@ $(function () {
 
 
     $('#random').click(function () {
-        random = 1;
+        var $randomDiv=$('#randomtest');
+        $randomDiv.html('');
+        $randomDiv.css('left','0px');
+        var random=1;
+        //champs before
+        var before=Math.floor((Math.random() * 20) + 30);
+        var beforeChamps=[];
+        var champ;
+        for (index = 0; index < before; ++index) {
+            champ=Math.floor((Math.random() * champions.length))
+            beforeChamps.push(champ);
+            $randomDiv.append('<img src="'+champions[champ].iconSRC+'">');
+        }
+        $randomDiv.append('<img src="'+champions[random].iconSRC+'">');
+        for (index = 0; index < 10; ++index) {
+            champ=Math.floor((Math.random() * champions.length))
+            $randomDiv.append('<img src="'+champions[champ].iconSRC+'">');
+        }
+
+        $randomDiv.animate({
+            left: "-="+(before)*100
+        }, 5000, function() {
+            // Animation complete.
+        });
     });
 });
 
@@ -92,8 +115,8 @@ function reloadActive() {
 }
 
 function updateShowHide() {
-    $('.toShow').show('fast');
-    $('.toHide').hide('fast');
+    $('.toShow').show('slow');
+    $('.toHide').hide('slow');
 }
 function champTextFit() {
 
