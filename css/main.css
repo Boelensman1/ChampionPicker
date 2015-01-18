@@ -45,3 +45,37 @@
     white-space: nowrap;
     overflow: hidden;
 }
+
+#randomSelecter
+{
+    height:100px;
+}
+#randomSelecterChild
+{
+    padding: 0px;
+    position: absolute;
+    right: 15px;
+    left: 15px;
+    height: 100px;
+    overflow:hidden;
+}
+
+#randomSelecterChild p
+ {
+    position: absolute;
+    height:100px;
+    width:10000px;
+ }
+#randomSelecterChild p img
+{
+    height:100px;
+    width:100px;
+}
+
+#randomArrow
+{
+    position: absolute;
+    line-height: 100px;
+    z-index:100;
+    color: white;
+}

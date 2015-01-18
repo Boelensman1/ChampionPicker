@@ -52,16 +52,25 @@
 <!-- Main jumbotron for a primary marketing message or call to action -->
 <div class="jumbotron">
     <div class="container">
-            <div class="col-xs-12  text-center">
-                <p><button type="button" id="random" class="btn btn-default btn-block">Random</button></p>
+        <div class="col-xs-12" id="randomSelecter">
+            <div id="randomArrow" class="glyphicon glyphicon-play"></div>
+            <div id="randomSelecterChild">
+                <p id="randomtest"></p>
             </div>
+        </div>
+        <div class="col-xs-12  text-center">
+            <p>
+                <button type="button" id="random" class="btn btn-default btn-block">Random</button>
+            </p>
+        </div>
         <div class="roles btn-group col-md-6 col-sm-9 hidden-xs" role="group" aria-label="role">
-            <button type="button"  data-roleId="0" class="role_0 btn btn-default active">Top</button>
-            <button type="button"  data-roleId="1" class="role_1 btn btn-default active">Jungle</button>
-            <button type="button"  data-roleId="2" class="role_2 btn btn-default active">Mid</button>
-            <button type="button"  data-roleId="3" class="role_3 btn btn-default active">Adc</button>
+            <button type="button" data-roleId="0" class="role_0 btn btn-default active">Top</button>
+            <button type="button" data-roleId="1" class="role_1 btn btn-default active">Jungle</button>
+            <button type="button" data-roleId="2" class="role_2 btn btn-default active">Mid</button>
+            <button type="button" data-roleId="3" class="role_3 btn btn-default active">Adc</button>
             <button type="button" data-roleId="4" class="role_4 btn btn-default active">Support</button>
-            <button type="button" class="btn btn-default disabled dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+            <button type="button" class="btn btn-default disabled dropdown-toggle" data-toggle="dropdown"
+                    aria-expanded="false">
                 All
                 <span class="caret"></span>
             </button>
@@ -77,7 +86,8 @@
             <button type="button" data-roleId="2" class="role_2 btn btn-default active col-xs-2">Mid</button>
             <button type="button" data-roleId="3" class="role_3 btn btn-default active col-xs-2">Adc</button>
             <button type="button" data-roleId="4" class="role_4 btn btn-default active col-xs-2">Sup</button>
-            <button type="button" class="btn btn-default disabled dropdown-toggle col-xs-2" data-toggle="dropdown" aria-expanded="false">
+            <button type="button" class="btn btn-default disabled dropdown-toggle col-xs-2" data-toggle="dropdown"
+                    aria-expanded="false">
                 All
                 <span class="caret"></span>
             </button>
@@ -91,19 +101,19 @@
         <!-- Add the extra clearfix for only the required viewport -->
         <div class="visible-xs-block col-xs-12"><p></p></div>
 
-            <div class="col-md-2 col-sm-3  hidden-xs">
-                <p><a class="btn btn-success active btn-block" href="#" role="button">Free To Play</a></p>
-            </div>
+        <div class="col-md-2 col-sm-3  hidden-xs">
+            <p><a class="btn btn-success active btn-block" href="#" role="button">Free To Play</a></p>
+        </div>
         <div class="visible-xs-block col-xs-5">
             <p><a class="btn btn-success active btn-block" href="#" role="button">Free2Play</a></p>
         </div>
-            <div class=" col-md-4 col-sm-12 col-xs-7">
-                <form role="form">
-                    <div class="form-group">
-                        <input type="text" placeholder="Search" class="form-control">
-                    </div>
-                </form>
-            </div>
+        <div class=" col-md-4 col-sm-12 col-xs-7">
+            <form role="form">
+                <div class="form-group">
+                    <input type="text" placeholder="Search" class="form-control">
+                </div>
+            </form>
+        </div>
         <div class="col-xs-12">
             <p></p>
         </div>
