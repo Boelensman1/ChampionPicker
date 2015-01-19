@@ -1,14 +1,18 @@
 var roles = [true, true, true, true, true];
 var champions = [];
 var free2play = [];
-var largeNames=['MissFortune','TwistedFate','Mordekaiser','Tryndamere','Cassiopeia','DrMundo','Heimerdinger','Fiddlesticks'];
+var largeNames=[];
 $(function () {
     //load the champion data
     $.getJSON("data/champions.json", function (championsJSON) {
         champions = championsJSON;
         var html;
         for (index = 0; index < champions.length; ++index) {
-            divId = champions[index].name.replace(/(\.|\s)/g, '');
+            divId = champions[index].name.replace(/\W/g, '');
+            if (champions[index].name.length>6)
+            {
+                largeNames.push(divId);
+            }
             html = '<li id="champ' + divId + '" class="col-lg-1 col-md-1 col-sm-2 col-xs-3 champion" data-championId="' + index + '"><img class="img-responsive championPortrait" src="' + champions[index].iconSRC + '"><span class="label label-default center-block championLabel">' + champions[index].name + '</span></li>';
             $('#champions').append(html);
         }
@@ -152,7 +156,7 @@ function updateShowHide() {
 }
 function champTextFit() {
 
-    if ($(window).width() > 992) {
+    if ($(window).width() > 992|| $(window).width()<512) {
         for (index = 0; index < largeNames.length; ++index) {
             $label = $('#champ' + largeNames[index] + ' .championLabel')
             $label.fitText(0.6 * ($label.html().length) / 11);
