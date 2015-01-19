@@ -173,3 +173,16 @@ div {
         width: 100%;
     }
 }
+#randomChampionModalLore
+{
+    height:196px;
+    overflow-y: scroll;
+    color: black;
+}
+
+
+#randomChampionModalLinks p
+{
+    display: inline-block;
+    width:20%;
+}

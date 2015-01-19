@@ -79,10 +79,15 @@ $(function () {
 
             $randomDiv.transition({
                 x: -(location)*100+$('#randomSelecterChild').width()/2+400-((Math.random() * 70) + 15)
-                //x: -100
             }, 3000,'cubic-bezier(.6,-.28,.48,1)',function(){
-                $('#randomChampionModalTitle').html(randomChamp.name);
-                $('#randomChampionModalBody p').html('<a href="http://www.probuilds.net/champions/'+randomChamp.shortName+'">Probuilds</a><br>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ad sed dolores iusto ab vero tempora in earum accusantium quas iure repellendus fugit ipsa reiciendis. Id illo natus sequi ex eveniet!');
+                $('#randomChampionModalTitle').html(randomChamp.name+': '+randomChamp.title);
+                $('#randomChampionModalLore p').html(randomChamp.description);
+                $('#randomChampionModalLinks').html('<p class="text-left"><a target="_blank" href="http://www.probuilds.net/champions/'+randomChamp.shortName+'">Probuilds</a></p>')
+                //get mobafire url
+                //$.getJSON('http://www.mobafire.com/ajax/searchSite?text='+encodeURIComponent());
+                //TODO: make mobafire link
+                $('#randomChampionModalLinks').append('<p class="text-center" style="width:60%"><a target="_blank" href="http://www.mobafire.com/league-of-legends/'+randomChamp.shortName+'-guide">Mobafire WIP</a></p>')
+                $('#randomChampionModalLinks').append('<p class="text-right"><a target="_blank" href="http://leagueoflegends.wikia.com/wiki/'+randomChamp.Name+'">LoL Wiki</a></p>')
                 $('#randomChampionModalBackground').css('background-image', 'url(' + randomChamp.splashSRC + ')');
                 setTimeout(function() {
                     adjustModalMaxHeightAndPosition();

@@ -163,6 +163,8 @@ class Champion
     public $splashURL;
     public $iconSRC;
     public $splashSRC;
+    public $title;
+    public $description;
     private $_baseUrlIcon;
     private $_baseUrlSplash = 'http://ddragon.leagueoflegends.com/cdn/img/champion/splash/';
 
@@ -181,7 +183,7 @@ class Champion
         if ($id != null) {
             $this->$_id = $id;
         }
-        $url = 'https://global.api.pvp.net/api/lol/static-data/euw/v1.2/champion/' . $this->_id . '?champData=image&api_key=' . $this->_apiKey;
+        $url = 'https://global.api.pvp.net/api/lol/static-data/euw/v1.2/champion/' . $this->_id . '?champData=image,lore&api_key=' . $this->_apiKey;
         $champion_json = download($url);
         $championRaw = json_decode($champion_json);
         if (!$championRaw) {
@@ -190,8 +192,10 @@ class Champion
         }
         unset($champion_json);
         $this->name = $championRaw->name;
-        $this->iconURL = $this->_baseUrlIcon . $championRaw->image->full;
+        $this->title=$championRaw->title;
+        $this->description=$championRaw->lore;
 
+        $this->iconURL = $this->_baseUrlIcon . $championRaw->image->full;
         $this->splashURL = $this->_baseUrlSplash . substr($championRaw->image->full, 0, -4) . '_0.jpg';
 
         $this->iconSRC = ICONS . $this->name . '.png';
