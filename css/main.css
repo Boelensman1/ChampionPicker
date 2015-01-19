@@ -61,6 +61,7 @@
     opacity: 0;
     height: 100px;
     position: relative;
+    transform: perspective(550px) rotateX(180deg);
 }
 #randomSelecterChild
 {
@@ -98,4 +99,9 @@
 #random
 {
     height: 100px;
+}
+
+div {
+    -webkit-backface-visibility: hidden; /* Chrome, Safari, Opera */
+    backface-visibility: hidden;
 }

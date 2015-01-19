@@ -63,16 +63,46 @@ $(function () {
         for (index = 0; index < location+10; ++index) {
             $randomDiv.append('<img src="'+randomArray[index].iconSRC+'">');
         }
-
-            /* fade out and rotate 3 times */
-        $('#randomButton').transition({ opacity: 0, perspective: 550, rotateX: 1080 }, 1000 );
-        $('#randomSelecter').transition({ opacity: 1, perspective: 550, rotateX: 1080 }, 1000);
-
         setTimeout(function() {
+            /* fade out and rotate 3 times */
+        $('#randomButton').transition({ opacity: 0, perspective: 550, rotateX: 180 }, 1000 );
+        $('#randomSelecter').transition({ opacity: 1, perspective: 550, rotateX: 360 }, 1000);
+
             $randomDiv.transition({
                 x: -(location)*100+$('#randomSelecterChild').width()/2+400-((Math.random() * 70) + 15)
-            }, 3000,'cubic-bezier(.6,-.28,.48,1)')
-        }, 500);
+                //x: -100
+            }, 3000,'cubic-bezier(.6,-.28,.48,1)',function(){
+                //alert('a');
+            })
+        }, 200);
+
+
+        /*var time=Date.now();
+        var prev=500;
+        var transform, x,x100;
+        test=function()
+        {
+            transform=matrixToArray($randomDiv.css('transform'));
+            x=Math.round(transform[4]-$('#randomSelecterChild').width()/2);
+            x100=Math.round(x/100)*100
+            if (x100!=prev)
+            {
+                prev=x100;
+                console.log(Date.now()-time);
+                document.getElementById('soundTick').play();
+            }
+
+            if (Date.now()-time<totaltime)
+            {
+                setTimeout(test, 1);
+            }
+        };
+        setTimeout(test, 2000);
+        //setTimeout(function(){prev=500},6000);
+
+         var matrixToArray = function(str){
+         return str.match(/(-?[0-9\.]+)/g);
+         };*/
     });
 });
 
