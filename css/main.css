@@ -106,3 +106,20 @@ div {
     -webkit-backface-visibility: hidden; /* Chrome, Safari, Opera */
     backface-visibility: hidden;
 }
+#randomChampionModalBody
+{
+    z-index: 1;
+}
+#randomChampionModalBackground
+{
+    content: "";
+    opacity: 0.5;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    position: absolute;
+    background-size: 100%;
+    background-repeat: no-repeat;
+    filter: alpha(opacity=10); /* For IE8 and earlier */
+}

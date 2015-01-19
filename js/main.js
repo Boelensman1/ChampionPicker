@@ -9,12 +9,17 @@ $(function () {
         var html;
         for (index = 0; index < champions.length; ++index) {
             divId = champions[index].name.replace(/\W/g, '');
+            champions[index].shortName=divId;
             if (champions[index].name.length>8)
             {
                 largeNames.push(divId);
             }
             html = '<li id="champ' + divId + '" class="col-lg-1 col-md-1 col-sm-2 col-xs-3 champion" data-championId="' + index + '"><img class="img-responsive championPortrait" src="' + champions[index].iconSRC + '"><span class="label label-default center-block championLabel">' + champions[index].name + '</span></li>';
             $('#champions').append(html);
+
+            //init modal
+            $('#randomChampionModal').modal({show:false});
+
         }
 
         //make some big champion names smaller on big scree
@@ -76,37 +81,18 @@ $(function () {
                 x: -(location)*100+$('#randomSelecterChild').width()/2+400-((Math.random() * 70) + 15)
                 //x: -100
             }, 3000,'cubic-bezier(.6,-.28,.48,1)',function(){
-                //alert('a');
+                $('#randomChampionModalBody h4').html(randomChamp.name);
+                $('#randomChampionModalBody p').html('<a href="http://www.probuilds.net/champions/'+champions[index].shortName+'">Probuilds</a><br>etc.');
+                $('#randomChampionModalBackground').css('background-image', 'url(' + randomChamp.splashSRC + ')');
+                setTimeout(function() {
+                    $('#randomChampionModal').modal('show');
+                    setTimeout(function() {
+                        $('#randomButton').transition({opacity: 1, perspective: 550, rotateX: 0}, 1000);
+                        $('#randomSelecter').transition({opacity: 0, perspective: 550, rotateX: 180}, 1000);
+                    },1000)
+                },200)
             })
         }, 200);
-
-
-        /*var time=Date.now();
-        var prev=500;
-        var transform, x,x100;
-        test=function()
-        {
-            transform=matrixToArray($randomDiv.css('transform'));
-            x=Math.round(transform[4]-$('#randomSelecterChild').width()/2);
-            x100=Math.round(x/100)*100
-            if (x100!=prev)
-            {
-                prev=x100;
-                console.log(Date.now()-time);
-                document.getElementById('soundTick').play();
-            }
-
-            if (Date.now()-time<totaltime)
-            {
-                setTimeout(test, 1);
-            }
-        };
-        setTimeout(test, 2000);
-        //setTimeout(function(){prev=500},6000);
-
-         var matrixToArray = function(str){
-         return str.match(/(-?[0-9\.]+)/g);
-         };*/
     });
 });
 
