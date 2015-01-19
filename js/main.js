@@ -49,28 +49,30 @@ $(function () {
     $('#random').click(function () {
         var $randomDiv=$('#randomtest');
         $randomDiv.html('');
-        $randomDiv.css('left','0px');
+        $randomDiv.css('transform','translate(200px,0px)');
         var random=1;
+        var randomChamp=champions[random];
         //champs before
-        var before=Math.floor((Math.random() * 20) + 30);
-        var beforeChamps=[];
-        var champ;
-        for (index = 0; index < before; ++index) {
-            champ=Math.floor((Math.random() * champions.length))
-            beforeChamps.push(champ);
-            $randomDiv.append('<img src="'+champions[champ].iconSRC+'">');
-        }
-        $randomDiv.append('<img src="'+champions[random].iconSRC+'">');
-        for (index = 0; index < 10; ++index) {
-            champ=Math.floor((Math.random() * champions.length))
-            $randomDiv.append('<img src="'+champions[champ].iconSRC+'">');
+        var location=Math.floor((Math.random() * 10) + 30);
+
+        var randomArray=champions.slice(); //copy the champ array to the random array
+        randomArray.splice(random,1)
+        randomArray=shuffle(randomArray);
+        randomArray[location]=randomChamp;
+
+        for (index = 0; index < location+10; ++index) {
+            $randomDiv.append('<img src="'+randomArray[index].iconSRC+'">');
         }
 
-        $randomDiv.animate({
-            left: "-="+(before)*100
-        }, 5000, function() {
-            // Animation complete.
-        });
+            /* fade out and rotate 3 times */
+        $('#randomButton').transition({ opacity: 0, perspective: 550, rotateX: 1080 }, 1000 );
+        $('#randomSelecter').transition({ opacity: 1, perspective: 550, rotateX: 1080 }, 1000);
+
+        setTimeout(function() {
+            $randomDiv.transition({
+                x: -(location)*100+$('#randomSelecterChild').width()/2+400-((Math.random() * 70) + 15)
+            }, 3000,'cubic-bezier(.6,-.28,.48,1)')
+        }, 500);
     });
 });
 
@@ -137,3 +139,8 @@ function champTextFit() {
 $(window).on("debouncedresize", function( event ) {
     champTextFit();
 });
+
+shuffle = function(v){
+    for(var j, x, i = v.length; i; j = parseInt(Math.random() * i), x = v[--i], v[i] = v[j], v[j] = x);
+    return v;
+};

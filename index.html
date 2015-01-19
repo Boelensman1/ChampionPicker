@@ -52,16 +52,21 @@
 <!-- Main jumbotron for a primary marketing message or call to action -->
 <div class="jumbotron">
     <div class="container">
-        <div class="col-xs-12" id="randomSelecter">
-            <div id="randomArrow" class="glyphicon glyphicon-play"></div>
-            <div id="randomSelecterChild">
-                <p id="randomtest"></p>
+        <div class="col-xs-12" id="randomContainer">
+            <div id="randomSelecter">
+                <div id="randomArrow" class="text-center"></div>
+                <div id="randomSelecterChild">
+                    <p id="randomtest"></p>
+                </div>
+            </div>
+            <div id="randomButton" class="text-center">
+                <p>
+                    <button type="button" id="random" class="btn btn-default btn-block">Random</button>
+                </p>
             </div>
         </div>
-        <div class="col-xs-12  text-center">
-            <p>
-                <button type="button" id="random" class="btn btn-default btn-block">Random</button>
-            </p>
+        <div class="col-xs-12">
+            <p></p>
         </div>
         <div class="roles btn-group col-md-6 col-sm-9 hidden-xs" role="group" aria-label="role">
             <button type="button" data-roleId="0" class="role_0 btn btn-default active">Top</button>
@@ -169,6 +174,8 @@
 <script src="js/libs/jquery.textfill.js"></script>
 
 <script src="js/libs/jquery.debouncedresize.js"></script>
+
+<script src="js/libs/jquery.transit.min.js"></script>
 
 <script src="js/main.js"></script>
 
