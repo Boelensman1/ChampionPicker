@@ -87,7 +87,7 @@ $(function () {
                 //$.getJSON('http://www.mobafire.com/ajax/searchSite?text='+encodeURIComponent());
                 //TODO: make mobafire link
                 $('#randomChampionModalLinks').append('<p class="text-center" style="width:60%"><a target="_blank" href="http://www.mobafire.com/league-of-legends/'+randomChamp.shortName+'-guide">Mobafire WIP</a></p>')
-                $('#randomChampionModalLinks').append('<p class="text-right"><a target="_blank" href="http://leagueoflegends.wikia.com/wiki/'+randomChamp.Name+'">LoL Wiki</a></p>')
+                $('#randomChampionModalLinks').append('<p class="text-right"><a target="_blank" href="http://leagueoflegends.wikia.com/wiki/'+randomChamp.name+'">LoL Wiki</a></p>')
                 $('#randomChampionModalBackground').css('background-image', 'url(' + randomChamp.splashSRC + ')');
                 setTimeout(function() {
                     adjustModalMaxHeightAndPosition();
