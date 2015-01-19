@@ -9,7 +9,7 @@ $(function () {
         var html;
         for (index = 0; index < champions.length; ++index) {
             divId = champions[index].name.replace(/\W/g, '');
-            if (champions[index].name.length>6)
+            if (champions[index].name.length>8)
             {
                 largeNames.push(divId);
             }

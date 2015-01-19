@@ -22,6 +22,7 @@
 
 .championLabel
 {
+    overflow:hidden;
     height:16px;
 }
 
