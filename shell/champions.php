@@ -19,7 +19,16 @@ foreach ($extraArguments as $extraArgument) {
             break;
         }
         case 'verbose': {
-            define('VERBOSE', $argumentParsed[2]);
+            define('VERBOSE',(int) $argumentParsed[2]);
+            break;
+        }
+        case 'apikey':{
+            define('APIKEY',$argumentParsed[2]);
+            break;
+        }
+        case 'dragonversion':
+        {
+            define('DDRAGONVERSION',$argumentParsed[2]);
             break;
         }
         default: {
@@ -31,6 +40,15 @@ foreach ($extraArguments as $extraArgument) {
 }
 unset($argumentParsed);
 unset($extraArguments);
+
+if (!defined('APIKEY')) {
+    die('No apikey given!');
+}
+if (!defined('DDRAGONVERSION')) {
+    echo_console('WARNING: no ddragonversion given, using default 5.1.1');
+    define('DDRAGONVERSION', '5.1.1');
+}
+
 if (!defined('VERBOSE')) {
     define('VERBOSE', 0);
 }
@@ -39,7 +57,7 @@ if (!defined('FORCE')) {
 }
 
 //the actual work
-$api = new ChampionsAPI('dc5dc19a-eb7d-4175-8955-59ab577026a5');
+$api = new ChampionsAPI(APIKEY,DDRAGONVERSION);
 $api->getChampions();
 $api->saveChampions();
 
@@ -59,12 +77,14 @@ class ChampionsList
 class ChampionsAPI
 {
     private $_apiKey;
+    private $_ddDragonVersion;
     public $champions = array();
     public $lists;
 
-    public function __construct($_apiKey)
+    public function __construct($_apiKey,$_ddDragonVersion)
     {
         $this->_apiKey = $_apiKey;
+        $this->_ddDragonVersion = $_ddDragonVersion;
     }
 
     public function getChampions()
@@ -92,7 +112,7 @@ class ChampionsAPI
             {
             progressBar($i, count($championsRaw));
             }
-            $this->champions[$i] = new Champion($this->_apiKey, $championRaw);
+            $this->champions[$i] = new Champion($this->_apiKey,$this->_ddDragonVersion, $championRaw);
             echo_console($championRaw->id . ' info', 1);
             $this->champions[$i]->loadFromAPIbyID();
             echo_console($this->champions[$i]->name . ' images', 1);
@@ -143,12 +163,13 @@ class Champion
     public $splashURL;
     public $iconSRC;
     public $splashSRC;
-    private $_baseUrlIcon = 'http://ddragon.leagueoflegends.com/cdn/4.21.5/img/champion/';
+    private $_baseUrlIcon;
     private $_baseUrlSplash = 'http://ddragon.leagueoflegends.com/cdn/img/champion/splash/';
 
-    public function __construct($_apiKey, $championRaw, $force = false)
+    public function __construct($_apiKey, $ddDragonVersion,$championRaw, $force = false)
     {
         $this->_apiKey = $_apiKey;
+        $this->_baseUrlIcon='http://ddragon.leagueoflegends.com/cdn/'.$ddDragonVersion.'/img/champion/';
         $this->_id = $championRaw->id;
         $this->active = $championRaw->active;
         $this->freeToPlay = $championRaw->freeToPlay;
@@ -218,16 +239,19 @@ function echo_console($input, $verbose = 0)
 }
 
 function show_help()
-{
-    echo_console('TODO: MAKE HELP FUNCTION');
+{//TODO: MAKE HELP FUNCTION
+    echo_console('HELP FUNCTION');
     die;
 }
 
 
 function progressBar($done, $total){
+    if (VERBOSE<=0)
+    {
     $perc = round(($done / $total) * 100);
     $bar  = "[" . str_repeat("=", $perc);
     $bar  = substr($bar, 0, strlen($bar) - 1) . ">"; // Change the last = to > for aesthetics
     $bar .= str_repeat(" ", 100 - $perc) . "] - $perc% - $done/$total";
     echo "$bar\r"; // Note the \r. Put the cursor at the beginning of the line
+    }
 }
