@@ -81,10 +81,11 @@ $(function () {
                 x: -(location)*100+$('#randomSelecterChild').width()/2+400-((Math.random() * 70) + 15)
                 //x: -100
             }, 3000,'cubic-bezier(.6,-.28,.48,1)',function(){
-                $('#randomChampionModalBody h4').html(randomChamp.name);
-                $('#randomChampionModalBody p').html('<a href="http://www.probuilds.net/champions/'+champions[index].shortName+'">Probuilds</a><br>etc.');
+                $('#randomChampionModalTitle').html(randomChamp.name);
+                $('#randomChampionModalBody p').html('<a href="http://www.probuilds.net/champions/'+randomChamp.shortName+'">Probuilds</a><br>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ad sed dolores iusto ab vero tempora in earum accusantium quas iure repellendus fugit ipsa reiciendis. Id illo natus sequi ex eveniet!');
                 $('#randomChampionModalBackground').css('background-image', 'url(' + randomChamp.splashSRC + ')');
                 setTimeout(function() {
+                    adjustModalMaxHeightAndPosition();
                     $('#randomChampionModal').modal('show');
                     setTimeout(function() {
                         $('#randomButton').transition({opacity: 1, perspective: 550, rotateX: 0}, 1000);

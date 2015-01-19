@@ -49,19 +49,23 @@
     </div>
 </nav>
 
-<div class="modal fade" id="randomChampionModal" tabindex="-1" role="dialog">
+
+<!-- Modal -->
+<div class="modal fade" id="randomChampionModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="randomChampionModalTitle">Champname</h4>
+            </div>
             <div class="modal-body" id="randomChampionModalBody">
-                <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
-                <h4></h4>
                 <p></p>
             </div>
-        </div>
+        </div><!-- /.modal-content -->
         <div id="randomChampionModalBackground">
         </div>
-    </div>
-</div>
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
 
 <!-- Main jumbotron for a primary marketing message or call to action -->
 <div class="jumbotron">
@@ -190,6 +194,8 @@
 <script src="js/libs/jquery.debouncedresize.js"></script>
 
 <script src="js/libs/jquery.transit.min.js"></script>
+
+<script src="js/centerModal.js"></script>
 
 <script src="js/main.js"></script>
 
