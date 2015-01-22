@@ -1,15 +1,35 @@
-var roles = [true, true, true, true, true];
+var roles = [];
+var roleTypeOptions=['All','Loose','Normal','Strict'];
+var roleType=0;
 var champions = [];
 var order = [];
 var free2play = [];
 var largeNames = [];
 var rolesPos = ['Toplane', 'Jungle', 'Midlane', 'Botlane: Adc', 'Botlane: Support']
 var championsDisabled;
-
+var roleType=0;
+var rolesJSON=[];
+rolesJSON[1]=null;
+rolesJSON[2]=null;
+rolesJSON[3]=null;
 //init storage
 ns = $.initNamespaceStorage('championPicker');
 storage = $.localStorage;
 championsDisabled = storage.get('championsDisabled');
+
+roles = storage.get('roles');
+if (roles===null)
+{
+    roles=[true, true, true, true, true];
+    storage.set('roles',roles);
+}
+
+roleType = storage.get('roleType');
+if (roleType===null)
+{
+    roleType=0;
+    storage.set('roleType',roleType);
+}
 
 $(function () {
     //load the champion data
@@ -42,6 +62,8 @@ $(function () {
             //make some big champion names smaller on big scree
             champTextFit();
 
+            //reload which champs should be active
+            reloadActive();
 
             //check if we have champions
             if (championsDisabled === null) {
@@ -92,11 +114,19 @@ $(function () {
         //get class
         var roleId = $(this).data('roleid');
         var $roleBtnClass = $('.role_' + roleId);
-        //toggle the appropriate button
-        $roleBtnClass.button('toggle');
 
+        //switch roles
         roles[roleId] = !roles[roleId];
+        storage.set('roles',roles);
         //reload which champs should be active
+        reloadActive();
+    });
+
+    $('.dropdownRole li a').click(function(){
+        //update roleType
+            roleType=$(this).data('roleid');
+            storage.set('roleType',roleType);
+        $('.roleType').html(roleTypeOptions[roleType]+'<span class="caret"></span>');
         reloadActive();
     });
 
@@ -196,11 +226,21 @@ $(function () {
 function reloadActive() {
     var toHide = [];
     var toShow = [];
+
     //check if all buttons are on:
     if (roles[0] && roles[1] && roles[2] && roles[3] && roles[4]) {
         //activate everything
         $("#champions li").addClass('toShow');
         $("#champions li").removeClass('toHide');
+
+        //toggle the appropriate button
+        $('.roles .btn').addClass('active');
+        //set the modifier to all
+        roleType=0;
+
+        $('.roleType').html('All <span class="caret"></span>');
+        $('.roleType').addClass('disabled');
+
         updateShowHide();
         return true;
     }
@@ -208,6 +248,16 @@ function reloadActive() {
     //de-activate everything
     $("#champions li").addClass('toHide');
     $("#champions li").removeClass('toShow');
+    $('.roles .btn').removeClass('active');
+    $('.roleType').removeClass('disabled');
+
+    //update roleType
+    if (roleType==0)
+    {
+        roleType=2;
+        storage.set('roleType',roleType);
+    }
+    $('.roleType').html(roleTypeOptions[roleType]+' <span class="caret"></span>');
 
     //check if all buttons are off:
     if (!roles[0] && !roles[1] && !roles[2] && !roles[3] && !roles[4]) {
@@ -217,25 +267,45 @@ function reloadActive() {
 
     //if its not we have to some real work
     filename = 'data/roles';
-    filename += 'Strict.json';
-    $.getJSON(filename, function (rolesJson) {
-        for (index = 0; index < roles.length; ++index) {
-            if (roles[index]) {
-                //we have to activate all champions who have this role
-                for (index2 = 0; index2 < rolesJson[index].length; ++index2) {
-                    $('[data-championId=' + rolesJson[index][index2] + ']').addClass('toShow');
-                    $('[data-championId=' + rolesJson[index][index2] + ']').removeClass('toHide');
-                }
+    filename += roleTypeOptions[roleType]+'.json';
+
+    //see if we already have this json
+    if (rolesJSON[roleType]===null)
+    {
+        //no, lets load it
+        $.getJSON(filename, function (rolesJson) {
+            rolesJSON[roleType]=rolesJson;
+            processRoles();
+            return true;
+        });
+    }
+    else
+    {
+        processRoles();
+        return true;
+    }
+}
+
+function processRoles()
+{
+    for (index = 0; index < roles.length; ++index) {
+        if (roles[index]) {
+            //activate the button
+            $('.role_'+index).addClass('active');
+
+            //we have to activate all champions who have this role
+            for (index2 = 0; index2 < rolesJSON[roleType][index].length; ++index2) {
+                $('[data-championId=' + rolesJSON[roleType][index][index2] + ']').addClass('toShow');
+                $('[data-championId=' + rolesJSON[roleType][index][index2] + ']').removeClass('toHide');
             }
         }
-        updateShowHide();
-        return true;
-    });
+    }
+    updateShowHide();
 }
 
 function updateShowHide() {
-    $('.toShow').show('slow');
-    $('.toHide').hide('slow');
+    $('.toShow').show();
+    $('.toHide').hide();
 }
 
 function champTextFit() {
