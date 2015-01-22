@@ -5,6 +5,23 @@ define('ICONS', 'img/icons/');
 define('SPLASHES', 'img/splashes/');
 define('DATA', BASEPATH . 'data/');
 
+$order=file_get_contents(DATA.'order.json');
+$order=json_decode($order);
+
+$file='rolesStrict.json';
+$roles=file_get_contents(DATA.$file);
+$roles=json_decode($roles);
+$roles2=$roles;
+$roles3=[];
+foreach ($roles as $index=>$role)
+{
+    foreach ($role as $champ)
+    {
+        $roles3[$index][]=$order[$champ];
+    }
+}
+file_put_contents(DATA.$file,json_encode($roles3));
+/*
 //get the extra arguments
 $extraArguments = $argv;
 unset($extraArguments[0]);
@@ -79,6 +96,7 @@ class ChampionsAPI
     private $_apiKey;
     private $_ddDragonVersion;
     public $champions = array();
+    public $championsArray = array();
     public $lists;
 
     public function __construct($_apiKey,$_ddDragonVersion)
@@ -112,20 +130,23 @@ class ChampionsAPI
             {
             progressBar($i, count($championsRaw));
             }
-            $this->champions[$i] = new Champion($this->_apiKey,$this->_ddDragonVersion, $championRaw);
-            echo_console($championRaw->id . ' info', 1);
-            $this->champions[$i]->loadFromAPIbyID();
-            echo_console($this->champions[$i]->name . ' images', 1);
-            $this->champions[$i]->getImages(FORCE);
+            $id=$championRaw->id;
+            $this->championsArray[$i]=$id;
 
-            if ($this->champions[$i]->active == true) {
-                $this->lists->active[] = $i;
+            $this->champions[$id] = new Champion($this->_apiKey,$this->_ddDragonVersion, $championRaw);
+            echo_console($championRaw->id . ' info', 1);
+            $this->champions[$id]->loadFromAPIbyID();
+            echo_console($this->champions[$id]->name . ' images', 1);
+            $this->champions[$id]->getImages(FORCE);
+
+            if ($this->champions[$id]->active == true) {
+                $this->lists->active[] = $id;
             }
-            if ($this->champions[$i]->freeToPlay == true) {
-                $this->lists->freeToPlay[] = $i;
+            if ($this->champions[$id]->freeToPlay == true) {
+                $this->lists->freeToPlay[] = $id;
             }
-            if ($this->champions[$i]->rankedEnabled == true) {
-                $this->lists->rankedEnabled[] = $i;
+            if ($this->champions[$id]->rankedEnabled == true) {
+                $this->lists->rankedEnabled[] = $id;
             }
             progressBar($i+1, count($championsRaw));
         }
@@ -142,13 +163,18 @@ class ChampionsAPI
         file_put_contents(DATA . 'rankedEnabled.json', $json);
         //make a copy of champions
         $championsTemp=$this->champions;
-        foreach ($championsTemp as $i=>$champion)
+        $i=0;
+        foreach ($championsTemp as $champion)
         {
-            progressBar($i+1, count($championsTemp));
+            $i++;
+            progressBar($i, count($this->championsArray));
             unset($champion->active,$champion->freeToPlay,$champion->rankedEnabled);
         }
         $json = json_encode($this->champions);
         file_put_contents(DATA . 'champions.json', $json);
+
+        $json = json_encode($this->championsArray);
+        file_put_contents(DATA . 'order.json', $json);
     }
 }
 
@@ -259,3 +285,4 @@ function progressBar($done, $total){
     echo "$bar\r"; // Note the \r. Put the cursor at the beginning of the line
     }
 }
+*/

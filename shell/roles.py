@@ -15,19 +15,21 @@ elif str(sys.argv[1]) == 'loose':
 else:
     print 'Usage: roles.py { strict | normal | loose }'
     sys.exit(1)
-
+    
 #get the champions
 basepath = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 #print basepath
 
 f = open(basepath+'/data/champions.json', 'r')
 champions = json.loads(f.read())
+f = open(basepath+'/data/order.json', 'r')
+order = json.loads(f.read())
 i = 0
 
 
 def getChoices():
     global n_choices
-    retur = [str(champions[i]['name']),
+    retur = [str(champions[str(order[i])]['name']),
              "[ ] Top", "[ ] Jungle", "[ ] Mid", "[ ] ADC", "[ ] Support"]
     if roles[i][0]:
         retur[1] = "[X] Top"
@@ -48,14 +50,14 @@ def saveChoices():
     for role in range(0, 5):
         for champId, champRoles in enumerate(roles):
             if champRoles[role]:
-                rolesSave[role].append(champId)
+                rolesSave[role].append(order[champId])
     with open(basepath+'/data/'+datafilename, 'w') as outfile:
         json.dump(rolesSave, outfile)
     return
 
 #init roles
 roles = []
-for index in range(0, len(champions)):
+for index in range(0, len(order)):
         roles.append([False, False, False, False, False])
 
 if os.path.isfile(basepath+'/data/'+datafilename):
@@ -63,7 +65,8 @@ if os.path.isfile(basepath+'/data/'+datafilename):
     roles_temp = json.loads(f.read())
     for role in range(0, 5):
         for champId in roles_temp[role]:
-            roles[champId][role] = True
+            roles[order.index(champId)][role] = True
+
 
 WIDTH = 30
 HEIGHT = 10
