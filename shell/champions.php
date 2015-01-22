@@ -8,20 +8,7 @@ define('DATA', BASEPATH . 'data/');
 $order=file_get_contents(DATA.'order.json');
 $order=json_decode($order);
 
-$file='rolesStrict.json';
-$roles=file_get_contents(DATA.$file);
-$roles=json_decode($roles);
-$roles2=$roles;
-$roles3=[];
-foreach ($roles as $index=>$role)
-{
-    foreach ($role as $champ)
-    {
-        $roles3[$index][]=$order[$champ];
-    }
-}
-file_put_contents(DATA.$file,json_encode($roles3));
-/*
+
 //get the extra arguments
 $extraArguments = $argv;
 unset($extraArguments[0]);
@@ -285,4 +272,3 @@ function progressBar($done, $total){
     echo "$bar\r"; // Note the \r. Put the cursor at the beginning of the line
     }
 }
-*/
