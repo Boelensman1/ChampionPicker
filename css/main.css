@@ -22,6 +22,7 @@
 
 .championLabel
 {
+    overflow:hidden;
     height:16px;
 }
 
@@ -61,6 +62,7 @@
     opacity: 0;
     height: 100px;
     position: relative;
+    transform: perspective(550px) rotateX(180deg);
 }
 #randomSelecterChild
 {
@@ -98,4 +100,90 @@
 #random
 {
     height: 100px;
+}
+
+div {
+    -webkit-backface-visibility: hidden; /* Chrome, Safari, Opera */
+    backface-visibility: hidden;
+}
+
+#randomChampionModalBackground
+{
+    content: "";
+    opacity: 0.4;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    position: absolute;
+    background:transparent;
+    background-size: 100%;
+    background-repeat: no-repeat;
+    filter: alpha(opacity=40); /* For IE8 and earlier */
+
+
+    pointer-events: none;
+
+    -webkit-backface-visibility: hidden;
+    -webkit-background-clip: padding-box;
+    background-clip: padding-box;
+    background-color: rgb(255, 255, 255);
+    border-bottom-color: rgba(0, 0, 0, 0.2);
+    border-bottom-left-radius: 6px;
+    border-bottom-right-radius: 6px;
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+    border-image-outset: 0px;
+    border-image-repeat: stretch;
+    border-image-slice: 100%;
+    border-image-source: none;
+    border-image-width: 1;
+    border-left-color: rgba(0, 0, 0, 0.2);
+    border-left-style: solid;
+    border-left-width: 1px;
+    border-right-color: rgba(0, 0, 0, 0.2);
+    border-right-style: solid;
+    border-right-width: 1px;
+    border-top-color: rgba(0, 0, 0, 0.2);
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+    border-top-style: solid;
+    border-top-width: 1px;
+    box-sizing: border-box;
+    display: block;
+}
+
+
+.modal-dialog-center {
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+}
+
+.modal-body {
+    overflow-y: auto;
+    z-index:1;
+}
+.modal-footer {
+    margin-top: 0;
+}
+
+@media (max-width: 767px) {
+    .modal-dialog-center {
+        width: 100%;
+    }
+}
+#randomChampionModalLore
+{
+    height:196px;
+    overflow-y: scroll;
+    color: black;
+}
+
+
+#randomChampionModalLinks p
+{
+    display: inline-block;
+    width:20%;
 }
