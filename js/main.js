@@ -1,3 +1,5 @@
+//init all variables
+//TODO: twitch's summary is bugged
 var roles = [];
 var roleTypeOptions=['All','Loose','Normal','Strict'];
 var roleType=0;
@@ -5,13 +7,15 @@ var champions = [];
 var order = [];
 var free2play = [];
 var largeNames = [];
-var rolesPos = ['Toplane', 'Jungle', 'Midlane', 'Botlane: Adc', 'Botlane: Support']
+var rolesPos = ['Toplane', 'Jungle', 'Midlane', 'Marksman', 'Support']
 var championsDisabled;
 var roleType=0;
 var rolesJSON=[];
 rolesJSON[1]=null;
 rolesJSON[2]=null;
 rolesJSON[3]=null;
+var champPlayed={};
+
 //init storage
 ns = $.initNamespaceStorage('championPicker');
 storage = $.localStorage;
@@ -74,6 +78,20 @@ $(function () {
                 }
                 storage.set('championsDisabled', championsDisabled);
             }
+
+
+            //get champion playcount
+            champPlayed = storage.get('champPlayed');
+            if (champPlayed===null)
+            {
+                champPlayed={};
+                for (i = 0; i < order.length; ++i) {
+                    index = order[i];
+                    champPlayed[index] = 0;
+                }
+                storage.set('champPlayed',champPlayed);
+            }
+
             //update disabled
             for (i = 0; i < order.length; ++i) {
                 index = order[i];
@@ -132,20 +150,51 @@ $(function () {
 
 
     $('#random').click(function () {
-        //get all possible champions
+        //lets first choose a role
+        var randomRole=Math.floor(Math.random() * 5);
+        while(!roles[randomRole])
+        {
+            randomRole=Math.floor(Math.random() * 5);
+        }
+
+        //now we get all possible champions
         var options = [];
         var index = 0;
+        var champId=0;
         $('.toShow.notDisabled').each(function () {
-            options[index++] = $(this).data('championid');
+            champId=$(this).data('championid');
+            if (rolesJSON[roleType][randomRole].indexOf(champId)!=-1)//the champion indeed has the role chosen
+            {
+                options[index++] = champId;
+            }
         });
+
+        //shuffle the options so its random
+        var optionsShuffle = shuffle(options);
+
+        //now lets see what champions we haven't played or played the least:
+        var random = options[0];
+        var mostPlayed=champPlayed[optionsShuffle[0]];
+        for (i = 1; i < options.length-1; ++i) {
+            if (mostPlayed>champPlayed[optionsShuffle[i]])
+            {
+                random=optionsShuffle[i];
+                mostPlayed=champPlayed[optionsShuffle[i]];
+            }
+        }
+
+        //we now have the best option
+        var randomChamp = champions[random];
+
+        //update its playcount
+        champPlayed[random]+=1;
+        storage.set('champPlayed',champPlayed);
+
 
         var $randomDiv = $('#randomtest');
         $randomDiv.html('');
         $('#randomChampionModalLore,#randomChampionModalLinks2').height(0);
         $randomDiv.css('transform', 'translate(200px,0px)');
-        var random = 103;
-        var randomChamp = champions[random];
-        var randomRole = 2;
         //champs before
         var location = Math.min(Math.max(10, options.length - 10), 35);
 
@@ -189,6 +238,7 @@ $(function () {
                 $('#randomChampionModalLinks2').html('<p class="text-center"><a target="_blank" href="http://www.probuilds.net/champions/' + randomChamp.shortName + '">Probuilds</a></p>')
                 //get mobafire url
                 //$.getJSON('http://www.mobafire.com/ajax/searchSite?text='+encodeURIComponent());
+
                 //TODO: make mobafire link
                 $('#randomChampionModalLinks').append('<p class="text-center" style="width:60%"><a target="_blank" href="http://www.mobafire.com/league-of-legends/' + randomChamp.shortName + '-guide">Mobafire WIP</a></p>')
                 $('#randomChampionModalLinks2').append('<p class="text-center""><a target="_blank" href="http://www.mobafire.com/league-of-legends/' + randomChamp.shortName + '-guide">Mobafire WIP</a></p>')
