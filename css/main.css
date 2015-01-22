@@ -176,7 +176,7 @@ div {
 }
 #randomChampionModalLore
 {
-    height:196px;
+    height:170px;
     overflow-y: scroll;
     color: black;
 }
@@ -186,4 +186,15 @@ div {
 {
     display: inline-block;
     width:20%;
+}
+
+#randomChampionModalRole
+{
+    color: red;
+}
+#randomChampionModalLinks2{
+    /*margin-top:-20px;*/
+}
+#randomChampionModalLinks2 p{
+    width:100%;
 }
