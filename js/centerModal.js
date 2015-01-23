@@ -32,6 +32,3 @@ function adjustModalMaxHeightAndPosition(){
         }
     });
 }
-if ($(window).height() >= 320){
-    $(window).resize(adjustModalMaxHeightAndPosition).trigger("resize");
-}
