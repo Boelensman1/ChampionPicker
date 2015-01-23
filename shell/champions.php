@@ -50,13 +50,16 @@ if (!defined('APIKEY')) {
 }
 if (!defined('DDRAGONVERSION')) {
     echo_console('WARNING: no ddragonversion given, using default 5.1.1');
+    /** @noinspection PhpConstantReassignmentInspection */
     define('DDRAGONVERSION', '5.1.1');
 }
 
 if (!defined('VERBOSE')) {
+    /** @noinspection PhpConstantReassignmentInspection */
     define('VERBOSE', 0);
 }
 if (!defined('FORCE')) {
+    /** @noinspection PhpConstantReassignmentInspection */
     define('FORCE', false);
 }
 
@@ -268,10 +271,10 @@ function show_help()
 function progressBar($done, $total){
     if (VERBOSE<=0)
     {
-    $perc = round(($done / $total) * 100);
-    $bar  = "[" . str_repeat("=", $perc);
+        $percent = round(($done / $total) * 100);
+    $bar  = "[" . str_repeat("=", $percent);
     $bar  = substr($bar, 0, strlen($bar) - 1) . ">"; // Change the last = to > for aesthetics
-    $bar .= str_repeat(" ", 100 - $perc) . "] - $perc% - $done/$total";
+    $bar .= str_repeat(" ", 100 - $percent) . "] - $percent% - $done/$total";
     echo "$bar\r"; // Note the \r. Put the cursor at the beginning of the line
     }
 }
