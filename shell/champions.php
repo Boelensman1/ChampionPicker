@@ -82,6 +82,7 @@ class ChampionsAPI
 {
     private $_apiKey;
     private $_ddDragonVersion;
+    /** @var Champion[] */
     public $champions = array();
     public $championsArray = array();
     public $lists;
@@ -157,7 +158,7 @@ class ChampionsAPI
             progressBar($i, count($this->championsArray));
             unset($champion->active,$champion->freeToPlay,$champion->rankedEnabled);
         }
-        $json = json_encode($this->champions);
+        $json = utf8_encode (json_encode($this->champions));
         file_put_contents(DATA . 'champions.json', $json);
 
         $json = json_encode($this->championsArray);
@@ -169,6 +170,7 @@ class Champion
 {
     private $_apiKey;
     private $_id;
+    public $name;
     public $active;
     public $freeToPlay;
     public $rankedEnabled;
@@ -211,20 +213,21 @@ class Champion
         $this->iconURL = $this->_baseUrlIcon . $championRaw->image->full;
         $this->splashURL = $this->_baseUrlSplash . substr($championRaw->image->full, 0, -4) . '_0.jpg';
 
-        $this->iconSRC = ICONS . $this->name . '.png';
-        $this->splashSRC = SPLASHES . $this->name . '.png';
+        $nameSanitized=preg_replace('/\\W/','',$this->name);
+        $this->iconSRC = ICONS . $nameSanitized . '.png';
+        $this->splashSRC = SPLASHES . $nameSanitized . '.png';
     }
 
     public function getImages($force = false)
     {
         //download the images
         echo_console($this->name . ' icon', 2);
-        if (!file_exists($this->iconSRC) || $force == true) {
+        if (!file_exists(BASEPATH.$this->iconSRC) || $force == true) {
             download($this->iconURL, BASEPATH.$this->iconSRC);
         }
 
         echo_console($this->name . ' splash', 2);
-        if (!file_exists($this->splashSRC) || $force == true) {
+        if (!file_exists(BASEPATH.$this->splashSRC) || $force == true) {
             download($this->splashURL, BASEPATH.$this->splashSRC);
         }
     }
