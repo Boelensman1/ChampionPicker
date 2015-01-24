@@ -24,6 +24,8 @@
 {
     overflow:hidden;
     height:16px;
+    max-width: 120px; /*width of image*/
+    margin-left: 0px !important;
 }
 
 /*

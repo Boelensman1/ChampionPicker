@@ -1,20 +1,20 @@
 //init all variables
 //TODO: twitch's summary is bugged
 var roles = [];
-var roleTypeOptions=['All','Loose','Normal','Strict'];
-var roleType=0;
+var roleTypeOptions = ['All', 'Loose', 'Normal', 'Strict'];
+var roleType = 0;
 var champions = [];
 var order = [];
 var free2play = [];
 var largeNames = [];
 var rolesPos = ['Toplane', 'Jungle', 'Midlane', 'Marksman', 'Support']
 var championsDisabled;
-var roleType=0;
-var rolesJSON=[];
-rolesJSON[1]=null;
-rolesJSON[2]=null;
-rolesJSON[3]=null;
-var champPlayed={};
+var roleType = 0;
+var rolesJSON = [];
+rolesJSON[1] = null;
+rolesJSON[2] = null;
+rolesJSON[3] = null;
+var champPlayed = {};
 
 //init storage
 ns = $.initNamespaceStorage('championPicker');
@@ -22,17 +22,15 @@ storage = $.localStorage;
 championsDisabled = storage.get('championsDisabled');
 
 roles = storage.get('roles');
-if (roles===null)
-{
-    roles=[true, true, true, true, true];
-    storage.set('roles',roles);
+if (roles === null) {
+    roles = [true, true, true, true, true];
+    storage.set('roles', roles);
 }
 
 roleType = storage.get('roleType');
-if (roleType===null)
-{
-    roleType=0;
-    storage.set('roleType',roleType);
+if (roleType === null) {
+    roleType = 0;
+    storage.set('roleType', roleType);
 }
 
 $(function () {
@@ -82,14 +80,13 @@ $(function () {
 
             //get champion playcount
             champPlayed = storage.get('champPlayed');
-            if (champPlayed===null)
-            {
-                champPlayed={};
+            if (champPlayed === null) {
+                champPlayed = {};
                 for (i = 0; i < order.length; ++i) {
                     index = order[i];
                     champPlayed[index] = 0;
                 }
-                storage.set('champPlayed',champPlayed);
+                storage.set('champPlayed', champPlayed);
             }
 
             //update disabled
@@ -135,51 +132,57 @@ $(function () {
 
         //switch roles
         roles[roleId] = !roles[roleId];
-        storage.set('roles',roles);
+        storage.set('roles', roles);
         //reload which champs should be active
         reloadActive();
     });
 
-    $('.dropdownRole li a').click(function(){
+    $('.dropdownRole li a').click(function () {
         //update roleType
-            roleType=$(this).data('roleid');
-            storage.set('roleType',roleType);
-        $('.roleType').html(roleTypeOptions[roleType]+'<span class="caret"></span>');
+        roleType = $(this).data('roleid');
+        storage.set('roleType', roleType);
+        $('.roleType').html(roleTypeOptions[roleType] + '<span class="caret"></span>');
         reloadActive();
     });
 
 
     $('#random').click(function () {
         //lets first choose a role
-        var randomRole=Math.floor(Math.random() * 5);
-        while(!roles[randomRole])
+        var randomRole = Math.floor(Math.random() * 5);
+        var allRoles=true;
+        //check if not all buttons are on:
+        if (!roles[0] || !roles[1] || !roles[2] || !roles[3] || !roles[4])
         {
-            randomRole=Math.floor(Math.random() * 5);
+            allRoles=false;
+            while (!roles[randomRole]) {
+                randomRole = Math.floor(Math.random() * 5);
+            }
         }
 
         //now we get all possible champions
-        var options = [];
+        var options = [];//all options, including not chosen lanes
+        var optionsShuffle = [];//the real options
         var index = 0;
-        var champId=0;
+        var champId = 0;
         $('.toShow.notDisabled').each(function () {
-            champId=$(this).data('championid');
-            if (rolesJSON[roleType][randomRole].indexOf(champId)!=-1)//the champion indeed has the role chosen
+            champId = $(this).data('championid');
+            options.push(champId);
+            if (allRoles=true || rolesJSON[roleType][randomRole].indexOf(champId) != -1)//the champion indeed has the role chosen
             {
-                options[index++] = champId;
+                optionsShuffle.push(champId);
             }
         });
 
         //shuffle the options so its random
-        var optionsShuffle = shuffle(options);
+        shuffle(optionsShuffle);
 
         //now lets see what champions we haven't played or played the least:
-        var random = options[0];
-        var mostPlayed=champPlayed[optionsShuffle[0]];
-        for (i = 1; i < options.length-1; ++i) {
-            if (mostPlayed>champPlayed[optionsShuffle[i]])
-            {
-                random=optionsShuffle[i];
-                mostPlayed=champPlayed[optionsShuffle[i]];
+        var random = optionsShuffle[0];
+        var mostPlayed = champPlayed[optionsShuffle[0]];
+        for (i = 1; i < options.length - 1; ++i) {
+            if (mostPlayed > champPlayed[optionsShuffle[i]]) {
+                random = optionsShuffle[i];
+                mostPlayed = champPlayed[optionsShuffle[i]];
             }
         }
 
@@ -187,8 +190,8 @@ $(function () {
         var randomChamp = champions[random];
 
         //update its playcount
-        champPlayed[random]+=1;
-        storage.set('champPlayed',champPlayed);
+        champPlayed[random] += 1;
+        storage.set('champPlayed', champPlayed);
 
 
         var $randomDiv = $('#randomtest');
@@ -206,13 +209,12 @@ $(function () {
                 options[index++] = options[key];
             }
         }
-
-        options.splice(random, 1)
-        options = shuffle(options);
+        (options.splice(random, 1))//remove the chosen element, inserts -1 to make sure the numbering remains intact
+        shuffle(options);
         options[location] = random;
 
         for (index = 0; index < location + 10; ++index) {
-            $randomDiv.append('<img src="' + champions[options[index]].iconSRC + '">');
+                $randomDiv.append('<img src="' + champions[options[index]].iconSRC + '">');
         }
         setTimeout(function () {
             /* fade out and rotate 3 times */
@@ -250,7 +252,9 @@ $(function () {
                 setTimeout(function () {
                     adjustModalMaxHeightAndPosition();
                     $('#randomChampionModal').modal('show');
-                    setTimeout(function(){modalLoreFit(false)},200);
+                    setTimeout(function () {
+                        modalLoreFit(false)
+                    }, 200);
                     //sometimes above does not work, then use this one:
                     $('#randomChampionModal').on('shown.bs.modal', function (e) {
                         modalLoreFit(true);
@@ -286,7 +290,7 @@ function reloadActive() {
         //toggle the appropriate button
         $('.roles .btn').addClass('active');
         //set the modifier to all
-        roleType=0;
+        roleType = 0;
 
         $('.roleType').html('All <span class="caret"></span>');
         $('.roleType').addClass('disabled');
@@ -302,12 +306,11 @@ function reloadActive() {
     $('.roleType').removeClass('disabled');
 
     //update roleType
-    if (roleType==0)
-    {
-        roleType=2;
-        storage.set('roleType',roleType);
+    if (roleType == 0) {
+        roleType = 2;
+        storage.set('roleType', roleType);
     }
-    $('.roleType').html(roleTypeOptions[roleType]+' <span class="caret"></span>');
+    $('.roleType').html(roleTypeOptions[roleType] + ' <span class="caret"></span>');
 
     //check if all buttons are off:
     if (!roles[0] && !roles[1] && !roles[2] && !roles[3] && !roles[4]) {
@@ -317,31 +320,28 @@ function reloadActive() {
 
     //if its not we have to some real work
     filename = 'data/roles';
-    filename += roleTypeOptions[roleType]+'.json';
+    filename += roleTypeOptions[roleType] + '.json';
 
     //see if we already have this json
-    if (rolesJSON[roleType]===null)
-    {
+    if (rolesJSON[roleType] === null) {
         //no, lets load it
         $.getJSON(filename, function (rolesJson) {
-            rolesJSON[roleType]=rolesJson;
+            rolesJSON[roleType] = rolesJson;
             processRoles();
             return true;
         });
     }
-    else
-    {
+    else {
         processRoles();
         return true;
     }
 }
 
-function processRoles()
-{
+function processRoles() {
     for (index = 0; index < roles.length; ++index) {
         if (roles[index]) {
             //activate the button
-            $('.role_'+index).addClass('active');
+            $('.role_' + index).addClass('active');
 
             //we have to activate all champions who have this role
             for (index2 = 0; index2 < rolesJSON[roleType][index].length; ++index2) {
@@ -391,9 +391,9 @@ function modalLoreFit(animate) {
         $('#randomChampionModalLinks').show();
         $('#randomChampionModalLinks2').hide();
 
-        height-=70//height of buttons
+        height -= 70//height of buttons
         if (animate) {
-            $('#randomChampionModalLore').transition({ height: (height)+'px' },
+            $('#randomChampionModalLore').transition({height: (height) + 'px'},
                 adjustModalMaxHeightAndPosition);
         }
         else {
@@ -407,9 +407,9 @@ function modalLoreFit(animate) {
         $('#randomChampionModalLinks').hide();
         $('#randomChampionModalLinks2').show();
 
-        height-=40//margins
+        height -= 40//margins
         if (animate) {
-            $('#randomChampionModalLinks2').transition({ height: (height)+'px' },
+            $('#randomChampionModalLinks2').transition({height: (height) + 'px'},
                 adjustModalMaxHeightAndPosition);
         }
         else {
@@ -419,7 +419,27 @@ function modalLoreFit(animate) {
     }
 }
 
-shuffle = function (v) {
-    for (var j, x, i = v.length; i; j = parseInt(Math.random() * i), x = v[--i], v[i] = v[j], v[j] = x);
-    return v;
-};
+
+
+function shuffle(array) {
+    var currentIndex = array.length
+        , temporaryValue
+        , randomIndex
+        ;
+
+    // While there remain elements to shuffle...
+    while (0 !== currentIndex) {
+
+        // Pick a remaining element...
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex -= 1;
+
+        // And swap it with the current element.
+        temporaryValue = array[currentIndex];
+        array[currentIndex] = array[randomIndex];
+        array[randomIndex] = temporaryValue;
+    }
+
+    return array;
+}
+
