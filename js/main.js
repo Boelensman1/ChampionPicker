@@ -219,12 +219,12 @@ $(function () {
         $('#randomChampionModalLore,#randomChampionModalLinks2').height(0);
         $randomDiv.css('transform', 'translate(200px,0px)');
         //champs before
-        var location = Math.min(Math.max(10, options.length - 10), 35);
+        var location = Math.min(Math.max(20, options.length - 10), 35)+Math.floor(Math.random() * 10);
 
-        if (options.length <= 22) {
+        if (options.length <= 42) {
             var len = options.length;
             //not enough options, fill it up!
-            while (options.length <= 22) {
+            while (options.length <= 42) {
                 var key = Math.floor(Math.random() * len);
                 options.push(options[key]);
             }
