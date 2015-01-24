@@ -420,7 +420,7 @@ function modalLoreFit(animate) {
 }
 
 
-
+//knuth-shuffle
 function shuffle(array) {
     var currentIndex = array.length
         , temporaryValue
