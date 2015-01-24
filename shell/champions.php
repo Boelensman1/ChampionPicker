@@ -112,7 +112,6 @@ class ChampionsAPI
         $this->champions = array();
         $this->lists = new stdClass();
         $this->lists->active = array();
-        $this->lists->freeToPlay = array();
         $this->lists->rankedEnabled = array();
 
         echo_console('Loading champion info');
@@ -133,9 +132,6 @@ class ChampionsAPI
             if ($this->champions[$id]->active == true) {
                 $this->lists->active[] = $id;
             }
-            if ($this->champions[$id]->freeToPlay == true) {
-                $this->lists->freeToPlay[] = $id;
-            }
             if ($this->champions[$id]->rankedEnabled == true) {
                 $this->lists->rankedEnabled[] = $id;
             }
@@ -148,8 +144,6 @@ class ChampionsAPI
         echo_console('saving champion info');
         $json = json_encode($this->lists->active);
         file_put_contents(DATA . 'active.json', $json);
-        $json = json_encode($this->lists->freeToPlay);
-        file_put_contents(DATA . 'freeToPlay.json', $json);
         $json = json_encode($this->lists->rankedEnabled);
         file_put_contents(DATA . 'rankedEnabled.json', $json);
         //make a copy of champions
@@ -159,7 +153,7 @@ class ChampionsAPI
         {
             $i++;
             progressBar($i, count($this->championsArray));
-            unset($champion->active,$champion->freeToPlay,$champion->rankedEnabled);
+            unset($champion->active,$champion->rankedEnabled);
         }
         $json = utf8_encode (json_encode($this->champions));
         file_put_contents(DATA . 'champions.json', $json);
@@ -175,7 +169,6 @@ class Champion
     private $_id;
     public $name;
     public $active;
-    public $freeToPlay;
     public $rankedEnabled;
     public $iconURL;
     public $splashURL;
@@ -192,7 +185,6 @@ class Champion
         $this->_baseUrlIcon='http://ddragon.leagueoflegends.com/cdn/'.$ddDragonVersion.'/img/champion/';
         $this->_id = $championRaw->id;
         $this->active = $championRaw->active;
-        $this->freeToPlay = $championRaw->freeToPlay;
         $this->rankedEnabled = $championRaw->rankedPlayEnabled;
     }
 
