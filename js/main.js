@@ -14,7 +14,9 @@ var rolesJSON = [];
 rolesJSON[1] = null;
 rolesJSON[2] = null;
 rolesJSON[3] = null;
+var enableF2P=true;
 var champPlayed = {};
+var apiKey='dc5dc19a-eb7d-4175-8955-59ab577026a5';
 
 //init storage
 ns = $.initNamespaceStorage('championPicker');
@@ -101,28 +103,47 @@ $(function () {
             }
 
             //load free2play
-            $.getJSON("data/freeToPlay.json", function (free2playJSON) {
-                free2play = free2playJSON;
-                for (index = 0; index < free2play.length; ++index) {
+            $.getJSON("https://euw.api.pvp.net/api/lol/euw/v1.2/champion?freeToPlay=true&api_key="+apiKey, function (free2playJSON) {
+                free2play = [];
+                for (index = 0; index < free2playJSON.champions.length; ++index) {
+                    free2play[index] = free2playJSON.champions[index].id;
+                    $('[data-championId=' + free2play[index] + ']').addClass('Free2Play');
                     $('[data-championId=' + free2play[index] + '] span').removeClass('label-default');
                     $('[data-championId=' + free2play[index] + '] span').addClass('label-success');
+                    $('[data-championId=' + free2play[index] + '] span').addClass('label-success');
                 }
+                updateFree2Play();
             });
 
             //load the champ click events
             $('.champion').click(function () {
                 //toggle the classes
-                $(this).toggleClass('disabled');
                 $(this).toggleClass('notDisabled');
 
                 var champId = $(this).data('championid');
                 var disabled = $(this).hasClass('disabled');
+
+                if ($(this).hasClass('free2play')){
+                    $('Free2Play').toggleClass('disabled_f2p');
+                    var disabled = $(this).hasClass('disabled_f2p');
+                }
+                else
+                {
+                    $(this).toggleClass('disabled');
+                    var disabled = $(this).hasClass('disabled');
+                }
+
                 championsDisabled[champId] = disabled;
                 storage.set('championsDisabled', championsDisabled);
             });
         });
     });
 
+    //the free2play button
+    $('.free2play').click(function(){
+        enableF2P=!enableF2P;
+        updateFree2Play();
+    });
 
     //load the selection buttons
     $('.roles button').click(function () {
@@ -162,9 +183,8 @@ $(function () {
         //now we get all possible champions
         var options = [];//all options, including not chosen lanes
         var optionsShuffle = [];//the real options
-        var index = 0;
         var champId = 0;
-        $('.toShow.notDisabled').each(function () {
+        $('.toShow.notDisabled, .toShow.disabled_f2p').each(function () {
             champId = $(this).data('championid');
             options.push(champId);
             if (allRoles=true || rolesJSON[roleType][randomRole].indexOf(champId) != -1)//the champion indeed has the role chosen
@@ -206,7 +226,7 @@ $(function () {
             //not enough options, fill it up!
             while (options.length <= 22) {
                 var key = Math.floor(Math.random() * len);
-                options[index++] = options[key];
+                options.push(options[key]);
             }
         }
         (options.splice(random, 1))//remove the chosen element, inserts -1 to make sure the numbering remains intact
@@ -416,6 +436,20 @@ function modalLoreFit(animate) {
             $('#randomChampionModalLinks2').height(height);
             adjustModalMaxHeightAndPosition();
         }
+    }
+}
+
+function updateFree2Play()
+{
+    if (enableF2P)
+    {
+        $('.Free2Play.disabled').addClass('disabled_f2p');
+        $('.Free2Play.disabled').removeClass('disabled');
+    }
+    else
+    {
+        $('.Free2Play.disabled_f2p').addClass('disabled');
+        $('.Free2Play.disabled_f2p').removeClass('disabled_f2p');
     }
 }
 

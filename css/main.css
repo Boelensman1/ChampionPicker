@@ -20,6 +20,12 @@
     filter: alpha(opacity=10); /* For IE8 and earlier */
 }
 
+#champions li.disabled_f2p
+{
+    opacity: 0.7;
+    filter: alpha(opacity=70); /* For IE8 and earlier */
+}
+
 .championLabel
 {
     overflow:hidden;
