@@ -15,7 +15,7 @@ var enableF2P = true;
 var champPlayed = {};
 var apiKey = 'dc5dc19a-eb7d-4175-8955-59ab577026a5';
 
-var loading = 7; //countdown till everything is loaded
+var loading = 6; //countdown till everything is loaded
 
 //init storage
 ns = $.initNamespaceStorage('championPicker');
@@ -263,7 +263,7 @@ function loadOrderData() {
 function loadRoleData()
 {
     for (index = 1; index < roleTypeOptions.length-1; ++index) {
-        filename = 'data/roles' + roleTypeOptions[roleType] + '.json';
+        filename = 'data/roles' + roleTypeOptions[index] + '.json';
         //lets load it
         rolesJSON=[];
         $.getJSON(filename, function (rolesJson) {
@@ -283,7 +283,6 @@ function loadF2PData() {
         free2play = [];
         for (index = 0; index < free2playJSON.champions.length; ++index) {
             free2play[index] = free2playJSON.champions[index].id;
-            loading--;
         }
         storage.set('free2play', free2play);
         loading--;
