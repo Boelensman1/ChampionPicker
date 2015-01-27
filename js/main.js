@@ -290,6 +290,17 @@ function loadF2PData() {
     });
 }
 function loadData() {
+    //reload the data after 2 seconds
+    setTimeout(function()
+    {
+        loading=7;
+        loadChampionData();
+        loadOrderData();
+        loadRoleData();
+        loadF2PData();
+    },2000);
+
+
     //save the roledata
     storage.set('rolesJSON',rolesJSON);
     var html='';

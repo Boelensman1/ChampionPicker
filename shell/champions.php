@@ -209,8 +209,8 @@ class Champion
         $this->splashURL = $this->_baseUrlSplash . substr($championRaw->image->full, 0, -4) . '_0.jpg';
 
         $nameSanitized=preg_replace('/\\W/','',$this->name);
-        $this->iconSRC = ICONS . $nameSanitized . '.png';
-        $this->splashSRC = SPLASHES . $nameSanitized . '.png';
+        $this->iconSRC = ICONS . $nameSanitized . '.jpg';
+        $this->splashSRC = SPLASHES . $nameSanitized . '.jpg';
     }
 
     public function getImages($force = false)
@@ -218,17 +218,17 @@ class Champion
         //download the images
         echo_console($this->name . ' icon', 2);
         if (!file_exists(BASEPATH.$this->iconSRC) || $force == true) {
-            download($this->iconURL, BASEPATH.$this->iconSRC);
+            download($this->iconURL, BASEPATH.$this->iconSRC,70);
         }
 
         echo_console($this->name . ' splash', 2);
         if (!file_exists(BASEPATH.$this->splashSRC) || $force == true) {
-            download($this->splashURL, BASEPATH.$this->splashSRC);
+            download($this->splashURL, BASEPATH.$this->splashSRC,70);
         }
     }
 }
 
-function download($url, $filename = null)
+function download($url, $filename = null,$quality=null)
 {
     $return = @file_get_contents($url);
     //error
@@ -243,7 +243,15 @@ function download($url, $filename = null)
     if ($return === FALSE) {
         die('Error while saving.');
     }
+    if ($quality===null)
+    {
     return file_put_contents($filename, $return);
+    }
+    else{
+        //its an image, lets first reduce the filesize
+        $return=imagecreatefromstring($return);
+        imagejpeg($return, $filename, $quality);
+    }
 }
 
 function echo_console($input, $verbose = 0)
