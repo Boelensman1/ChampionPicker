@@ -293,7 +293,6 @@ function loadData() {
     //reload the data after 2 seconds
     setTimeout(function()
     {
-        loading=7;
         loadChampionData();
         loadOrderData();
         loadRoleData();
