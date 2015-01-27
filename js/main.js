@@ -389,6 +389,8 @@ function loadData2() {
 
     //the free2play button
     $('.free2play').click(function () {
+        $('.free2play').toggleClass('btn-success');
+        $('.free2play').toggleClass('btn-default');
         enableF2P = !enableF2P;
         updateFree2Play();
     });
