@@ -14,8 +14,8 @@ var rolesJSON;
 var enableF2P = true;
 var champPlayed = {};
 var apiKey = 'dc5dc19a-eb7d-4175-8955-59ab577026a5';
-
-var loading = 6; //countdown till everything is loaded
+var doingRandom=false;
+var loading = 7; //countdown till everything is loaded
 
 //init storage
 ns = $.initNamespaceStorage('championPicker');
@@ -33,6 +33,7 @@ if (roleType === null) {
     roleType = 0;
     storage.set('roleType', roleType);
 }
+$('.roleType').html(roleTypeOptions[roleType] + ' <span class="caret"></span>');
 
 //load from storage
 champions = storage.get('champions');
@@ -109,11 +110,6 @@ function reloadActive() {
 
         //toggle the appropriate button
         $('.roles .btn').addClass('active');
-        //set the modifier to all
-        roleType = 0;
-
-        $('.roleType').html('All <span class="caret"></span>');
-        $('.roleType').addClass('disabled');
 
         updateShowHide();
         return true;
@@ -123,7 +119,6 @@ function reloadActive() {
     $("#champions li").addClass('toHide');
     $("#champions li").removeClass('toShow');
     $('.roles .btn').removeClass('active');
-    $('.roleType').removeClass('disabled');
 
     //update roleType
     if (roleType == 0) {
@@ -262,12 +257,14 @@ function loadOrderData() {
 
 function loadRoleData()
 {
-    for (index = 1; index < roleTypeOptions.length-1; ++index) {
+    var roleIndex={}; //so we know what data we are parsing
+    for (index = 1; index < roleTypeOptions.length; ++index) {
         filename = 'data/roles' + roleTypeOptions[index] + '.json';
+        roleIndex[filename]=index;
         //lets load it
         rolesJSON=[];
         $.getJSON(filename, function (rolesJson) {
-            rolesJSON[roleType] = rolesJson;
+            rolesJSON[roleIndex[this.url]] = rolesJson;
             loading--;
             if (!loading)//check if we are loading to load everything
             {
@@ -413,31 +410,44 @@ function loadData2() {
         //update roleType
         roleType = $(this).data('roleid');
         storage.set('roleType', roleType);
-        $('.roleType').html(roleTypeOptions[roleType] + '<span class="caret"></span>');
+        $('.roleType').html(roleTypeOptions[roleType] + ' <span class="caret"></span>');
         reloadActive();
     });
 
 
     $('#random').click(function () {
+        $optionDivs=$('.toShow.notDisabled, .toShow.disabled_f2p');
+
+        //check if we have options:
+        if ($optionDivs.length==0)
+        {
+            return false;
+        }
+        //check if we are not already busy with the previous one
+        if (doingRandom)
+        {
+            return false;
+        }
+        doingRandom=true;
+
+
         //lets first choose a role
         var randomRole = Math.floor(Math.random() * 5);
-        var allRoles = true;
-        //check if not all buttons are on:
-        if (!roles[0] || !roles[1] || !roles[2] || !roles[3] || !roles[4]) {
-            allRoles = false;
-            while (!roles[randomRole]) {
-                randomRole = Math.floor(Math.random() * 5);
-            }
-        }
+
+         //make sure the role is actually chosen
+         while (!roles[randomRole]) {
+             randomRole = Math.floor(Math.random() * 5);
+         }
 
         //now we get all possible champions
         var options = [];//all options, including not chosen lanes
         var optionsShuffle = [];//the real options
         var champId = 0;
-        $('.toShow.notDisabled, .toShow.disabled_f2p').each(function () {
+        $optionDivs.each(function () {
             champId = $(this).data('championid');
             options.push(champId);
-            if (allRoles = true || rolesJSON[roleType][randomRole].indexOf(champId) != -1)//the champion indeed has the role chosen
+            //roleType 0 == all roles
+            if (roleType==0 || rolesJSON[roleType][randomRole].indexOf(champId) != -1)//the champion indeed has the role chosen
             {
                 optionsShuffle.push(champId);
             }
@@ -527,10 +537,17 @@ function loadData2() {
                     setTimeout(function () {
                         modalLoreFit(false)
                     }, 200);
+
                     //sometimes above does not work, then use this one:
                     $('#randomChampionModal').on('shown.bs.modal', function (e) {
                         modalLoreFit(true);
                     });
+
+                    //we can random again after the modal closes
+                    $('#randomChampionModal').on('hidden.bs.modal', function () {
+                        doingRandom=false;
+                    });
+
                     setTimeout(function () {
                         $('#randomButton').transition({
                             opacity: 1,
