@@ -412,6 +412,7 @@ function loadData() {
         updateProgress(loadedPlus);
         if (loaded==order.length)
         {
+            $('#ProgressContainer').remove();
             loadData2();
         }
     }).each(function() {
