@@ -1,6 +1,5 @@
 //init all variables
-//TODO: twitch's summary is bugged
-var roles = [];
+var roles = [false, false, false, false, false];
 var roleTypeOptions = ['All', 'Loose', 'Normal', 'Strict'];
 var roleType = 0;
 var champions = [];
@@ -22,13 +21,6 @@ var loadingProgress=0; //the progress bar
 ns = $.initNamespaceStorage('championPicker');
 storage = $.localStorage;
 championsDisabled = storage.get('championsDisabled');
-
-roles = storage.get('roles');
-if (roles === null) {
-    //default to false
-    roles = [false, false, false, false, false];
-    storage.set('roles', roles);
-}
 
 roleType = storage.get('roleType');
 if (roleType === null) {
