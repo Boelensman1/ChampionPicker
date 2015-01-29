@@ -432,7 +432,7 @@ function loadData() {
 
 
     //load search button
-    $('#championSearch').keyup(function() {
+    $('#championSearch').keydown(function() {
         var val=$('#championSearch').val().toLowerCase();
         if (val.length==0)
         {
