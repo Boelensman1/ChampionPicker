@@ -17,7 +17,7 @@ var doingRandom=false;
 var loading = 7; //countdown till all JSON is loaded
 var loadingProgress=0; //the progress bar
 
-//init storage
+//init easy storage
 ns = $.initNamespaceStorage('championPicker');
 storage = $.localStorage;
 championsDisabled = storage.get('championsDisabled');
@@ -29,7 +29,19 @@ if (roleType === null) {
 }
 $('.roleType').html(roleTypeOptions[roleType] + ' <span class="caret"></span>');
 
-//load from storage
+
+enableF2P = storage.get('enableF2P');
+if (enableF2P===null)
+{
+    enableF2P=true;
+    storage.set('enableF2P',enableF2P);
+}
+if (!enableF2P) {
+    $('.free2play').toggleClass('btn-success');
+    $('.free2play').toggleClass('btn-default');
+}
+
+//load from storage (or from JSON)
 champions = storage.get('champions');
 order = storage.get('order');
 free2play = storage.get('free2play');
@@ -242,6 +254,8 @@ function updateFree2Play() {
         $('.Free2Play.disabled_f2p').addClass('disabled');
         $('.Free2Play.disabled_f2p').removeClass('disabled_f2p');
     }
+    //update f2p
+    storage.set('enableF2P',enableF2P);
 }
 
 function loadChampionData() {
@@ -392,11 +406,20 @@ function loadData() {
         $(this).toggleClass('notDisabled');
 
         var champId = $(this).data('championid');
-        var disabled = $(this).hasClass('disabled');
 
         if ($(this).hasClass('Free2Play')) {
-            $('Free2Play').toggleClass('disabled_f2p');
+            //if free 2 play enabled, only half disable it
+            if (enableF2P)
+            {
+            $(this).toggleClass('disabled_f2p');
             var disabled = $(this).hasClass('disabled_f2p');
+            }
+            else
+            {
+                //fully disable
+                $(this).toggleClass('disabled');
+                var disabled = $(this).hasClass('disabled');
+            }
         }
         else {
             $(this).toggleClass('disabled');
