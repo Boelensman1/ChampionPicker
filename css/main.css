@@ -217,3 +217,13 @@ div {
 {
     width:20%;
 }
+
+.hiddenSearch
+{
+    display:none !important;
+}
+/*
+.toHide
+{
+    display:none;
+}*/
