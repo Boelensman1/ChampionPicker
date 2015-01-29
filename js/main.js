@@ -25,7 +25,8 @@ championsDisabled = storage.get('championsDisabled');
 
 roles = storage.get('roles');
 if (roles === null) {
-    roles = [true, true, true, true, true];
+    //default to false
+    roles = [false, false, false, false, false];
     storage.set('roles', roles);
 }
 
@@ -108,14 +109,21 @@ function reloadActive(update) {
     var toHide = [];
     var toShow = [];
 
-    //check if all buttons are on:
-    if (roles[0] && roles[1] && roles[2] && roles[3] && roles[4]) {
+    //check if all buttons are on or off:
+    if ((roles[0] && roles[1] && roles[2] && roles[3] && roles[4])
+    || (!roles[0] && !roles[1] && !roles[2] && !roles[3] && !roles[4])) {
         //activate everything
         $("#champions li").addClass('toShow');
         $("#champions li").removeClass('toHide');
 
         //toggle the appropriate button
-        $('.roles .btn').addClass('active');
+        if (roles[0]) {
+            $('.btn-role').addClass('active');
+        }
+        else
+        {
+            $('.btn-role').removeClass('active');
+        }
 
         if (update) {
             updateShowHide();
@@ -126,7 +134,7 @@ function reloadActive(update) {
     //de-activate everything
     $("#champions li").addClass('toHide');
     $("#champions li").removeClass('toShow');
-    $('.roles .btn').removeClass('active');
+    $('.btn-role').removeClass('active');
 
     //update roleType
     if (roleType == 0) {
