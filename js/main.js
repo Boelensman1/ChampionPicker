@@ -488,10 +488,14 @@ function loadData2() {
         //lets first choose a role
         var randomRole = Math.floor(Math.random() * 5);
 
-         //make sure the role is actually chosen
-         while (!roles[randomRole]) {
-             randomRole = Math.floor(Math.random() * 5);
-         }
+        //if all roles are deselected it counts as all roles being selected
+        if (!(!roles[0] && !roles[1] && !roles[2] && !roles[3] && !roles[4]))
+        {
+             //make sure the role is actually chosen
+             while (!roles[randomRole]) {
+                 randomRole = Math.floor(Math.random() * 5);
+             }
+        }
 
         //now we get all possible champions
         var options = [];//all options, including not chosen lanes
