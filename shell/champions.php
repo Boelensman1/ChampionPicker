@@ -4,6 +4,8 @@ define('BASEPATH', dirname(realpath(dirname(__FILE__))).'/');
 define('ICONS', 'img/icons/');
 define('SPLASHES', 'img/splashes/');
 define('DATA', BASEPATH . 'data/');
+define('BASE_URL_MOBAFIRESEARCH','http://www.mobafire.com/ajax/searchSite?text=');
+define('BASE_URL_MOBAFIRERESULT','http://www.mobafire.com');
 
 $order=file_get_contents(DATA.'order.json');
 $order=json_decode($order);
@@ -176,6 +178,7 @@ class Champion
     public $splashSRC;
     public $title;
     public $description;
+    public $mobafireURL;
     private $_baseUrlIcon;
     private $_baseUrlSplash = 'http://ddragon.leagueoflegends.com/cdn/img/champion/splash/';
 
@@ -211,6 +214,11 @@ class Champion
         $nameSanitized=preg_replace('/\\W/','',$this->name);
         $this->iconSRC = ICONS . $nameSanitized . '.jpg';
         $this->splashSRC = SPLASHES . $nameSanitized . '.jpg';
+
+        //get mobafire URL
+        $mobafire=download(BASE_URL_MOBAFIRESEARCH.urlencode($this->name));
+        preg_match("/firstTargetUrl.*>(.*?)<\\/div>/",$mobafire,$mobafire);
+        $this->mobafireURL=BASE_URL_MOBAFIRERESULT.$mobafire[1];//the url
     }
 
     public function getImages($force = false)

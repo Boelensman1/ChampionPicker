@@ -15,7 +15,8 @@ var enableF2P = true;
 var champPlayed = {};
 var apiKey = 'dc5dc19a-eb7d-4175-8955-59ab577026a5';
 var doingRandom=false;
-var loading = 7; //countdown till everything is loaded
+var loading = 7; //countdown till all JSON is loaded
+var loadingProgress=0; //the progress bar
 
 //init storage
 ns = $.initNamespaceStorage('championPicker');
@@ -47,6 +48,7 @@ if (champions === null) {
 }
 else {
     loading--;
+    updateProgress(3)
     if (!loading)//check if we are loading to load everything
     {
         loadData();
@@ -59,6 +61,7 @@ if (order === null) {
 }
 else {
     loading--;
+    updateProgress(2);
     if (!loading)//check if we are loading to load everything
     {
         loadData();
@@ -71,6 +74,7 @@ if (free2play === null) {
 }
 else {
     loading--;
+    updateProgress(2);
     if (!loading)//check if we are loading to load everything
     {
         loadData();
@@ -83,6 +87,7 @@ if (rolesJSON === null) {
 }
 else {
     loading-=(roleTypeOptions.length-1);
+    updateProgress(3*(roleTypeOptions.length-1));
     if (!loading)//check if we are loading to load everything
     {
         loadData();
@@ -92,6 +97,7 @@ else {
 $(function () {
     //DOM is loading!
     loading--;
+    updateProgress(2);
     if (!loading)//check if we are loading to load everything
     {
         loadData();
@@ -236,6 +242,7 @@ function loadChampionData() {
         champions = championsJSON;
         storage.set('champions', champions);
         loading--;
+        updateProgress(2);
         if (!loading)//check if we are loading to load everything
         {
             loadData();
@@ -248,6 +255,7 @@ function loadOrderData() {
         order = orderJSON;
         storage.set('order', order);
         loading--;
+        updateProgress(2);
         if (!loading)//check if we are loading to load everything
         {
             loadData();
@@ -266,6 +274,7 @@ function loadRoleData()
         $.getJSON(filename, function (rolesJson) {
             rolesJSON[roleIndex[this.url]] = rolesJson;
             loading--;
+            updateProgress(2);
             if (!loading)//check if we are loading to load everything
             {
                 loadData();
@@ -283,6 +292,7 @@ function loadF2PData() {
         }
         storage.set('free2play', free2play);
         loading--;
+        updateProgress(2);
         if (!loading)//check if we are loading to load everything
         {
             loadData();
@@ -311,10 +321,13 @@ function loadData() {
             largeNames.push(divId);
         }
 
-        //Insert the champion
-        html += '<li id="champ' + divId + '" class="col-lg-1 col-md-1 col-sm-2 col-xs-3 champion toShow" data-championId="' + index + '"><img class="img-responsive championPortrait" src="' + champions[index].iconSRC + '"><span class="label label-default center-block championLabel">' + champions[index].name + '</span></li>';
+        //Insert the champion, first don't display because its still loading
+        html += '<li style="display:none" id="champ' + divId + '" class="col-lg-1 col-md-1 col-sm-2 col-xs-3 champion toShow" data-championId="' + index + '"><img class="img-responsive championPortrait" src="' + champions[index].iconSRC + '"><span class="label label-default center-block championLabel">' + champions[index].name + '</span></li>';
     }
     $('#champions').append(html);
+
+    //free the memory
+    delete html;
 
 
     //init modal
@@ -322,11 +335,9 @@ function loadData() {
         show: false
     });
 
+
     //make some big champion names smaller on big scree
     champTextFit();
-
-    //reload which champs should be active
-    reloadActive();
 
     //check if we have champions
     if (championsDisabled === null) {
@@ -377,7 +388,7 @@ function loadData() {
         var champId = $(this).data('championid');
         var disabled = $(this).hasClass('disabled');
 
-        if ($(this).hasClass('free2play')) {
+        if ($(this).hasClass('Free2Play')) {
             $('Free2Play').toggleClass('disabled_f2p');
             var disabled = $(this).hasClass('disabled_f2p');
         }
@@ -390,12 +401,37 @@ function loadData() {
         storage.set('championsDisabled', championsDisabled);
     });
 
-    //load the rest
-    loadData2();
+
+
+    //loading
+    var loaded=0;
+    var loadedPlus=(1/order.length)*(100-7*2);
+    $('.championPortrait').on('load',function()
+    {
+        loaded++;
+        updateProgress(loadedPlus);
+        if (loaded==order.length)
+        {
+            loadData2();
+        }
+    }).each(function() {
+        //if its in cache it might have already loaded.
+        if(this.complete){
+            $(this).trigger('load');
+        }
+    });
 }
 
+function loadData2()
+{
+    //reload which champs should be active
+    reloadActive();
 
-function loadData2() {
+    //load the rest
+    //loadData3();
+}
+
+function loadData3() {
 
     //the free2play button
     $('.free2play').click(function () {
@@ -530,15 +566,15 @@ function loadData2() {
                 $('#randomChampionModalRole').html(rolesPos[randomRole]);
                 $('#randomChampionModalLore p').html(randomChamp.description);
 
+                //probuilds
                 $('#randomChampionModalLinks').html('<p class="text-left"><a target="_blank" href="http://www.probuilds.net/champions/' + randomChamp.shortName + '">Probuilds</a></p>')
                 $('#randomChampionModalLinks2').html('<p class="text-center"><a target="_blank" href="http://www.probuilds.net/champions/' + randomChamp.shortName + '">Probuilds</a></p>')
-                //get mobafire url
-                //$.getJSON('http://www.mobafire.com/ajax/searchSite?text='+encodeURIComponent());
 
-                //TODO: make mobafire link
-                $('#randomChampionModalLinks').append('<p class="text-center" style="width:60%"><a target="_blank" href="http://www.mobafire.com/league-of-legends/' + randomChamp.shortName + '-guide">Mobafire WIP</a></p>')
-                $('#randomChampionModalLinks2').append('<p class="text-center""><a target="_blank" href="http://www.mobafire.com/league-of-legends/' + randomChamp.shortName + '-guide">Mobafire WIP</a></p>')
+                //mobafire
+                $('#randomChampionModalLinks').append('<p class="text-center" style="width:60%"><a target="_blank" href="' + randomChamp.mobafireURL+'">Mobafire</a></p>')
+                $('#randomChampionModalLinks2').append('<p class="text-center""><a target="_blank" href="' + randomChamp.mobafireURL+'">Mobafire WIP</a></p>')
 
+                //lolwiki
                 $('#randomChampionModalLinks').append('<p class="text-right"><a target="_blank" href="http://leagueoflegends.wikia.com/wiki/' + randomChamp.name + '">LoL Wiki</a></p>')
                 $('#randomChampionModalLinks2').append('<p class="text-center"><a target="_blank" href="http://leagueoflegends.wikia.com/wiki/' + randomChamp.name + '">LoL Wiki</a></p>')
 
@@ -576,6 +612,12 @@ function loadData2() {
             })
         }, 200);
     });
+}
+
+function updateProgress(loadProgress)
+{
+    loadingProgress+=loadProgress;
+    $("#loadingProgress").css('width',loadingProgress+'%')
 }
 
 //knuth-shuffle
