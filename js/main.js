@@ -104,7 +104,7 @@ $(function () {
     }
 });
 
-function reloadActive() {
+function reloadActive(update) {
     var toHide = [];
     var toShow = [];
 
@@ -117,7 +117,9 @@ function reloadActive() {
         //toggle the appropriate button
         $('.roles .btn').addClass('active');
 
-        updateShowHide();
+        if (update) {
+            updateShowHide();
+        }
         return true;
     }
 
@@ -135,16 +137,18 @@ function reloadActive() {
 
     //check if all buttons are off:
     if (!roles[0] && !roles[1] && !roles[2] && !roles[3] && !roles[4]) {
-        updateShowHide();
+        if (update) {
+            updateShowHide();
+        }
         return true;
     }
 
     //if its not we have to some real work
-    processRoles();
+    processRoles(update);
     return true;
 }
 
-function processRoles() {
+function processRoles(update) {
     for (index = 0; index < roles.length; ++index) {
         if (roles[index]) {
             //activate the button
@@ -157,7 +161,10 @@ function processRoles() {
             }
         }
     }
+    if (update)
+    {
     updateShowHide();
+    }
 }
 
 function updateShowHide() {
@@ -329,7 +336,6 @@ function loadData() {
     //free the memory
     delete html;
 
-
     //init modal
     $('#randomChampionModal').modal({
         show: false
@@ -403,6 +409,10 @@ function loadData() {
 
 
 
+    //update active
+    reloadActive(false);
+
+
     //loading
     var loaded=0;
     var loadedPlus=(1/order.length)*(100-7*2);
@@ -410,6 +420,10 @@ function loadData() {
     {
         loaded++;
         updateProgress(loadedPlus);
+        if ($(this).parent().hasClass('toShow'))
+        {
+            $(this).parent().show();
+        }
         if (loaded==order.length)
         {
             $('#ProgressContainer').remove();
@@ -423,16 +437,7 @@ function loadData() {
     });
 }
 
-function loadData2()
-{
-    //reload which champs should be active
-    reloadActive();
-
-    //load the rest
-    //loadData3();
-}
-
-function loadData3() {
+function loadData2() {
 
     //the free2play button
     $('.free2play').click(function () {
@@ -452,7 +457,7 @@ function loadData3() {
         roles[roleId] = !roles[roleId];
         storage.set('roles', roles);
         //reload which champs should be active
-        reloadActive();
+        reloadActive(true);
     });
 
     $('.dropdownRole li a').click(function () {
@@ -460,7 +465,7 @@ function loadData3() {
         roleType = $(this).data('roleid');
         storage.set('roleType', roleType);
         $('.roleType').html(roleTypeOptions[roleType] + ' <span class="caret"></span>');
-        reloadActive();
+        reloadActive(true);
     });
 
 
