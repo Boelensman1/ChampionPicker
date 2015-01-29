@@ -41,7 +41,7 @@ if (champions === null) {
 }
 else {
     loading--;
-    updateProgress(3)
+    updateProgress(2)
     if (!loading)//check if we are loading to load everything
     {
         loadData();
@@ -80,7 +80,7 @@ if (rolesJSON === null) {
 }
 else {
     loading-=(roleTypeOptions.length-1);
-    updateProgress(3*(roleTypeOptions.length-1));
+    updateProgress(2*(roleTypeOptions.length-1));
     if (!loading)//check if we are loading to load everything
     {
         loadData();
@@ -429,12 +429,16 @@ function loadData() {
             $('#ProgressContainer').remove();
             loadData2();
         }
-    }).each(function() {
-        //if its in cache it might have already loaded.
-        if(this.complete){
-            $(this).trigger('load');
-        }
     });
+
+    //if its in cache it might have already loaded.
+    if (loaded!=order.length) {
+        $('.championPortrait').each(function() {
+            if (this.complete) {
+                $(this).trigger('load');
+            }
+    });
+    }
 }
 
 function loadData2() {

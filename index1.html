@@ -41,9 +41,6 @@
             </button>
             <a class="navbar-brand" href="#">Champion Picker</a>
         </div>
-        <div id="navbar" class="navbar-collapse collapse">
-            <span>abc</span>
-        </div>
         <!--/.navbar-collapse -->
     </div>
 </nav>
@@ -95,7 +92,7 @@
             <button type="button" onclick="this.blur();" data-roleId="3" class="role_3 btn btn-default btn-role">Adc</button>
             <button type="button" onclick="this.blur();" data-roleId="4" class="role_4 btn btn-default btn-role">Support</button>
             <div class="btn-group" role="group">
-                <button type="button" class="btn btn-default roleType dropdown-toggle" data-toggle="dropdown">
+                <button type="button" onclick="this.blur();" class="btn btn-default roleType dropdown-toggle" data-toggle="dropdown">
                     Normal
                     <span class="caret"></span>
                 </button>
@@ -108,17 +105,23 @@
             </div>
         </div>
         <div class="btn-group roles visible-xs-block col-xs-12" role="group">
-            <button type="button" onclick="this.blur();" data-roleId="0" class="role_0 btn btn-default col-xs-2 btn-role">Top</button>
-            <button type="button" onclick="this.blur();" data-roleId="1" class="role_1 btn btn-default col-xs-2 btn-role">Jun</button>
-            <button type="button" onclick="this.blur();" data-roleId="2" class="role_2 btn btn-default col-xs-2 btn-role">Mid</button>
-            <button type="button" onclick="this.blur();" data-roleId="3" class="role_3 btn btn-default col-xs-2 btn-role">Adc</button>
-            <button type="button" onclick="this.blur();" data-roleId="4" class="role_4 btn btn-default col-xs-2 btn-role">Sup</button>
-            <div class="btn-group" role="group">
-                <button type="button" class="btn btn-default roleType dropdown-toggle col-xs-2" data-toggle="dropdown">
+            <button type="button" onclick="this.blur();" data-roleId="0" class="role_0 btn btn-default col-xs-2 btn-role btn-20">Top</button>
+            <button type="button" onclick="this.blur();" data-roleId="1" class="role_1 btn btn-default col-xs-2 btn-role btn-20">Jun</button>
+            <button type="button" onclick="this.blur();" data-roleId="2" class="role_2 btn btn-default col-xs-2 btn-role btn-20">Mid</button>
+            <button type="button" onclick="this.blur();" data-roleId="3" class="role_3 btn btn-default col-xs-2 btn-role btn-20">Adc</button>
+            <button type="button" onclick="this.blur();" data-roleId="4" class="role_4 btn btn-default col-xs-2 btn-role btn-20">Sup</button>
+        </div>
+
+        <!-- Add the extra clearfix for only the required viewport -->
+        <div class="visible-xs-block col-xs-12"><p></p></div>
+
+        <div class="roles visible-xs-block col-xs-12">
+            <div class="btn-group col-xs-12" style="padding:0px" role="group">
+                <button type="button" onclick="this.blur();" class="btn btn-default roleType dropdown-toggle btn-block" data-toggle="dropdown">
                     Normal
                     <span class="caret"></span>
                 </button>
-                <ul class="dropdown-menu dropdownRole" role="menu">
+                <ul class="dropdown-menu dropdownRole col-xs-12" role="menu">
                     <li><a data-roleId="0" href="#">All</a></li>
                     <li><a data-roleId="1" href="#">Loose</a></li>
                     <li><a data-roleId="2" href="#">Normal</a></li>
@@ -147,8 +150,10 @@
             <p></p>
         </div>
         <!--loading progress-->
-        <div class="progress col-xs-12" id="ProgressContainer">
-            <div class="progress-bar progress-bar-striped active" id="loadingProgress" role="progressbar" style="width: 1%">
+        <div class="col-xs-12" id="ProgressContainer">
+            <div class="progress">
+                <div class="progress-bar progress-bar-striped active" id="loadingProgress" role="progressbar" style="width: 1%">
+                </div>
             </div>
         </div>
 
@@ -160,26 +165,16 @@
 <div class="container">
     <!-- Example row of columns -->
     <div class="row">
-        <div class="col-md-4">
-            <h2>Heading</h2>
+        <div class="col-md-6">
+            <h2>Help</h2>
 
             <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris
                 condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis
                 euismod. Donec sed odio dui. </p>
 
-            <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
         </div>
-        <div class="col-md-4">
-            <h2>Heading</h2>
-
-            <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris
-                condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis
-                euismod. Donec sed odio dui. </p>
-
-            <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
-        </div>
-        <div class="col-md-4">
-            <h2>Heading</h2>
+        <div class="col-md-6">
+            <h2>Contact</h2>
 
             <p>Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula
                 porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut
