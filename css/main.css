@@ -228,11 +228,12 @@ div {
     display:none;
 }*/
 
-#randomChampionDontHave
+.randomChampionFooter
 {
-    height:35px;
+    height:50px;
 }
-#randomChampionDontHaveButton
+
+.randomChampionDontHaveButton
 {
-    height: 100%;
+    height:100%;
 }

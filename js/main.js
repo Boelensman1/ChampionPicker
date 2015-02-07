@@ -222,7 +222,7 @@ function modalLoreFit(animate) {
     var width = $('.randomChampionDialog').width();
     var height = width * 0.590;//aspect ratio of splashes
     height -= 110//height of title
-    height -= 35//height of bottom button
+    height -= 50//height of bottom button
 
     if ($(window).width() >= 450) {
         //update visibility
