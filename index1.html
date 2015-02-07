@@ -47,21 +47,39 @@
 
 
 <!-- Modal -->
-<div class="modal fade" id="randomChampionModal" tabindex="-1" role="dialog">
-    <div class="modal-dialog" id="randomChampionDialog">
+<div class="modal fade randomChampionModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog randomChampionDialog">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title" id="randomChampionModalTitle">Champname</h4>
-                <h4 id="randomChampionModalRole">ChampRole</h4>
+                <h4 class="modal-title randomChampionModalTitle">Champname</h4>
+                <h4 class="randomChampionModalRole">ChampRole</h4>
             </div>
-            <div class="modal-body" id="randomChampionModalBody">
-                <div id="randomChampionModalLore"><p></p></div><br>
-                <div id="randomChampionModalLinks"></div>
-                <div id="randomChampionModalLinks2" style="display:none;"></div>
+            <div class="modal-body randomChampionModalBody">
+                <div class="randomChampionModalLore"><p></p></div><br>
+                <div class="randomChampionModalLinks">
+                    <p class="text-left"><a target="_blank" class="randomChampionModalProbuildLink" href="link">Probuilds</a></p>
+                    <p class="text-center" style="width:58%"><a target="_blank" class="randomChampionModalMobafireLink" href="link">Mobafire</a></p>
+                    <p class="text-right"><a target="_blank" class="randomChampionModalLoLWikiLink" href="link">LoL Wiki</a></p>
+                </div>
+                <div class="randomChampionModalLinks2" style="display:none;">
+                    <p class="text-center"><a target="_blank" class="randomChampionModalProbuildLink" href="link">Probuilds</a></p>
+                    <p class="text-center"><a target="_blank" class="randomChampionModalMobafireLink" href="link">Mobafire</a></p>
+                    <p class="text-center"><a target="_blank" class="randomChampionModalLoLWikiLink" href="link">LoL Wiki</a></p>
+                </div>
+                <div class="randomChampionDontHave col-xs-6">
+                    <button class="btn btn-default btn-block randomChampionDontHaveButton">
+                        I don't have this champion
+                    </button>
+                </div>
+                <div class="randomChampionNext col-xs-6">
+                    <button class="btn btn-default btn-block randomChampionNextButton">
+                        Next champion
+                    </button>
+                </div>
             </div>
         </div><!-- /.modal-content -->
-        <div id="randomChampionModalBackground">
+        <div class="randomChampionModalBackground">
         </div>
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->

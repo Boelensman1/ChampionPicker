@@ -14,8 +14,11 @@ var enableF2P = true;
 var champPlayed = {};
 var apiKey = 'dc5dc19a-eb7d-4175-8955-59ab577026a5';
 var doingRandom=false;
+var doingNext=false;
 var loading = 7; //countdown till all JSON is loaded
 var loadingProgress=0; //the progress bar
+var randomChamp;
+var randomChampId;
 
 //init easy storage
 ns = $.initNamespaceStorage('championPicker');
@@ -207,39 +210,40 @@ $(window).on("debouncedresize", function (event) {
 });
 
 function modalLoreFit(animate) {
-    var width = $('#randomChampionDialog').width();
+    var width = $('.randomChampionDialog').width();
     var height = width * 0.590;//aspect ratio of splashes
     height -= 110//height of title
+    height -= 35//height of bottom button
 
     if ($(window).width() >= 450) {
         //update visibility
-        $('#randomChampionModalLore').show();
-        $('#randomChampionModalLinks').show();
-        $('#randomChampionModalLinks2').hide();
+        $('.randomChampionModalLore').show();
+        $('.randomChampionModalLinks').show();
+        $('.randomChampionModalLinks2').hide();
 
         height -= 70//height of buttons
         if (animate) {
-            $('#randomChampionModalLore').transition({height: (height) + 'px'},
+            $('.randomChampionModalLore').transition({height: (height) + 'px'},
                 adjustModalMaxHeightAndPosition);
         }
         else {
-            $('#randomChampionModalLore').height(height);
+            $('.randomChampionModalLore').height(height);
             adjustModalMaxHeightAndPosition();
         }
     }
     else {
         //update visibility
-        $('#randomChampionModalLore').hide();
-        $('#randomChampionModalLinks').hide();
-        $('#randomChampionModalLinks2').show();
+        $('.randomChampionModalLore').hide();
+        $('.randomChampionModalLinks').hide();
+        $('.randomChampionModalLinks2').show();
 
         height -= 40//margins
         if (animate) {
-            $('#randomChampionModalLinks2').transition({height: (height) + 'px'},
+            $('.randomChampionModalLinks2').transition({height: (height) + 'px'},
                 adjustModalMaxHeightAndPosition);
         }
         else {
-            $('#randomChampionModalLinks2').height(height);
+            $('.randomChampionModalLinks2').height(height);
             adjustModalMaxHeightAndPosition();
         }
     }
@@ -351,7 +355,7 @@ function loadData() {
     delete html;
 
     //init modal
-    $('#randomChampionModal').modal({
+    $('.randomChampionModal').modal({
         show: false
     });
 
@@ -429,6 +433,117 @@ function loadData() {
         championsDisabled[champId] = disabled;
         storage.set('championsDisabled', championsDisabled);
     });
+
+    $('.randomChampionDontHaveButton').click(randomChampionDontHave);
+
+    $('.randomChampionNextButton').click(randomChampionNew);
+
+    function randomChampionDontHave()
+    {
+        //set champion to not have
+        $('[data-championId=' + randomChampId+ ']').click();
+
+        //update the optionDivs
+        $optionDivs=$('.toShow.notDisabled.showSearch, .toShow.disabled_f2p.showSearch');
+
+        randomChampionNew();
+
+    }
+    function randomChampionNew(){
+        //check if we are not mid animation.
+        if (doingNext==true)
+        {
+            return;
+        }
+
+        doingNext=true;
+        //apparently he does not have this champion. Lets decrease the playcount
+        champPlayed[randomChampId] -= 1;
+
+        //lets get a new one, lets first choose a role
+        var randomRole = Math.floor(Math.random() * 5);
+
+        //if all roles are deselected it counts as all roles being selected
+        if (!(!roles[0] && !roles[1] && !roles[2] && !roles[3] && !roles[4]))
+        {
+            //make sure the role is actually chosen
+            while (!roles[randomRole]) {
+                randomRole = Math.floor(Math.random() * 5);
+            }
+        }
+
+        //now we get all possible champions
+        var options = [];//all options, including not chosen lanes
+        var optionsShuffle = [];//the real options
+        var champId = 0;
+        $optionDivs.each(function () {
+            champId = $(this).data('championid');
+            options.push(champId);
+            //roleType 0 == all roles
+            if (roleType==0 || rolesJSON[roleType][randomRole].indexOf(champId) != -1)//the champion indeed has the role chosen
+            {
+                optionsShuffle.push(champId);
+            }
+        });
+
+        //shuffle the options so its random
+        shuffle(optionsShuffle);
+
+        //now lets see what champions we haven't played or played the least, and it must not be equal to the previously chosen champ.
+        var random = optionsShuffle[0];
+        var mostPlayed = champPlayed[optionsShuffle[0]];
+        for (i = 1; i < options.length - 1; ++i) {
+            if (mostPlayed > champPlayed[optionsShuffle[i]] && optionsShuffle[i]!=randomChampId) {
+                random = optionsShuffle[i];
+                mostPlayed = champPlayed[optionsShuffle[i]];
+            }
+        }
+
+        //we now have the best option
+        randomChampId = random;
+        randomChamp = champions[random];
+
+        //update its playcount
+        champPlayed[random] += 1;
+        storage.set('champPlayed', champPlayed);
+
+        //clone the modal
+        var $randomChampionModal=$('.randomChampionDialog');
+        var $randomChampionModal2=$randomChampionModal.clone();
+
+        //change the champion
+        updateModal($randomChampionModal2,randomChamp,randomChampId,rolesPos[randomRole]);
+
+        //rotate and hide the modal
+        $randomChampionModal2.css('opacity',0);
+        $randomChampionModal2.css('transform','perspective(550px) rotateX(180deg)');
+
+        //insert the modal
+        $randomChampionModal2.insertAfter('.randomChampionDialog');
+
+        //do the transformation.
+        /* fade out and rotate 3 times */
+        $randomChampionModal.transition({
+            opacity: 0,
+            perspective: 550,
+            rotateX: 540
+        }, 1000);
+        $randomChampionModal2.transition({
+            opacity: 1,
+            perspective: 550,
+            rotateX: 360
+        }, 1000,  function (){
+            $randomChampionModal.remove();
+
+            //reset the click events
+            $('.randomChampionDontHaveButton').click(randomChampionDontHave);
+
+            $('.randomChampionNextButton').click(randomChampionNew);
+
+            //reset the mid animation counter
+            doingNext=false;
+        });
+    };
 
 
     //load search button
@@ -572,7 +687,8 @@ function loadData2() {
         }
 
         //we now have the best option
-        var randomChamp = champions[random];
+        randomChampId=random;
+        randomChamp = champions[random];
 
         //update its playcount
         champPlayed[random] += 1;
@@ -581,7 +697,7 @@ function loadData2() {
 
         var $randomDiv = $('#randomtest');
         $randomDiv.empty();
-        $('#randomChampionModalLore,#randomChampionModalLinks2').height(0);
+        $('.randomChampionModalLore,.randomChampionModalLinks2').height(0);
         $randomDiv.css('transform', 'translate(200px,0px)');
         //champs before
         var location = Math.min(Math.max(20, options.length - 10), 35) + Math.floor(Math.random() * 10);
@@ -619,37 +735,26 @@ function loadData2() {
             $randomDiv.transition({
                 x: -(location) * 100 + $('#randomSelecterChild').width() / 2 + 400 - ((Math.random() * 70) + 15)
             }, 3000, 'cubic-bezier(.6,-.28,.48,1)', function () {
-                $('#randomChampionModalTitle').html(randomChamp.name + ': ' + randomChamp.title);
-                $('#randomChampionModalRole').html(rolesPos[randomRole]);
-                $('#randomChampionModalLore p').html(randomChamp.description);
 
-                //probuilds
-                $('#randomChampionModalLinks').html('<p class="text-left"><a target="_blank" href="http://www.probuilds.net/champions/' + randomChamp.shortName + '">Probuilds</a></p>')
-                $('#randomChampionModalLinks2').html('<p class="text-center"><a target="_blank" href="http://www.probuilds.net/champions/' + randomChamp.shortName + '">Probuilds</a></p>')
+                //set rotation
+                $('.randomChampionDialog').css('transform','perspective(550px) rotateX(360deg)');
 
-                //mobafire
-                $('#randomChampionModalLinks').append('<p class="text-center" style="width:60%"><a target="_blank" href="' + randomChamp.mobafireURL+'">Mobafire</a></p>')
-                $('#randomChampionModalLinks2').append('<p class="text-center""><a target="_blank" href="' + randomChamp.mobafireURL+'">Mobafire WIP</a></p>')
+                updateModal($('.randomChampionModal'),randomChamp,randomChampId,rolesPos[randomRole]);
 
-                //lolwiki
-                $('#randomChampionModalLinks').append('<p class="text-right"><a target="_blank" href="http://leagueoflegends.wikia.com/wiki/' + randomChamp.name + '">LoL Wiki</a></p>')
-                $('#randomChampionModalLinks2').append('<p class="text-center"><a target="_blank" href="http://leagueoflegends.wikia.com/wiki/' + randomChamp.name + '">LoL Wiki</a></p>')
-
-                $('#randomChampionModalBackground').css('background-image', 'url(' + randomChamp.splashSRC + ')');
                 setTimeout(function () {
                     adjustModalMaxHeightAndPosition();
-                    $('#randomChampionModal').modal('show');
+                    $('.randomChampionModal').modal('show');
                     setTimeout(function () {
                         modalLoreFit(false)
                     }, 200);
 
                     //sometimes above does not work, then use this one:
-                    $('#randomChampionModal').on('shown.bs.modal', function (e) {
+                    $('.randomChampionModal').on('shown.bs.modal', function (e) {
                         modalLoreFit(true);
                     });
 
                     //we can random again after the modal closes
-                    $('#randomChampionModal').on('hidden.bs.modal', function () {
+                    $('.randomChampionModal').on('hidden.bs.modal', function () {
                         doingRandom=false;
                     });
 
@@ -669,6 +774,43 @@ function loadData2() {
             })
         }, 200);
     });
+}
+
+function updateModal(divId, randomChamp,randomChampId,role)
+{
+    divId.find('.randomChampionModalTitle').html(randomChamp.name + ': ' + randomChamp.title);
+    divId.find('.randomChampionModalRole').html(role);
+    divId.find('.randomChampionModalLore p').html(randomChamp.description);
+
+    //probuilds
+    divId.find('.randomChampionModalProbuildLink').attr("href",'http://www.probuilds.net/champions/' + randomChamp.shortName);
+
+    //mobafire
+    divId.find('.randomChampionModalMobafireLink').attr("href",randomChamp.mobafireURL);
+
+    //lolwiki
+    divId.find('.randomChampionModalLoLWikiLink').attr("href",'http://leagueoflegends.wikia.com/wiki/' + randomChamp.name);
+
+    divId.find('.randomChampionModalBackground').css('background-image', 'url(' + randomChamp.splashSRC + ')');
+
+    //enable both buttons
+
+    divId.find('.randomChampionDontHaveButton').prop("disabled",false);
+    divId.find('.randomChampionNextButton').prop("disabled",false);
+
+    //check if its a free 2 play champion that has been disabled
+    if (enableF2P===true)//otherwise the champ would not have been chosen
+    {
+        if (free2play.indexOf(randomChampId)!=-1)
+        {
+            //okay, the champion is free2play, now lets see if its disabled
+            if (championsDisabled[randomChampId]===true)
+            {
+                //okay, its already disabled, no use of the "i dont have this champion button now"
+                divId.find('.randomChampionDontHaveButton').prop("disabled",true);
+            }
+        }
+    }
 }
 
 function updateProgress(loadProgress)

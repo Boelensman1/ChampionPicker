@@ -115,7 +115,7 @@ div {
     backface-visibility: hidden;
 }
 
-#randomChampionModalBackground
+.randomChampionModalBackground
 {
     content: "";
     opacity: 0.4;
@@ -182,7 +182,7 @@ div {
         width: 100%;
     }
 }
-#randomChampionModalLore
+.randomChampionModalLore
 {
     height:170px;
     overflow-y: scroll;
@@ -190,20 +190,20 @@ div {
 }
 
 
-#randomChampionModalLinks p
+.randomChampionModalLinks p
 {
     display: inline-block;
     width:20%;
 }
 
-#randomChampionModalRole
+.randomChampionModalRole
 {
     color: red;
 }
-#randomChampionModalLinks2{
+.randomChampionModalLinks2{
     /*margin-top:-20px;*/
 }
-#randomChampionModalLinks2 p{
+.randomChampionModalLinks2 p{
     width:100%;
 }
 
@@ -227,3 +227,12 @@ div {
 {
     display:none;
 }*/
+
+#randomChampionDontHave
+{
+    height:35px;
+}
+#randomChampionDontHaveButton
+{
+    height: 100%;
+}
