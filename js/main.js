@@ -22,6 +22,10 @@ var randomChampId;
 var DOMReady=false;
 var free2playError=false;
 
+//set pnotify styling and options
+PNotify.prototype.options.styling = "bootstrap3";
+PNotify.prototype.options.delay = 3000;
+
 //init easy storage
 ns = $.initNamespaceStorage('championPicker');
 storage = $.localStorage;
@@ -880,7 +884,13 @@ function showFree2PlayError()
 
     new PNotify({
         title: 'Riot server error',
-        text: 'Failed to get free to play data from riot.'
+        text: 'Failed to get free to play data from riot.',
+        opacity: .9,
+        icon: 'glyphicon glyphicon-envelope',
+        nonblock: {
+            nonblock: true,
+            nonblock_opacity: .2
+        }
     });
 }
 
