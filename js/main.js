@@ -19,6 +19,8 @@ var loading = 7; //countdown till all JSON is loaded
 var loadingProgress=0; //the progress bar
 var randomChamp;
 var randomChampId;
+var DOMReady=false;
+var free2playError=false;
 
 //init easy storage
 ns = $.initNamespaceStorage('championPicker');
@@ -103,7 +105,14 @@ else {
 }
 
 $(function () {
-    //DOM is loading!
+    //DOM completed loading!
+    DOMReady=true;
+
+    if (free2playError)
+    {
+        showFree2PlayError();
+    }
+
     loading--;
     updateProgress(2);
     if (!loading)//check if we are loading to load everything
@@ -322,6 +331,30 @@ function loadF2PData() {
         {
             loadData();
         }
+    }).error(function(){
+        //something went wrong! Lets check if the dom is ready
+        //If free2playError is true, it has already been showed sometime, so do not show it again.
+        if ((DOMReady==true) && (free2playError==false))
+        {
+            //show error now
+            free2playError=true;
+            showFree2PlayError();
+        }
+        else
+        {
+            //if not, handle this when it is
+            free2playError=true;
+        }
+
+        //lets still do the rest, so we can continue loading
+        free2play = [];
+        loading--;
+        updateProgress(2);
+        if (!loading)//check if we are loading to load everything
+        {
+            loadData();
+        }
+
     });
 }
 function loadData() {
@@ -516,7 +549,7 @@ function loadData() {
 
         //rotate and hide the modal
         $randomChampionModal2.css('opacity',0);
-        $randomChampionModal2.css('transform','perspective(550px) rotateX(180deg)');
+        $randomChampionModal2.css('transform','perspective(550px) rotateY(180deg)');
 
         //insert the modal
         $randomChampionModal2.insertAfter('.randomChampionDialog');
@@ -526,12 +559,12 @@ function loadData() {
         $randomChampionModal.transition({
             opacity: 0,
             perspective: 550,
-            rotateX: 540
+            rotateY: 540
         }, 1000);
         $randomChampionModal2.transition({
             opacity: 1,
             perspective: 550,
-            rotateX: 360
+            rotateY: 360
         }, 1000,  function (){
             $randomChampionModal.remove();
 
@@ -737,7 +770,7 @@ function loadData2() {
             }, 3000, 'cubic-bezier(.6,-.28,.48,1)', function () {
 
                 //set rotation
-                $('.randomChampionDialog').css('transform','perspective(550px) rotateX(360deg)');
+                $('.randomChampionDialog').css('transform','perspective(550px) rotateY(360deg)');
 
                 updateModal($('.randomChampionModal'),randomChamp,randomChampId,rolesPos[randomRole]);
 
@@ -842,7 +875,14 @@ function shuffle(array) {
     return array;
 }
 
+function showFree2PlayError()
+{
 
+    new PNotify({
+        title: 'Riot server error',
+        text: 'Failed to get free to play data from riot.'
+    });
+}
 
 function searchFor(toSearch) {
     var results = [];
