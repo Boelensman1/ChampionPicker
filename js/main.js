@@ -21,7 +21,8 @@ var randomChampId;
 var champsExcluded;
 var DOMReady=false;
 var free2playError=false;
-var free2playURL="https://euw.api.pvp.net/api/lol/euw/v1.2/champion?freeToPlay=true&api_key=" + apiKey;
+var free2playURL="http://wwbtestserver.cloudapp.net:8080/free2play.json";
+var region='EUW';
 
 //set pnotify styling and options
 PNotify.prototype.options.styling = "bootstrap3";
@@ -325,11 +326,25 @@ function loadRoleData()
 function loadF2PData() {
     //load free2play
     $.getJSON(free2playURL, function (free2playJSON) {
-        free2play = [];
-        for (index = 0; index < free2playJSON.champions.length; ++index) {
-            free2play[index] = free2playJSON.champions[index].id;
+        //check for error:
+        if (free2playJSON.errors[region]==true)
+        {
+            if ((DOMReady==true) && (free2playError==false))
+            {
+                //show error now
+                free2playError=true;
+                showFree2PlayError();
+            }
+            else
+            {
+                //if not, handle this when it is
+                free2playError=true;
+            }
         }
+
+        free2play=free2playJSON.free2play[region];
         storage.set('free2play', free2play);
+
         loading--;
         updateProgress(2);
         if (!loading)//check if we are loading to load everything
@@ -352,7 +367,13 @@ function loadF2PData() {
         }
 
         //lets still do the rest, so we can continue loading
-        free2play = [];
+        //if we have data, lets use it instead of the online
+        free2play = storage.get('free2play');
+        if (free2play==null)
+        {
+            free2play=[];
+        }
+
         loading--;
         updateProgress(2);
         if (!loading)//check if we are loading to load everything
@@ -929,7 +950,7 @@ function showFree2PlayError()
 
     new PNotify({
         title: 'Riot server error',
-        text: 'Failed to get free to play data from riot.',
+        text: 'Failed to get free to play data from riot. Data may be missing or out of date.',
         opacity: .9,
         icon: 'glyphicon glyphicon-envelope',
         nonblock: {
