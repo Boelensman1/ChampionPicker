@@ -1,26 +1,27 @@
 //init all variables
 var roles = [false, false, false, false, false];
 var roleTypeOptions = ['All', 'Loose', 'Normal', 'Strict'];
-var roleType = 0;
+var roleType = 2;
 var champions = [];
 var order = [];
 var free2play = [];
 var largeNames = [];
 var rolesPos = ['Toplane', 'Jungle', 'Midlane', 'Marksman', 'Support']
 var championsDisabled;
-var roleType = 0;
 var rolesJSON;
 var enableF2P = true;
 var champPlayed = {};
 var apiKey = 'dc5dc19a-eb7d-4175-8955-59ab577026a5';
-var doingRandom=false;
+var doingRandom=true;
 var doingNext=false;
 var loading = 7; //countdown till all JSON is loaded
 var loadingProgress=0; //the progress bar
 var randomChamp;
 var randomChampId;
+var champsExcluded;
 var DOMReady=false;
 var free2playError=false;
+var free2playURL="https://euw.api.pvp.net/api/lol/euw/v1.2/champion?freeToPlay=true&api_key=" + apiKey;
 
 //set pnotify styling and options
 PNotify.prototype.options.styling = "bootstrap3";
@@ -33,7 +34,7 @@ championsDisabled = storage.get('championsDisabled');
 
 roleType = storage.get('roleType');
 if (roleType === null) {
-    roleType = 0;
+    roleType = 2;
     storage.set('roleType', roleType);
 }
 $('.roleType').html(roleTypeOptions[roleType] + ' <span class="caret"></span>');
@@ -323,7 +324,7 @@ function loadRoleData()
 
 function loadF2PData() {
     //load free2play
-    $.getJSON("https://euw.api.pvp.net/api/lol/euw/v1.2/champion?freeToPlay=true&api_key=" + apiKey, function (free2playJSON) {
+    $.getJSON(free2playURL, function (free2playJSON) {
         free2play = [];
         for (index = 0; index < free2playJSON.champions.length; ++index) {
             free2play[index] = free2playJSON.champions[index].id;
@@ -481,7 +482,7 @@ function loadData() {
         $('[data-championId=' + randomChampId+ ']').click();
 
         //update the optionDivs
-        $optionDivs=$('.toShow.notDisabled.showSearch, .toShow.disabled_f2p.showSearch');
+        //$optionDivs=$('.toShow.notDisabled.showSearch, .toShow.disabled_f2p.showSearch');
 
         randomChampionNew();
 
@@ -494,51 +495,23 @@ function loadData() {
         }
 
         doingNext=true;
-        //apparently he does not have this champion. Lets decrease the playcount
+        //apparently he does not have or like this champion. Lets decrease the playcount
         champPlayed[randomChampId] -= 1;
 
-        //lets get a new one, lets first choose a role
-        var randomRole = Math.floor(Math.random() * 5);
+        //lets add it to the excluded champions
+        champsExcluded.push(randomChampId);
 
-        //if all roles are deselected it counts as all roles being selected
-        if (!(!roles[0] && !roles[1] && !roles[2] && !roles[3] && !roles[4]))
+        var random=getRandomChampion(champsExcluded);
+        if (random==false)
         {
-            //make sure the role is actually chosen
-            while (!roles[randomRole]) {
-                randomRole = Math.floor(Math.random() * 5);
-            }
+            //something went wrong
+            doingRandom=false;
+            return false;
         }
-
-        //now we get all possible champions
-        var options = [];//all options, including not chosen lanes
-        var optionsShuffle = [];//the real options
-        var champId = 0;
-        $optionDivs.each(function () {
-            champId = $(this).data('championid');
-            options.push(champId);
-            //roleType 0 == all roles
-            if (roleType==0 || rolesJSON[roleType][randomRole].indexOf(champId) != -1)//the champion indeed has the role chosen
-            {
-                optionsShuffle.push(champId);
-            }
-        });
-
-        //shuffle the options so its random
-        shuffle(optionsShuffle);
-
-        //now lets see what champions we haven't played or played the least, and it must not be equal to the previously chosen champ.
-        var random = optionsShuffle[0];
-        var mostPlayed = champPlayed[optionsShuffle[0]];
-        for (i = 1; i < options.length - 1; ++i) {
-            if (mostPlayed > champPlayed[optionsShuffle[i]] && optionsShuffle[i]!=randomChampId) {
-                random = optionsShuffle[i];
-                mostPlayed = champPlayed[optionsShuffle[i]];
-            }
-        }
-
-        //we now have the best option
-        randomChampId = random;
-        randomChamp = champions[random];
+        randomChampId=random[0];
+        var randomRole=random[1]
+        var options=random[2];
+        randomChamp = champions[randomChampId];
 
         //update its playcount
         champPlayed[random] += 1;
@@ -593,13 +566,18 @@ function loadData() {
         }
         else
         {
-            var results = searchFor(val);
+            val=val.split("|");
+            var searchresults=[];
+            for (i = 0; i < val.length; ++i) {
+                var subresult=searchFor(val[i]);
+                $.merge(searchresults,subresult);
+            }
             //disable all champions
             $('.champion').addClass('hiddenSearch');
             $('.champion').removeClass('showSearch');
-            for (i = 0; i < results.length; ++i) {
-                $('[data-championId=' + results[i]+ ']').removeClass('hiddenSearch');
-                $('[data-championId=' + results[i]+ ']').addClass('showSearch');
+            for (i = 0; i < searchresults.length; ++i) {
+                $('[data-championId=' + searchresults[i] + ']').removeClass('hiddenSearch');
+                $('[data-championId=' + searchresults[i] + ']').addClass('showSearch');
             }
         }
     });
@@ -634,6 +612,9 @@ function loadData() {
             }
     });
     }
+
+    //enable random button
+    doingRandom=false;
 }
 
 function loadData2() {
@@ -669,13 +650,6 @@ function loadData2() {
 
 
     $('#random').click(function () {
-        $optionDivs=$('.toShow.notDisabled.showSearch, .toShow.disabled_f2p.showSearch');
-
-        //check if we have options:
-        if ($optionDivs.length==0)
-        {
-            return false;
-        }
         //check if we are not already busy with the previous one
         if (doingRandom)
         {
@@ -683,52 +657,29 @@ function loadData2() {
         }
         doingRandom=true;
 
+        //reset the excluded champions
+        champsExcluded=[];
 
-        //lets first choose a role
-        var randomRole = Math.floor(Math.random() * 5);
-
-        //if all roles are deselected it counts as all roles being selected
-        if (!(!roles[0] && !roles[1] && !roles[2] && !roles[3] && !roles[4]))
+        var random=getRandomChampion([]);//no excluded champions
+        if (random==false)
         {
-             //make sure the role is actually chosen
-             while (!roles[randomRole]) {
-                 randomRole = Math.floor(Math.random() * 5);
-             }
+            //something went wrong
+            doingRandom=false;
+            return false;
         }
+        randomChampId=random[0];
+        var randomRole=random[1]
+        var options=random[2];
+        randomChamp = champions[randomChampId];
 
-        //now we get all possible champions
-        var options = [];//all options, including not chosen lanes
-        var optionsShuffle = [];//the real options
-        var champId = 0;
-        $optionDivs.each(function () {
-            champId = $(this).data('championid');
-            options.push(champId);
-            //roleType 0 == all roles
-            if (roleType==0 || rolesJSON[roleType][randomRole].indexOf(champId) != -1)//the champion indeed has the role chosen
-            {
-                optionsShuffle.push(champId);
-            }
-        });
 
-        //shuffle the options so its random
-        shuffle(optionsShuffle);
-
-        //now lets see what champions we haven't played or played the least:
-        var random = optionsShuffle[0];
-        var mostPlayed = champPlayed[optionsShuffle[0]];
-        for (i = 1; i < options.length - 1; ++i) {
-            if (mostPlayed > champPlayed[optionsShuffle[i]]) {
-                random = optionsShuffle[i];
-                mostPlayed = champPlayed[optionsShuffle[i]];
-            }
+        //remove this champion from the option selection if there are enough champions
+        if (options.length > 8) {
+            options.splice(options.indexOf(randomChampId), 1);
         }
-
-        //we now have the best option
-        randomChampId=random;
-        randomChamp = champions[random];
 
         //update its playcount
-        champPlayed[random] += 1;
+        champPlayed[randomChampId] += 1;
         storage.set('champPlayed', champPlayed);
 
 
@@ -739,20 +690,26 @@ function loadData2() {
         //champs before
         var location = Math.min(Math.max(20, options.length - 10), 35) + Math.floor(Math.random() * 10);
 
-        if (options.length <= 42) {
+        //max is location, + 10 at the end
+        if (options.length <= location+10) {
             var len = options.length;
             //not enough options, fill it up!
-            while (options.length <= 42) {
+            while (options.length <= location+10) {
                 var key = Math.floor(Math.random() * len);
                 options.push(options[key]);
             }
         }
-        (options.splice(random, 1))//remove the chosen element, inserts -1 to make sure the numbering remains intact
+
         shuffle(options);
-        options[location] = random;
+
+        //insert the champion at the correct location
+        options[location] = randomChampId;
         var html='';
-        for (index = 0; index < location + 10; ++index) {
-            html+=('<img src="' + champions[options[index]].iconSRC + '">');
+        for (index = 0; index <= location + 10; ++index) {
+            if (options[index]!=-1)
+            {
+                html+=('<img src="' + champions[options[index]].iconSRC + '">');
+            }
         }
         $randomDiv.append(html);
 
@@ -877,6 +834,94 @@ function shuffle(array) {
     }
 
     return array;
+}
+
+
+function getRandomChampion(excluded)
+{
+
+    var $optionDivs=$('.toShow.notDisabled.showSearch, .toShow.disabled_f2p.showSearch');
+
+    //check if we have options:
+    if ($optionDivs.length==0)
+    {
+        return false;
+    }
+
+    //Get all possible champions for all roles
+    var options = [];//all options, including not chosen lanes
+    var optionsShuffle = [[],[],[],[],[]];//the real options
+    var champId = 0;
+
+    //now lets see what champions we haven't played or played the least:
+    var leastPlayed = Number.MAX_VALUE;
+    $optionDivs.each(function () {
+        champId = $(this).data('championid');
+        options.push(champId);
+
+        //check if not excluded
+        if (excluded.indexOf(champId)==-1)
+        {
+            //if smaller, replace the list
+            if (champPlayed[champId]<leastPlayed)
+            {
+                //reset
+                optionsShuffle = [[],[],[],[],[]];//the real options
+                leastPlayed=champPlayed[champId];
+            }
+
+            //if just as much (or smaller), add to the list
+            if (champPlayed[champId]<=leastPlayed)
+            {
+                //go through all roles
+                for (i=0;i<5;++i) {
+                    if (rolesJSON[roleType][i].indexOf(champId) != -1)
+                    {
+                        optionsShuffle[i].push(champId);
+                    }
+                }
+            }
+        }
+    });
+
+    var rolesFiltered=roles.slice(0);//copy
+
+    if ((optionsShuffle[0].length+optionsShuffle[1].length+optionsShuffle[2].length+optionsShuffle[3].length+optionsShuffle[4].length)==0)
+    {
+        //something went wrong, we have no options!
+        return false;
+    }
+
+    //if all roles are deselected it counts as all roles being selected
+    if (!roles[0] && !roles[1] && !roles[2] && !roles[3] && !roles[4])
+    {
+        rolesFiltered=[true,true,true,true,true];
+    }
+
+    //filter the roles where there is no champion for
+    for (i=0;i<5;++i) {
+        if (optionsShuffle[i].length === 0)
+        {
+            //no champions for this role
+            rolesFiltered[i]=false;
+        }
+    }
+
+    // choose a role
+    var randomRole = Math.floor(Math.random() * 5);
+
+    //make sure the role chosen is actually wanted
+    while (!rolesFiltered[randomRole]) {
+        randomRole = Math.floor(Math.random() * 5);
+    }
+
+    //go to the correct options
+    optionsShuffle=optionsShuffle[randomRole];
+
+    //lets get a random option
+    var randomId=optionsShuffle[Math.floor(Math.random()*optionsShuffle.length)];
+
+    return [randomId,randomRole,options];
 }
 
 function showFree2PlayError()
