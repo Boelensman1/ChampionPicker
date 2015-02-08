@@ -23,6 +23,7 @@
     </style>
     <link rel="stylesheet" href="css/bootstrap-theme.min.css">
     <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/pnotify.custom.min.css">
 
     <script src="js/libs/modernizr-2.6.2-respond-1.1.0.min.js"></script>
 </head>
@@ -41,30 +42,47 @@
             </button>
             <a class="navbar-brand" href="#">Champion Picker</a>
         </div>
-        <div id="navbar" class="navbar-collapse collapse">
-            <span>abc</span>
-        </div>
         <!--/.navbar-collapse -->
     </div>
 </nav>
 
 
 <!-- Modal -->
-<div class="modal fade" id="randomChampionModal" tabindex="-1" role="dialog">
-    <div class="modal-dialog" id="randomChampionDialog">
+<div class="modal fade randomChampionModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog randomChampionDialog">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title" id="randomChampionModalTitle">Champname</h4>
-                <h4 id="randomChampionModalRole">ChampRole</h4>
+                <h4 class="modal-title randomChampionModalTitle">Champname</h4>
+                <h4 class="randomChampionModalRole">ChampRole</h4>
             </div>
-            <div class="modal-body" id="randomChampionModalBody">
-                <div id="randomChampionModalLore"><p></p></div><br>
-                <div id="randomChampionModalLinks"></div>
-                <div id="randomChampionModalLinks2" style="display:none;"></div>
+            <div class="modal-body randomChampionModalBody">
+                <div class="randomChampionModalLore"><p></p></div><br>
+                <div class="randomChampionModalLinks">
+                    <p class="text-left"><a target="_blank" class="randomChampionModalProbuildLink" href="link">Probuilds</a></p>
+                    <p class="text-center" style="width:58%"><a target="_blank" class="randomChampionModalMobafireLink" href="link">Mobafire</a></p>
+                    <p class="text-right"><a target="_blank" class="randomChampionModalLoLWikiLink" href="link">LoL Wiki</a></p>
+                </div>
+                <div class="randomChampionModalLinks2" style="display:none;">
+                    <p class="text-center"><a target="_blank" class="randomChampionModalProbuildLink" href="link">Probuilds</a></p>
+                    <p class="text-center"><a target="_blank" class="randomChampionModalMobafireLink" href="link">Mobafire</a></p>
+                    <p class="text-center"><a target="_blank" class="randomChampionModalLoLWikiLink" href="link">LoL Wiki</a></p>
+                </div>
+                <div class="modal-footer randomChampionFooter">
+                    <div class="randomChampionDontHave col-xs-6">
+                        <button class="btn btn-default btn-block randomChampionDontHaveButton">
+                            I don't have this champion
+                        </button>
+                    </div>
+                    <div class="randomChampionNext col-xs-6">
+                        <button class="btn btn-default btn-block randomChampionNextButton">
+                            Next champion
+                        </button>
+                    </div>
+                </div>
             </div>
         </div><!-- /.modal-content -->
-        <div id="randomChampionModalBackground">
+        <div class="randomChampionModalBackground">
         </div>
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
@@ -89,13 +107,13 @@
             <p></p>
         </div>
         <div class="roles btn-group col-md-6 col-sm-9 hidden-xs" role="group">
-            <button type="button" data-roleId="0" class="role_0 btn btn-default active">Top</button>
-            <button type="button" data-roleId="1" class="role_1 btn btn-default active">Jungle</button>
-            <button type="button" data-roleId="2" class="role_2 btn btn-default active">Mid</button>
-            <button type="button" data-roleId="3" class="role_3 btn btn-default active">Adc</button>
-            <button type="button" data-roleId="4" class="role_4 btn btn-default active">Support</button>
+            <button type="button" onclick="this.blur();" data-roleId="0" class="role_0 btn btn-default btn-role">Top</button>
+            <button type="button" onclick="this.blur();" data-roleId="1" class="role_1 btn btn-default btn-role">Jungle</button>
+            <button type="button" onclick="this.blur();" data-roleId="2" class="role_2 btn btn-default btn-role">Mid</button>
+            <button type="button" onclick="this.blur();" data-roleId="3" class="role_3 btn btn-default btn-role">Adc</button>
+            <button type="button" onclick="this.blur();" data-roleId="4" class="role_4 btn btn-default btn-role">Support</button>
             <div class="btn-group" role="group">
-                <button type="button" class="btn btn-default roleType dropdown-toggle" data-toggle="dropdown">
+                <button type="button" onclick="this.blur();" class="btn btn-default roleType dropdown-toggle" data-toggle="dropdown">
                     Normal
                     <span class="caret"></span>
                 </button>
@@ -108,17 +126,23 @@
             </div>
         </div>
         <div class="btn-group roles visible-xs-block col-xs-12" role="group">
-            <button type="button" data-roleId="0" class="role_0 btn btn-default active col-xs-2">Top</button>
-            <button type="button" data-roleId="1" class="role_1 btn btn-default active col-xs-2">Jun</button>
-            <button type="button" data-roleId="2" class="role_2 btn btn-default active col-xs-2">Mid</button>
-            <button type="button" data-roleId="3" class="role_3 btn btn-default active col-xs-2">Adc</button>
-            <button type="button" data-roleId="4" class="role_4 btn btn-default active col-xs-2">Sup</button>
-            <div class="btn-group" role="group">
-                <button type="button" class="btn btn-default roleType dropdown-toggle col-xs-2" data-toggle="dropdown">
+            <button type="button" onclick="this.blur();" data-roleId="0" class="role_0 btn btn-default col-xs-2 btn-role btn-20">Top</button>
+            <button type="button" onclick="this.blur();" data-roleId="1" class="role_1 btn btn-default col-xs-2 btn-role btn-20">Jun</button>
+            <button type="button" onclick="this.blur();" data-roleId="2" class="role_2 btn btn-default col-xs-2 btn-role btn-20">Mid</button>
+            <button type="button" onclick="this.blur();" data-roleId="3" class="role_3 btn btn-default col-xs-2 btn-role btn-20">Adc</button>
+            <button type="button" onclick="this.blur();" data-roleId="4" class="role_4 btn btn-default col-xs-2 btn-role btn-20">Sup</button>
+        </div>
+
+        <!-- Add the extra clearfix for only the required viewport -->
+        <div class="visible-xs-block col-xs-12"><p></p></div>
+
+        <div class="roles visible-xs-block col-xs-12">
+            <div class="btn-group col-xs-12" style="padding:0px" role="group">
+                <button type="button" onclick="this.blur();" class="btn btn-default roleType dropdown-toggle btn-block" data-toggle="dropdown">
                     Normal
                     <span class="caret"></span>
                 </button>
-                <ul class="dropdown-menu dropdownRole" role="menu">
+                <ul class="dropdown-menu dropdownRole col-xs-12" role="menu">
                     <li><a data-roleId="0" href="#">All</a></li>
                     <li><a data-roleId="1" href="#">Loose</a></li>
                     <li><a data-roleId="2" href="#">Normal</a></li>
@@ -131,55 +155,47 @@
         <div class="visible-xs-block col-xs-12"><p></p></div>
 
         <div class="col-md-2 col-sm-3  hidden-xs">
-            <p><a class="btn btn-success btn-block free2play" href="#" role="button">Free To Play</a></p>
+            <p><a class="btn btn-success btn-block free2play" onclick="this.blur();" href="#" role="button">Free To Play</a></p>
         </div>
         <div class="visible-xs-block col-xs-5">
-            <p><a class="btn btn-success btn-block free2play" href="#" role="button">Free2Play</a></p>
+            <p><a class="btn btn-success btn-block free2play" onclick="this.blur();" href="#" role="button">Free2Play</a></p>
         </div>
         <div class=" col-md-4 col-sm-12 col-xs-7">
             <form role="form">
                 <div class="form-group">
-                    <input type="text" placeholder="Search" class="form-control">
+                    <input type="text" placeholder="Search" id="championSearch" class="form-control">
                 </div>
             </form>
         </div>
         <div class="col-xs-12">
             <p></p>
         </div>
-        <!--here come the champions-->
-        <ul id="champions"></ul>
-
         <!--loading progress-->
-        <div class="progress col-xs-12" id="ProgressContainer">
-            <div class="progress-bar progress-bar-striped active" id="loadingProgress" role="progressbar" style="width: 1%">
+        <div class="col-xs-12" id="ProgressContainer">
+            <div class="progress">
+                <div class="progress-bar progress-bar-striped active" id="loadingProgress" role="progressbar" style="width: 1%">
+                </div>
             </div>
         </div>
+
+        <!--here come the champions-->
+        <ul id="champions"></ul>
     </div>
 </div>
 
 <div class="container">
     <!-- Example row of columns -->
     <div class="row">
-        <div class="col-md-4">
-            <h2>Heading</h2>
+        <div class="col-md-6">
+            <h2>Help</h2>
 
             <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris
                 condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis
                 euismod. Donec sed odio dui. </p>
 
-            <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
         </div>
-        <div class="col-md-4">
-            <h2>Heading</h2>
-
-            <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris
-                condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis
-                euismod. Donec sed odio dui. </p>
-
-            <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
-        </div>
-        <div class="col-md-4">
-            <h2>Heading</h2>
+        <div class="col-md-6">
+            <h2>Contact</h2>
 
             <p>Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula
                 porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut
@@ -209,9 +225,11 @@
 
 <script src="js/libs/jquery.storageapi.min.js"></script>
 
-<script src="js/centerModal.js"></script>
+<script src="js/libs/pnotify.custom.min.js"></script>
 
 <script src="js/main.js"></script>
+
+<script src="js/centerModal.js"></script>
 
 <!-- Google Analytics-->
 <script>

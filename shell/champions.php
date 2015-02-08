@@ -170,6 +170,7 @@ class Champion
     private $_apiKey;
     private $_id;
     public $name;
+    public $nameLower;
     public $active;
     public $rankedEnabled;
     public $iconURL;
@@ -205,6 +206,7 @@ class Champion
         }
         unset($champion_json);
         $this->name = $championRaw->name;
+        $this->nameLower = strtolower($championRaw->name);
         $this->title=$championRaw->title;
         $this->description=$championRaw->lore;
 
