@@ -2,26 +2,30 @@
 var roles = [false, false, false, false, false];
 var roleTypeOptions = ['All', 'Loose', 'Normal', 'Strict'];
 var roleType = 2;
+var rolesPos = ['Toplane', 'Jungle', 'Midlane', 'Marksman', 'Support'];
+var rolesJSON;
+
 var champions = [];
 var order = [];
-var free2play = [];
 var largeNames = [];
-var rolesPos = ['Toplane', 'Jungle', 'Midlane', 'Marksman', 'Support']
 var championsDisabled;
-var rolesJSON;
-var enableF2P = true;
 var champPlayed = {};
-var apiKey = 'dc5dc19a-eb7d-4175-8955-59ab577026a5';
+
+var free2play = [];
+var enableF2P = true;
+var free2playError=false;
+var free2playURL="http://wwbtestserver.cloudapp.net:8080/free2play.json";
+
 var doingRandom=true;
 var doingNext=false;
-var loading = 7; //countdown till all JSON is loaded
-var loadingProgress=0; //the progress bar
 var randomChamp;
 var randomChampId;
 var champsExcluded;
+
+var loading = 7; //countdown till all JSON is loaded
+var loadingProgress=0; //the progress bar
+
 var DOMReady=false;
-var free2playError=false;
-var free2playURL="http://wwbtestserver.cloudapp.net:8080/free2play.json";
 var region='EUW';
 
 //set pnotify styling and options
