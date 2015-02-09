@@ -124,6 +124,7 @@ $(function () {
     }
 
     loading--;
+
     updateProgress(2);
     if (!loading)//check if we are loading to load everything
     {
@@ -531,7 +532,7 @@ function loadData() {
             $('.randomChampionModal').modal('hide');
             //and notify the user
 
-            new PNotify({
+            var notice = new PNotify({
                 title: 'No champions',
                 text: 'There are no champions left to choose from.',
                 opacity: .9,
@@ -539,7 +540,14 @@ function loadData() {
                 nonblock: {
                     nonblock: true,
                     nonblock_opacity: .2
+                },
+                history: {
+                    history: false
                 }
+            });
+            notice.get().click(function() {
+                notice.options.animation='none';
+                notice.remove();
             });
 
             doingRandom=false;
@@ -707,7 +715,7 @@ function loadData2() {
             //something went wrong, no champions
             doingRandom=false;
             //send a message
-            new PNotify({
+            var notice=new PNotify({
                 title: 'No possible champions.',
                 text: 'Please enable at least 1 champion.',
                 opacity: .9,
@@ -716,7 +724,14 @@ function loadData2() {
                 nonblock: {
                     nonblock: true,
                     nonblock_opacity: .2
+                },
+                history: {
+                    history: false
                 }
+            });
+            notice.get().click(function() {
+                notice.options.animation='none';
+                notice.remove();
             });
 
             false;
@@ -988,7 +1003,7 @@ function getRandomChampion(excluded)
 
 function showFree2PlayError()
 {
-    new PNotify({
+    var notice = new PNotify({
         title: 'Riot server error',
         text: 'Failed to get free to play data from riot. Data may be missing or out of date.',
         opacity: .9,
@@ -996,7 +1011,14 @@ function showFree2PlayError()
         nonblock: {
             nonblock: true,
             nonblock_opacity: .2
+        },
+        history: {
+            history: false
         }
+    });
+    notice.get().click(function() {
+        notice.options.animation='none';
+        notice.remove();
     });
 }
 

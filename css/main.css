@@ -237,3 +237,22 @@ div {
 {
     height:100%;
 }
+
+/*make the navbar always stay collapsed*/
+@media (min-width: 768px)
+{
+    .navbar-header
+    {
+        float: none;
+    }
+
+    .navbar-toggle
+    {
+        display: block;
+    }
+
+    .navbar-collapse.collapse
+    {
+        display: none !important;
+    }
+}
