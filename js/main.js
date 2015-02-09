@@ -2,26 +2,30 @@
 var roles = [false, false, false, false, false];
 var roleTypeOptions = ['All', 'Loose', 'Normal', 'Strict'];
 var roleType = 2;
+var rolesPos = ['Toplane', 'Jungle', 'Midlane', 'Marksman', 'Support'];
+var rolesJSON;
+
 var champions = [];
 var order = [];
-var free2play = [];
 var largeNames = [];
-var rolesPos = ['Toplane', 'Jungle', 'Midlane', 'Marksman', 'Support']
 var championsDisabled;
-var rolesJSON;
-var enableF2P = true;
 var champPlayed = {};
-var apiKey = 'dc5dc19a-eb7d-4175-8955-59ab577026a5';
+
+var free2play = [];
+var enableF2P = true;
+var free2playError=false;
+var free2playURL="http://wwbtestserver.cloudapp.net:8080/free2play.json";
+
 var doingRandom=true;
 var doingNext=false;
-var loading = 7; //countdown till all JSON is loaded
-var loadingProgress=0; //the progress bar
 var randomChamp;
 var randomChampId;
 var champsExcluded;
+
+var loading = 7; //countdown till all JSON is loaded
+var loadingProgress=0; //the progress bar
+
 var DOMReady=false;
-var free2playError=false;
-var free2playURL="http://wwbtestserver.cloudapp.net:8080/free2play.json";
 var region='EUW';
 
 //set pnotify styling and options
@@ -227,8 +231,8 @@ $(window).on("debouncedresize", function (event) {
 function modalLoreFit(animate) {
     var width = $('.randomChampionDialog').width();
     var height = width * 0.590;//aspect ratio of splashes
-    height -= 110//height of title
-    height -= 50//height of bottom button
+    height -= 110;//height of title
+    height -= 50;//height of bottom button
 
     if ($(window).width() >= 450) {
         //update visibility
@@ -236,7 +240,7 @@ function modalLoreFit(animate) {
         $('.randomChampionModalLinks').show();
         $('.randomChampionModalLinks2').hide();
 
-        height -= 70//height of buttons
+        height -= 70;//height of buttons
         if (animate) {
             $('.randomChampionModalLore').transition({height: (height) + 'px'},
                 adjustModalMaxHeightAndPosition);
@@ -502,9 +506,6 @@ function loadData() {
         //set champion to not have
         $('[data-championId=' + randomChampId+ ']').click();
 
-        //update the optionDivs
-        //$optionDivs=$('.toShow.notDisabled.showSearch, .toShow.disabled_f2p.showSearch');
-
         randomChampionNew();
 
     }
@@ -525,14 +526,32 @@ function loadData() {
         var random=getRandomChampion(champsExcluded);
         if (random==false)
         {
-            //something went wrong
+            //something went wrong, there are no options!
+            //this is probably because someone clicked on "i don't have this champion. So lets hide the modal.
+            $('.randomChampionModal').modal('hide');
+            //and notify the user
+
+            new PNotify({
+                title: 'No champions',
+                text: 'There are no champions left to choose from.',
+                opacity: .9,
+                icon: 'glyphicon glyphicon-envelope',
+                nonblock: {
+                    nonblock: true,
+                    nonblock_opacity: .2
+                }
+            });
+
             doingRandom=false;
             return false;
+
         }
-        randomChampId=random[0];
-        var randomRole=random[1]
-        var options=random[2];
-        randomChamp = champions[randomChampId];
+        else{
+            randomChampId=random[0];
+            var randomRole=random[1];
+            var options=random[2];
+            randomChamp = champions[randomChampId];
+        }
 
         //update its playcount
         champPlayed[random] += 1;
@@ -543,7 +562,7 @@ function loadData() {
         var $randomChampionModal2=$randomChampionModal.clone();
 
         //change the champion
-        updateModal($randomChampionModal2,randomChamp,randomChampId,rolesPos[randomRole]);
+        updateModal($randomChampionModal2,randomChamp,randomChampId,rolesPos[randomRole],options.length);
 
         //rotate and hide the modal
         $randomChampionModal2.css('opacity',0);
@@ -684,13 +703,28 @@ function loadData2() {
         var random=getRandomChampion([]);//no excluded champions
         if (random==false)
         {
-            //something went wrong
+            //something went wrong, no champions
             doingRandom=false;
-            return false;
+            //send a message
+            new PNotify({
+                title: 'No possible champions.',
+                text: 'Please enable at least 1 champion.',
+                opacity: .9,
+                type: 'error',
+                icon: 'glyphicon glyphicon-warning-sign',
+                nonblock: {
+                    nonblock: true,
+                    nonblock_opacity: .2
+                }
+            });
+
+            false;
         }
         randomChampId=random[0];
-        var randomRole=random[1]
+        var randomRole=random[1];
         var options=random[2];
+        //because options is later padded
+        var totalOptions=options.length;
         randomChamp = champions[randomChampId];
 
 
@@ -754,7 +788,7 @@ function loadData2() {
                 //set rotation
                 $('.randomChampionDialog').css('transform','perspective(550px) rotateY(360deg)');
 
-                updateModal($('.randomChampionModal'),randomChamp,randomChampId,rolesPos[randomRole]);
+                updateModal($('.randomChampionModal'),randomChamp,randomChampId,rolesPos[randomRole],totalOptions);
 
                 setTimeout(function () {
                     adjustModalMaxHeightAndPosition();
@@ -791,7 +825,7 @@ function loadData2() {
     });
 }
 
-function updateModal(divId, randomChamp,randomChampId,role)
+function updateModal(divId, randomChamp,randomChampId,role,totalOptions)
 {
     divId.find('.randomChampionModalTitle').html(randomChamp.name + ': ' + randomChamp.title);
     divId.find('.randomChampionModalRole').html(role);
@@ -809,7 +843,6 @@ function updateModal(divId, randomChamp,randomChampId,role)
     divId.find('.randomChampionModalBackground').css('background-image', 'url(' + randomChamp.splashSRC + ')');
 
     //enable both buttons
-
     divId.find('.randomChampionDontHaveButton').prop("disabled",false);
     divId.find('.randomChampionNextButton').prop("disabled",false);
 
@@ -825,6 +858,11 @@ function updateModal(divId, randomChamp,randomChampId,role)
                 divId.find('.randomChampionDontHaveButton').prop("disabled",true);
             }
         }
+    }
+    //check if we have no other option to switch to
+    if (totalOptions==1)
+    {
+        divId.find('.randomChampionNextButton').prop("disabled",true);
     }
 }
 
@@ -871,23 +909,24 @@ function getRandomChampion(excluded)
 
     //Get all possible champions for all roles
     var options = [];//all options, including not chosen lanes
-    var optionsShuffle = [[],[],[],[],[]];//the real options
+    var realOptions = [[],[],[],[],[]];//the real options
     var champId = 0;
 
     //now lets see what champions we haven't played or played the least:
     var leastPlayed = Number.MAX_VALUE;
     $optionDivs.each(function () {
         champId = $(this).data('championid');
-        options.push(champId);
 
         //check if not excluded
         if (excluded.indexOf(champId)==-1)
         {
+            options.push(champId);
+
             //if smaller, replace the list
             if (champPlayed[champId]<leastPlayed)
             {
                 //reset
-                optionsShuffle = [[],[],[],[],[]];//the real options
+                realOptions = [[],[],[],[],[]];//the real options
                 leastPlayed=champPlayed[champId];
             }
 
@@ -898,7 +937,7 @@ function getRandomChampion(excluded)
                 for (i=0;i<5;++i) {
                     if (rolesJSON[roleType][i].indexOf(champId) != -1)
                     {
-                        optionsShuffle[i].push(champId);
+                        realOptions[i].push(champId);
                     }
                 }
             }
@@ -907,7 +946,8 @@ function getRandomChampion(excluded)
 
     var rolesFiltered=roles.slice(0);//copy
 
-    if ((optionsShuffle[0].length+optionsShuffle[1].length+optionsShuffle[2].length+optionsShuffle[3].length+optionsShuffle[4].length)==0)
+    //count the amount of options
+    if ((realOptions[0].length+realOptions[1].length+realOptions[2].length+realOptions[3].length+realOptions[4].length)==0)
     {
         //something went wrong, we have no options!
         return false;
@@ -921,7 +961,7 @@ function getRandomChampion(excluded)
 
     //filter the roles where there is no champion for
     for (i=0;i<5;++i) {
-        if (optionsShuffle[i].length === 0)
+        if (realOptions[i].length === 0)
         {
             //no champions for this role
             rolesFiltered[i]=false;
@@ -937,17 +977,16 @@ function getRandomChampion(excluded)
     }
 
     //go to the correct options
-    optionsShuffle=optionsShuffle[randomRole];
+    realOptions=realOptions[randomRole];
 
     //lets get a random option
-    var randomId=optionsShuffle[Math.floor(Math.random()*optionsShuffle.length)];
+    var randomId=realOptions[Math.floor(Math.random()*realOptions.length)];
 
     return [randomId,randomRole,options];
 }
 
 function showFree2PlayError()
 {
-
     new PNotify({
         title: 'Riot server error',
         text: 'Failed to get free to play data from riot. Data may be missing or out of date.',
