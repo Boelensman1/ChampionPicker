@@ -543,6 +543,7 @@ function loadData() {
             });
 
             doingRandom=false;
+            doingNext=false;
             return false;
 
         }
