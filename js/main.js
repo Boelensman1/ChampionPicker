@@ -1,4 +1,5 @@
 //init all variables
+/*global adjustModalMaxHeightAndPosition */
 var roles = [false, false, false, false, false];
 var roleTypeOptions = ['All', 'Loose', 'Normal', 'Strict'];
 var roleType = 2;
@@ -29,12 +30,13 @@ var DOMReady=false;
 var region='EUW';
 
 //set pnotify styling and options
+/* global PNotify */
 PNotify.prototype.options.styling = "bootstrap3";
 PNotify.prototype.options.delay = 3000;
 
 //init easy storage
-ns = $.initNamespaceStorage('championPicker');
-storage = $.localStorage;
+var ns = $.initNamespaceStorage('championPicker');
+var storage = $.localStorage;
 championsDisabled = storage.get('championsDisabled');
 
 roleType = storage.get('roleType');
@@ -52,8 +54,9 @@ if (enableF2P===null)
     storage.set('enableF2P',enableF2P);
 }
 if (!enableF2P) {
-    $('.free2play').toggleClass('btn-success');
-    $('.free2play').toggleClass('btn-default');
+    var $free2play=$('.free2play');
+    $free2play.toggleClass('btn-success');
+    $free2play.toggleClass('btn-default');
 }
 
 //load from storage (or from JSON)
@@ -68,7 +71,7 @@ if (champions === null) {
 }
 else {
     loading--;
-    updateProgress(2)
+    updateProgress(2);
     if (!loading)//check if we are loading to load everything
     {
         loadData();
@@ -115,6 +118,8 @@ else {
 }
 
 $(function () {
+    "use strict";//strict mode
+
     //DOM completed loading!
     DOMReady=true;
 
@@ -133,23 +138,26 @@ $(function () {
 });
 
 function reloadActive(update) {
+    "use strict";//strict mode
+
     var toHide = [];
     var toShow = [];
 
+    var $championsli=$("#champions").find("li");
+    var $btnRole=$('.btn-role');
     //check if all buttons are on or off:
-    if ((roles[0] && roles[1] && roles[2] && roles[3] && roles[4])
-    || (!roles[0] && !roles[1] && !roles[2] && !roles[3] && !roles[4])) {
+    if ((roles[0] && roles[1] && roles[2] && roles[3] && roles[4]) || (!roles[0] && !roles[1] && !roles[2] && !roles[3] && !roles[4])) {
         //activate everything
-        $("#champions li").addClass('toShow');
-        $("#champions li").removeClass('toHide');
+        $championsli.addClass('toShow');
+        $championsli.removeClass('toHide');
 
         //toggle the appropriate button
         if (roles[0]) {
-            $('.btn-role').addClass('active');
+            $btnRole.addClass('active');
         }
         else
         {
-            $('.btn-role').removeClass('active');
+            $btnRole.removeClass('active');
         }
 
         if (update) {
@@ -159,12 +167,12 @@ function reloadActive(update) {
     }
 
     //de-activate everything
-    $("#champions li").addClass('toHide');
-    $("#champions li").removeClass('toShow');
-    $('.btn-role').removeClass('active');
+    $championsli.addClass('toHide');
+    $championsli.removeClass('toShow');
+    $btnRole.removeClass('active');
 
     //update roleType
-    if (roleType == 0) {
+    if (roleType === 0) {
         roleType = 2;
         storage.set('roleType', roleType);
     }
@@ -184,6 +192,9 @@ function reloadActive(update) {
 }
 
 function processRoles(update) {
+    "use strict";//strict mode
+
+    var index,index2;
     for (index = 0; index < roles.length; ++index) {
         if (roles[index]) {
             //activate the button
@@ -191,8 +202,9 @@ function processRoles(update) {
 
             //we have to activate all champions who have this role
             for (index2 = 0; index2 < rolesJSON[roleType][index].length; ++index2) {
-                $('[data-championId=' + rolesJSON[roleType][index][index2] + ']').addClass('toShow');
-                $('[data-championId=' + rolesJSON[roleType][index][index2] + ']').removeClass('toHide');
+                var $championDiv=$('[data-championId=' + rolesJSON[roleType][index][index2] + ']');
+                $championDiv.addClass('toShow');
+                $championDiv.removeClass('toHide');
             }
         }
     }
@@ -203,25 +215,31 @@ function processRoles(update) {
 }
 
 function updateShowHide() {
+    "use strict";//strict mode
+
     $('.toShow').show();
     $('.toHide').hide();
 }
 
 function champTextFit() {
+    "use strict";//strict mode
 
+    var index,$label;
     if ($(window).width() > 992 || $(window).width() < 512) {
         for (index = 0; index < largeNames.length; ++index) {
-            $label = $('#champ' + largeNames[index] + ' .championLabel')
+            $label = $('#champ' + largeNames[index] + ' .championLabel');
             $label.fitText(0.6 * ($label.html().length) / 11);
         }
     } else {
         for (index = 0; index < largeNames.length; ++index) {
-            $label = $('#champ' + largeNames[index] + ' .championLabel')
+            $label = $('#champ' + largeNames[index] + ' .championLabel');
             $label.removeAttr('style');
         }
     }
 }
-$(window).on("debouncedresize", function (event) {
+$(window).on("debouncedresize", function () {
+    "use strict";//strict mode
+
     champTextFit();
     if ($(window).height() >= 320) {
         adjustModalMaxHeightAndPosition();
@@ -230,34 +248,37 @@ $(window).on("debouncedresize", function (event) {
 });
 
 function modalLoreFit(animate) {
+    "use strict";//strict mode
+
     var width = $('.randomChampionDialog').width();
     var height = width * 0.590;//aspect ratio of splashes
+    var $randomChampionModalLore=$('.randomChampionModalLore');
     height -= 110;//height of title
     height -= 50;//height of bottom button
 
     if ($(window).width() >= 450) {
         //update visibility
-        $('.randomChampionModalLore').show();
+        $randomChampionModalLore.show();
         $('.randomChampionModalLinks').show();
         $('.randomChampionModalLinks2').hide();
 
         height -= 70;//height of buttons
         if (animate) {
-            $('.randomChampionModalLore').transition({height: (height) + 'px'},
+            $randomChampionModalLore.transition({height: (height) + 'px'},
                 adjustModalMaxHeightAndPosition);
         }
         else {
-            $('.randomChampionModalLore').height(height);
+            $randomChampionModalLore.height(height);
             adjustModalMaxHeightAndPosition();
         }
     }
     else {
         //update visibility
-        $('.randomChampionModalLore').hide();
+        $randomChampionModalLore.hide();
         $('.randomChampionModalLinks').hide();
         $('.randomChampionModalLinks2').show();
 
-        height -= 40//margins
+        height -= 40;//margins
         if (animate) {
             $('.randomChampionModalLinks2').transition({height: (height) + 'px'},
                 adjustModalMaxHeightAndPosition);
@@ -270,19 +291,26 @@ function modalLoreFit(animate) {
 }
 
 function updateFree2Play() {
+    "use strict";//strict mode
+
+    var $Free2PlayDis;
     if (enableF2P) {
-        $('.Free2Play.disabled').addClass('disabled_f2p');
-        $('.Free2Play.disabled').removeClass('disabled');
+        $Free2PlayDis=$('.Free2Play.disabled');
+        $Free2PlayDis.addClass('disabled_f2p');
+        $Free2PlayDis.removeClass('disabled');
     }
     else {
-        $('.Free2Play.disabled_f2p').addClass('disabled');
-        $('.Free2Play.disabled_f2p').removeClass('disabled_f2p');
+        $Free2PlayDis=$('.Free2Play.disabled');
+        $Free2PlayDis.addClass('disabled');
+        $Free2PlayDis.removeClass('disabled_f2p');
     }
     //update f2p
     storage.set('enableF2P',enableF2P);
 }
 
 function loadChampionData() {
+    "use strict";//strict mode
+
     $.getJSON("data/champions.json", function (championsJSON) {
         champions = championsJSON;
         storage.set('champions', champions);
@@ -296,6 +324,8 @@ function loadChampionData() {
 }
 
 function loadOrderData() {
+    "use strict";//strict mode
+
     $.getJSON("data/order.json", function (orderJSON) {
         order = orderJSON;
         storage.set('order', order);
@@ -310,31 +340,41 @@ function loadOrderData() {
 
 function loadRoleData()
 {
-    var roleIndex={}; //so we know what data we are parsing
+    "use strict";//strict mode
+
+    var filename,index; //so we know what data we are parsing
     for (index = 1; index < roleTypeOptions.length; ++index) {
         filename = 'data/roles' + roleTypeOptions[index] + '.json';
-        roleIndex[filename]=index;
         //lets load it
-        rolesJSON=[];
-        $.getJSON(filename, function (rolesJson) {
-            rolesJSON[roleIndex[this.url]] = rolesJson;
-            loading--;
-            updateProgress(2);
-            if (!loading)//check if we are loading to load everything
-            {
-                loadData();
-            }
+        $.ajax({
+            dataType: "json",
+            url: filename,
+            success: loadRole,
+            context: {index: index}
         });
+    }
+}
+function loadRole(rolesJson) {
+    "use strict";//strict mode
+
+    rolesJSON[this.index] = rolesJson; // jshint ignore:line
+    loading--;
+    updateProgress(2);
+    if (!loading)//check if we are loading to load everything
+    {
+        loadData();
     }
 }
 
 function loadF2PData() {
+    "use strict";//strict mode
+
     //load free2play
     $.getJSON(free2playURL, function (free2playJSON) {
         //check for error:
-        if (free2playJSON.errors[region]==true)
+        if (free2playJSON.errors[region]===true)
         {
-            if ((DOMReady==true) && (free2playError==false))
+            if ((DOMReady===true) && (free2playError===false))
             {
                 //show error now
                 free2playError=true;
@@ -359,7 +399,7 @@ function loadF2PData() {
     }).error(function(){
         //something went wrong! Lets check if the dom is ready
         //If free2playError is true, it has already been showed sometime, so do not show it again.
-        if ((DOMReady==true) && (free2playError==false))
+        if ((DOMReady===true) && (free2playError===false))
         {
             //show error now
             free2playError=true;
@@ -374,7 +414,7 @@ function loadF2PData() {
         //lets still do the rest, so we can continue loading
         //if we have data, lets use it instead of the online
         free2play = storage.get('free2play');
-        if (free2play==null)
+        if (free2play===null)
         {
             free2play=[];
         }
@@ -389,6 +429,8 @@ function loadF2PData() {
     });
 }
 function loadData() {
+    "use strict";//strict mode
+
     //reload the data after 2 seconds
     setTimeout(function()
     {
@@ -401,7 +443,7 @@ function loadData() {
 
     //save the roledata
     storage.set('rolesJSON',rolesJSON);
-    var html='';
+    var i,index,divId,html='';
     for (i = 0; i < order.length; ++i) {
         index = order[i];
         divId = champions[index].name.replace(/\W/g, '');
@@ -414,9 +456,6 @@ function loadData() {
         html += '<li style="display:none" id="champ' + divId + '" class="col-lg-1 col-md-1 col-sm-2 col-xs-3 champion toShow showSearch" data-championId="' + index + '"><img class="img-responsive championPortrait" src="' + champions[index].iconSRC + '"><span class="label label-default center-block championLabel">' + champions[index].name + '</span></li>';
     }
     $('#champions').append(html);
-
-    //free the memory
-    delete html;
 
     //init modal
     $('.randomChampionModal').modal({
@@ -461,10 +500,12 @@ function loadData() {
     }
 
     //free 2play
+    var $championDiv;
     for (index = 0; index < free2play.length; ++index) {
-        $('[data-championId=' + free2play[index] + ']').addClass('Free2Play');
-        $('[data-championId=' + free2play[index] + '] span').removeClass('label-default');
-        $('[data-championId=' + free2play[index] + '] span').addClass('label-success');
+        $championDiv=$('[data-championId=' + free2play[index] + ']');
+        $championDiv.addClass('Free2Play');
+        $championDiv.find('span').removeClass('label-default');
+        $championDiv.find('span').addClass('label-success');
     }
     updateFree2Play();
 
@@ -475,23 +516,24 @@ function loadData() {
 
         var champId = $(this).data('championid');
 
+        var disabled;
         if ($(this).hasClass('Free2Play')) {
             //if free 2 play enabled, only half disable it
             if (enableF2P)
             {
             $(this).toggleClass('disabled_f2p');
-            var disabled = $(this).hasClass('disabled_f2p');
+            disabled = $(this).hasClass('disabled_f2p');
             }
             else
             {
                 //fully disable
                 $(this).toggleClass('disabled');
-                var disabled = $(this).hasClass('disabled');
+                disabled = $(this).hasClass('disabled');
             }
         }
         else {
             $(this).toggleClass('disabled');
-            var disabled = $(this).hasClass('disabled');
+            disabled = $(this).hasClass('disabled');
         }
 
         championsDisabled[champId] = disabled;
@@ -512,7 +554,7 @@ function loadData() {
     }
     function randomChampionNew(){
         //check if we are not mid animation.
-        if (doingNext==true)
+        if (doingNext===true)
         {
             return;
         }
@@ -525,7 +567,8 @@ function loadData() {
         champsExcluded.push(randomChampId);
 
         var random=getRandomChampion(champsExcluded);
-        if (random==false)
+        var randomRole,options;
+        if (random===false)
         {
             //something went wrong, there are no options!
             //this is probably because someone clicked on "i don't have this champion. So lets hide the modal.
@@ -535,11 +578,11 @@ function loadData() {
             var notice = new PNotify({
                 title: 'No champions',
                 text: 'There are no champions left to choose from.',
-                opacity: .9,
+                opacity: 0.9,
                 icon: 'glyphicon glyphicon-envelope',
                 nonblock: {
                     nonblock: true,
-                    nonblock_opacity: .2
+                    nonblock_opacity: 0.2
                 },
                 history: {
                     history: false
@@ -557,8 +600,8 @@ function loadData() {
         }
         else{
             randomChampId=random[0];
-            var randomRole=random[1];
-            var options=random[2];
+            randomRole=random[1];
+            options=random[2];
             randomChamp = champions[randomChampId];
         }
 
@@ -602,16 +645,15 @@ function loadData() {
             //reset the mid animation counter
             doingNext=false;
         });
-    };
-
-
+    }
     //load search button
     $('#championSearch').keyup(function() {
         var val=$('#championSearch').val().toLowerCase();
-        if (val.length==0)
+        var $champion=$('.champion');
+        if (val.length===0)
         {
-            $('.champion').removeClass('hiddenSearch');
-            $('.champion').addClass('showSearch');
+            $champion.removeClass('hiddenSearch');
+            $champion.addClass('showSearch');
         }
         else
         {
@@ -622,11 +664,13 @@ function loadData() {
                 $.merge(searchresults,subresult);
             }
             //disable all champions
-            $('.champion').addClass('hiddenSearch');
-            $('.champion').removeClass('showSearch');
+            $champion.addClass('hiddenSearch');
+            $champion.removeClass('showSearch');
+            var $championDiv;
             for (i = 0; i < searchresults.length; ++i) {
-                $('[data-championId=' + searchresults[i] + ']').removeClass('hiddenSearch');
-                $('[data-championId=' + searchresults[i] + ']').addClass('showSearch');
+                $championDiv=$('[data-championId=' + searchresults[i] + ']');
+                $championDiv.removeClass('hiddenSearch');
+                $championDiv.addClass('showSearch');
             }
         }
     });
@@ -646,7 +690,7 @@ function loadData() {
         {
             $(this).parent().show();
         }
-        if (loaded==order.length)
+        if (loaded===order.length)
         {
             $('#ProgressContainer').remove();
             loadData2();
@@ -654,7 +698,7 @@ function loadData() {
     });
 
     //if its in cache it might have already loaded.
-    if (loaded!=order.length) {
+    if (loaded!==order.length) {
         $('.championPortrait').each(function() {
             if (this.complete) {
                 $(this).trigger('load');
@@ -668,10 +712,13 @@ function loadData() {
 
 function loadData2() {
 
+    "use strict";//strict mode
+
     //the free2play button
     $('.free2play').click(function () {
-        $('.free2play').toggleClass('btn-success');
-        $('.free2play').toggleClass('btn-default');
+        var $free2play=$('.free2play');
+        $free2play.toggleClass('btn-success');
+        $free2play.toggleClass('btn-default');
         enableF2P = !enableF2P;
         updateFree2Play();
     });
@@ -680,7 +727,7 @@ function loadData2() {
     $('.roles button').click(function () {
         //get class
         var roleId = $(this).data('roleid');
-        var $roleBtnClass = $('.role_' + roleId);
+        //var $roleBtnClass = $('.role_' + roleId);
 
         //switch roles
         roles[roleId] = !roles[roleId];
@@ -710,7 +757,7 @@ function loadData2() {
         champsExcluded=[];
 
         var random=getRandomChampion([]);//no excluded champions
-        if (random==false)
+        if (random===false)
         {
             //something went wrong, no champions
             doingRandom=false;
@@ -718,12 +765,12 @@ function loadData2() {
             var notice=new PNotify({
                 title: 'No possible champions.',
                 text: 'Please enable at least 1 champion.',
-                opacity: .9,
+                opacity: 0.9,
                 type: 'error',
                 icon: 'glyphicon glyphicon-warning-sign',
                 nonblock: {
                     nonblock: true,
-                    nonblock_opacity: .2
+                    nonblock_opacity: 0.2
                 },
                 history: {
                     history: false
@@ -734,7 +781,7 @@ function loadData2() {
                 notice.remove();
             });
 
-            false;
+            return false;
         }
         randomChampId=random[0];
         var randomRole=random[1];
@@ -775,9 +822,9 @@ function loadData2() {
 
         //insert the champion at the correct location
         options[location] = randomChampId;
-        var html='';
+        var index,html='';
         for (index = 0; index <= location + 10; ++index) {
-            if (options[index]!=-1)
+            if (options[index]!==-1)
             {
                 html+=('<img src="' + champions[options[index]].iconSRC + '">');
             }
@@ -801,25 +848,28 @@ function loadData2() {
                 x: -(location) * 100 + $('#randomSelecterChild').width() / 2 + 400 - ((Math.random() * 70) + 15)
             }, 3000, 'cubic-bezier(.6,-.28,.48,1)', function () {
 
+                var $randomChampionDialog=$('.randomChampionDialog');
                 //set rotation
-                $('.randomChampionDialog').css('transform','perspective(550px) rotateY(360deg)');
+                $randomChampionDialog.css('transform','perspective(550px) rotateY(360deg)');
 
-                updateModal($('.randomChampionModal'),randomChamp,randomChampId,rolesPos[randomRole],totalOptions);
+                updateModal($randomChampionDialog,randomChamp,randomChampId,rolesPos[randomRole],totalOptions);
 
                 setTimeout(function () {
+                    var $randomChampionModal=$('.randomChampionModal');
+
                     adjustModalMaxHeightAndPosition();
                     $('.randomChampionModal').modal('show');
                     setTimeout(function () {
-                        modalLoreFit(false)
+                        modalLoreFit(false);
                     }, 200);
 
                     //sometimes above does not work, then use this one:
-                    $('.randomChampionModal').on('shown.bs.modal', function (e) {
+                    $randomChampionModal.on('shown.bs.modal', function () {
                         modalLoreFit(true);
                     });
 
                     //we can random again after the modal closes
-                    $('.randomChampionModal').on('hidden.bs.modal', function () {
+                    $randomChampionModal.on('hidden.bs.modal', function () {
                         doingRandom=false;
                     });
 
@@ -834,15 +884,17 @@ function loadData2() {
                             perspective: 550,
                             rotateX: 180
                         }, 1000);
-                    }, 1000)
-                }, 200)
-            })
+                    }, 1000);
+                }, 200);
+            });
         }, 200);
     });
 }
 
 function updateModal(divId, randomChamp,randomChampId,role,totalOptions)
 {
+    "use strict";//strict mode
+
     divId.find('.randomChampionModalTitle').html(randomChamp.name + ': ' + randomChamp.title);
     divId.find('.randomChampionModalRole').html(role);
     divId.find('.randomChampionModalLore p').html(randomChamp.description);
@@ -865,7 +917,7 @@ function updateModal(divId, randomChamp,randomChampId,role,totalOptions)
     //check if its a free 2 play champion that has been disabled
     if (enableF2P===true)//otherwise the champ would not have been chosen
     {
-        if (free2play.indexOf(randomChampId)!=-1)
+        if (free2play.indexOf(randomChampId)!==-1)
         {
             //okay, the champion is free2play, now lets see if its disabled
             if (championsDisabled[randomChampId]===true)
@@ -876,7 +928,7 @@ function updateModal(divId, randomChamp,randomChampId,role,totalOptions)
         }
     }
     //check if we have no other option to switch to
-    if (totalOptions==1)
+    if (totalOptions===1)
     {
         divId.find('.randomChampionNextButton').prop("disabled",true);
     }
@@ -884,16 +936,17 @@ function updateModal(divId, randomChamp,randomChampId,role,totalOptions)
 
 function updateProgress(loadProgress)
 {
+    "use strict";//strict mode
+
     loadingProgress+=loadProgress;
-    $("#loadingProgress").css('width',loadingProgress+'%')
+    $("#loadingProgress").css('width',loadingProgress+'%');
 }
 
 //knuth-shuffle
 function shuffle(array) {
-    var currentIndex = array.length
-        , temporaryValue
-        , randomIndex
-        ;
+    "use strict";//strict mode
+
+    var currentIndex = array.length, temporaryValue, randomIndex;
 
     // While there remain elements to shuffle...
     while (0 !== currentIndex) {
@@ -915,10 +968,12 @@ function shuffle(array) {
 function getRandomChampion(excluded)
 {
 
+    "use strict";//strict mode
+
     var $optionDivs=$('.toShow.notDisabled.showSearch, .toShow.disabled_f2p.showSearch');
 
     //check if we have options:
-    if ($optionDivs.length==0)
+    if ($optionDivs.length===0)
     {
         return false;
     }
@@ -934,7 +989,7 @@ function getRandomChampion(excluded)
         champId = $(this).data('championid');
 
         //check if not excluded
-        if (excluded.indexOf(champId)==-1)
+        if (excluded.indexOf(champId)===-1)
         {
             options.push(champId);
 
@@ -950,8 +1005,9 @@ function getRandomChampion(excluded)
             if (champPlayed[champId]<=leastPlayed)
             {
                 //go through all roles
+                var i;
                 for (i=0;i<5;++i) {
-                    if (rolesJSON[roleType][i].indexOf(champId) != -1)
+                    if (rolesJSON[roleType][i].indexOf(champId) !== -1)
                     {
                         realOptions[i].push(champId);
                     }
@@ -963,7 +1019,7 @@ function getRandomChampion(excluded)
     var rolesFiltered=roles.slice(0);//copy
 
     //count the amount of options
-    if ((realOptions[0].length+realOptions[1].length+realOptions[2].length+realOptions[3].length+realOptions[4].length)==0)
+    if ((realOptions[0].length+realOptions[1].length+realOptions[2].length+realOptions[3].length+realOptions[4].length)===0)
     {
         //something went wrong, we have no options!
         return false;
@@ -976,6 +1032,7 @@ function getRandomChampion(excluded)
     }
 
     //filter the roles where there is no champion for
+    var i;
     for (i=0;i<5;++i) {
         if (realOptions[i].length === 0)
         {
@@ -1003,14 +1060,16 @@ function getRandomChampion(excluded)
 
 function showFree2PlayError()
 {
+    "use strict";//strict mode
+
     var notice = new PNotify({
         title: 'Riot server error',
         text: 'Failed to get free to play data from riot. Data may be missing or out of date.',
-        opacity: .9,
+        opacity: 0.9,
         icon: 'glyphicon glyphicon-envelope',
         nonblock: {
             nonblock: true,
-            nonblock_opacity: .2
+            nonblock_opacity: 0.2
         },
         history: {
             history: false
@@ -1023,31 +1082,62 @@ function showFree2PlayError()
 }
 
 function searchFor(toSearch) {
+    "use strict";//strict mode
+
     var results = [];
     toSearch = trimString(toSearch); // trim it
     for(var i=0; i<order.length; i++) {
-            if(champions[order[i]].nameLower.indexOf(toSearch)!=-1) {
-                if(!itemExists(results, champions[order[i]])) results.push(order[i]);
+            if(champions[order[i]].nameLower.indexOf(toSearch)!==-1) {
+                if(!itemExists(results, champions[order[i]])) {
+                    results.push(order[i]);
+                }
             }
     }
     return results;
 }
 
 function trimString(s) {
+    "use strict";//strict mode
+
     var l=0, r=s.length -1;
-    while(l < s.length && s[l] == ' ') l++;
-    while(r > l && s[r] == ' ') r-=1;
+    while(l < s.length && s[l] === ' ')
+    {
+        l++;
+    }
+    while(r > l && s[r] === ' '){
+        r-=1;
+    }
     return s.substring(l, r+1);
 }
 
 function compareObjects(o1, o2) {
-    var k = '';
-    for(k in o1) if(o1[k] != o2[k]) return false;
-    for(k in o2) if(o1[k] != o2[k]) return false;
+    "use strict";//strict mode
+
+    var k;
+    for(k in o1) {
+        if(o1[k] != o2[k]) // jshint ignore:line
+        {
+            return false;
+        }
+    }
+    for(k in o2) {
+        if(o1[k] != o2[k])// jshint ignore:line
+        {
+            return false;
+        }
+    }
     return true;
 }
 
 function itemExists(haystack, needle) {
-    for(var i=0; i<haystack.length; i++) if(compareObjects(haystack[i], needle)) return true;
+    "use strict";//strict mode
+
+    for(var i=0; i<haystack.length; i++)
+    {
+        if(compareObjects(haystack[i], needle))
+        {
+            return true;
+        }
+    }
     return false;
 }
