@@ -29,6 +29,16 @@ module.exports = function (grunt) {
                     'js/extra/centerModal.js'],
                 dest: 'dist/<%= pkg.name %>.js'
             }
+        },  concat_css: {
+            options: {},
+            dist: {
+                src: ['bower_components/bootstrap/dist/css/bootstrap.min.css',
+                    'bower_components/bootstrap/dist/css/bootstrap-theme.min.css',
+                    'bower_components/pnotify/pnotify.core.css',
+                    'bower_components/pnotify/pnotify.nonblock.css',
+                    "css/*.css"],
+                dest: "dist/<%= pkg.name %>.css"
+            }
         },
         uglify: {
             options: {
@@ -41,6 +51,17 @@ module.exports = function (grunt) {
             modernizr: {
                 files: {
                     'dist/modernizr.min.js': 'bower_components/modernizr/modernizr.js'
+                }
+            }
+        },
+        cssmin: {
+            options: {
+                shorthandCompacting: false,
+                roundingPrecision: -1
+            },
+            target: {
+                files: {
+                    'dist/ChampionPick.min.css': ['dist/ChampionPick.css']
                 }
             }
         },
@@ -78,11 +99,13 @@ module.exports = function (grunt) {
 
     // These plugins provide necessary tasks.
     grunt.loadNpmTasks('grunt-contrib-concat');
+    grunt.loadNpmTasks('grunt-concat-css');
     grunt.loadNpmTasks('grunt-contrib-uglify');
+    grunt.loadNpmTasks('grunt-contrib-cssmin');
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-contrib-watch');
 
     // Default task.
-    grunt.registerTask('default', ['jshint', 'concat', 'uglify']);
+    grunt.registerTask('default', ['jshint', 'concat','concat_css', 'uglify','cssmin']);
 
 };

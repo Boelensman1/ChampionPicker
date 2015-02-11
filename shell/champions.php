@@ -228,17 +228,17 @@ class Champion
         //download the images
         echo_console($this->name . ' icon', 2);
         if (!file_exists(BASEPATH.$this->iconSRC) || $force == true) {
-            download($this->iconURL, BASEPATH.$this->iconSRC,70);
+            download($this->iconURL, BASEPATH.$this->iconSRC,70,[70,70]);
         }
 
         echo_console($this->name . ' splash', 2);
         if (!file_exists(BASEPATH.$this->splashSRC) || $force == true) {
-            download($this->splashURL, BASEPATH.$this->splashSRC,70);
+            download($this->splashURL, BASEPATH.$this->splashSRC,80,[550,550 * 0.590]);//0.590 is aspect ratio of splashes
         }
     }
 }
 
-function download($url, $filename = null,$quality=null)
+function download($url, $filename = null,$quality=null,$size=null)
 {
     $return = @file_get_contents($url);
     //error
@@ -258,9 +258,21 @@ function download($url, $filename = null,$quality=null)
     return file_put_contents($filename, $return);
     }
     else{
-        //its an image, lets first reduce the filesize
-        $return=imagecreatefromstring($return);
-        imagejpeg($return, $filename, $quality);
+        //we want to reduce the quality
+        if ($size===null)
+        {
+            $return=imagecreatefromstring($return);
+            imagejpeg($return, $filename, $quality);
+        }
+        else
+        {
+            //reduce the size
+            list($width, $height) = getimagesizefromstring($return);
+            $src = imagecreatefromstring($return);
+            $dst = imagecreatetruecolor($size[0], $size[1]);
+            imagecopyresampled($dst, $src, 0, 0, 0, 0, $size[0], $size[1], $width, $height);
+            imagejpeg($dst, $filename, $quality);
+        }
         return 1;
     }
 }
