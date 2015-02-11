@@ -31,7 +31,7 @@
     overflow:hidden;
     height:16px;
     max-width: 120px; /*width of image*/
-    margin-left: 0px !important;
+    margin-left: 0 !important;
 }
 
 /*
@@ -74,10 +74,10 @@
 }
 #randomSelecterChild
 {
-    padding: 0px;
+    padding: 0;
     position: absolute;
-    right: 0px;
-    left: 0px;
+    right: 0;
+    left: 0;
     height: 100px;
     overflow:hidden;
 }
@@ -124,9 +124,7 @@ div {
     bottom: 0;
     right: 0;
     position: absolute;
-    background:transparent;
     background-size: 100%;
-    background-repeat: no-repeat;
     filter: alpha(opacity=40); /* For IE8 and earlier */
 
 
@@ -135,28 +133,23 @@ div {
     -webkit-backface-visibility: hidden;
     -webkit-background-clip: padding-box;
     background-clip: padding-box;
-    background-color: rgb(255, 255, 255);
-    border-bottom-color: rgba(0, 0, 0, 0.2);
-    border-bottom-left-radius: 6px;
-    border-bottom-right-radius: 6px;
-    border-bottom-style: solid;
-    border-bottom-width: 1px;
-    border-image-outset: 0px;
+    background: rgb(255, 255, 255) no-repeat;
+
+    /*make the background fit the container*/
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='images/homeBg.jpg',     sizingMethod='scale');
+    -ms-filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='images/homeBg', sizingMethod='scale');
+
+    border-image-outset: 0;
     border-image-repeat: stretch;
     border-image-slice: 100%;
     border-image-source: none;
     border-image-width: 1;
-    border-left-color: rgba(0, 0, 0, 0.2);
-    border-left-style: solid;
-    border-left-width: 1px;
-    border-right-color: rgba(0, 0, 0, 0.2);
-    border-right-style: solid;
-    border-right-width: 1px;
-    border-top-color: rgba(0, 0, 0, 0.2);
-    border-top-left-radius: 6px;
-    border-top-right-radius: 6px;
-    border-top-style: solid;
-    border-top-width: 1px;
+    border-radius: 6px;
+    border: 1px solid rgba(0, 0, 0, 0.2);
     box-sizing: border-box;
     display: block;
 }
@@ -209,8 +202,8 @@ div {
 
 .progress
 {
-    padding-left: 0px;
-    padding-right: 0px;
+    padding-left: 0;
+    padding-right: 0;
 }
 
 .btn-20

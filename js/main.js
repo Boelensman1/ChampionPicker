@@ -32,27 +32,47 @@ var region='EUW';
 //set pnotify styling and options
 /* global PNotify */
 PNotify.prototype.options.styling = "bootstrap3";
-PNotify.prototype.options.delay = 3000;
+PNotify.prototype.options.delay = 3000;//3 seconds
 
 //init easy storage
-var ns = $.initNamespaceStorage('championPicker');
-var storage = $.localStorage;
+//var ns = $.initNamespaceStorage('championPicker');
+//check if we support localstorage
+if (Modernizr.localstorage) {
+    var storage = $.localStorage;
+}
+else
+{
+    //no, lets do cookies
+    var storage = $.cookieStorage;
+}
+if (storage.isSet('championsDisabled'))
+{
 championsDisabled = storage.get('championsDisabled');
+}
+else
+{
+    championsDisabled=null;
+}
 
-roleType = storage.get('roleType');
-if (roleType === null) {
+if (storage.isSet('roleType')) {
+    roleType = storage.get('roleType');
+} else {
     roleType = 2;
     storage.set('roleType', roleType);
 }
+
 $('.roleType').html(roleTypeOptions[roleType] + ' <span class="caret"></span>');
 
 
-enableF2P = storage.get('enableF2P');
-if (enableF2P===null)
-{
-    enableF2P=true;
-    storage.set('enableF2P',enableF2P);
+if (storage.isSet('enableF2P')) {
+
+    enableF2P = storage.get('enableF2P');
+} else {
+    enableF2P = true;
+    storage.set('enableF2P', enableF2P);
 }
+
+
 if (!enableF2P) {
     var $free2play=$('.free2play');
     $free2play.toggleClass('btn-success');
@@ -60,61 +80,63 @@ if (!enableF2P) {
 }
 
 //load from storage (or from JSON)
-champions = storage.get('champions');
-order = storage.get('order');
-free2play = storage.get('free2play');
-rolesJSON=storage.get('rolesJSON');
+if (storage.isSet('champions')) {
+    champions = storage.get('champions');
 
-if (champions === null) {
+    loading--;
+    updateProgress(2);
+    if (!loading)//check if we are loading to load everything
+    {
+        loadData();
+    }
+} else {
     //load the champion data
     loadChampionData();
 }
-else {
+
+if (storage.isSet('order')) {
+    order = storage.get('order');
+
     loading--;
     updateProgress(2);
     if (!loading)//check if we are loading to load everything
     {
         loadData();
     }
-}
-
-if (order === null) {
+} else {
     loadOrderData();
 
 }
-else {
+if (storage.isSet('free2play')) {
+    free2play = storage.get('free2play');
+
     loading--;
     updateProgress(2);
     if (!loading)//check if we are loading to load everything
     {
         loadData();
     }
-}
-
-if (free2play === null) {
+} else {
     //load f2p
     loadF2PData();
 }
-else {
-    loading--;
-    updateProgress(2);
-    if (!loading)//check if we are loading to load everything
-    {
-        loadData();
-    }
-}
 
-if (rolesJSON === null) {
-    //load f2p
-    loadRoleData();
-}
-else {
-    loading-=(roleTypeOptions.length-1);
-    updateProgress(2*(roleTypeOptions.length-1));
+if (storage.isSet('rolesJSON')) {
+    rolesJSON = storage.get('rolesJSON');
+
+    loading -= (roleTypeOptions.length - 1);
+    updateProgress(2 * (roleTypeOptions.length - 1));
     if (!loading)//check if we are loading to load everything
     {
         loadData();
     }
+} else {
+
+    //init rolesJSON
+    rolesJSON=[];
+
+    //load roles
+    loadRoleData();
 }
 
 $(function () {
@@ -225,9 +247,11 @@ function champTextFit() {
     "use strict";//strict mode
 
     var index,$label;
+    //numbers are where bootstrap swithes
     if ($(window).width() > 992 || $(window).width() < 512) {
         for (index = 0; index < largeNames.length; ++index) {
             $label = $('#champ' + largeNames[index] + ' .championLabel');
+            //0.6 and 11 are semi-randomly chosen but seem to fit
             $label.fitText(0.6 * ($label.html().length) / 11);
         }
     } else {
@@ -241,6 +265,7 @@ $(window).on("debouncedresize", function () {
     "use strict";//strict mode
 
     champTextFit();
+    //320=where bootstrap swtiches
     if ($(window).height() >= 320) {
         adjustModalMaxHeightAndPosition();
     }
@@ -253,14 +278,17 @@ function modalLoreFit(animate) {
     var width = $('.randomChampionDialog').width();
     var height = width * 0.590;//aspect ratio of splashes
     var $randomChampionModalLore=$('.randomChampionModalLore');
+    var $randomChampionModalLinks=$('.randomChampionModalLinks');
+    var $randomChampionModalLinks2=$('.randomChampionModalLinks2');
+
     height -= 110;//height of title
     height -= 50;//height of bottom button
 
     if ($(window).width() >= 450) {
         //update visibility
         $randomChampionModalLore.show();
-        $('.randomChampionModalLinks').show();
-        $('.randomChampionModalLinks2').hide();
+        $randomChampionModalLinks.show();
+        $randomChampionModalLinks2.hide();
 
         height -= 70;//height of buttons
         if (animate) {
@@ -275,16 +303,16 @@ function modalLoreFit(animate) {
     else {
         //update visibility
         $randomChampionModalLore.hide();
-        $('.randomChampionModalLinks').hide();
-        $('.randomChampionModalLinks2').show();
+        $randomChampionModalLinks.hide();
+        $randomChampionModalLinks2.show();
 
         height -= 40;//margins
         if (animate) {
-            $('.randomChampionModalLinks2').transition({height: (height) + 'px'},
+            $randomChampionModalLinks2.transition({height: (height) + 'px'},
                 adjustModalMaxHeightAndPosition);
         }
         else {
-            $('.randomChampionModalLinks2').height(height);
+            $randomChampionModalLinks2.height(height);
             adjustModalMaxHeightAndPosition();
         }
     }
@@ -360,6 +388,7 @@ function loadRole(rolesJson) {
     rolesJSON[this.index] = rolesJson; // jshint ignore:line
     loading--;
     updateProgress(2);
+
     if (!loading)//check if we are loading to load everything
     {
         loadData();
@@ -369,9 +398,8 @@ function loadRole(rolesJson) {
 function loadF2PData() {
     "use strict";//strict mode
 
-    //load free2play
+    //get free2play
     $.getJSON(free2playURL, function (free2playJSON) {
-        //check for error:
         if (free2playJSON.errors[region]===true)
         {
             if ((DOMReady===true) && (free2playError===false))
@@ -431,6 +459,10 @@ function loadF2PData() {
 function loadData() {
     "use strict";//strict mode
 
+    //save the roles
+    storage.set('rolesJSON',rolesJSON);
+
+
     //reload the data after 2 seconds
     setTimeout(function()
     {
@@ -441,8 +473,6 @@ function loadData() {
     },2000);
 
 
-    //save the roledata
-    storage.set('rolesJSON',rolesJSON);
     var i,index,divId,html='';
     for (i = 0; i < order.length; ++i) {
         index = order[i];
@@ -556,7 +586,7 @@ function loadData() {
         //check if we are not mid animation.
         if (doingNext===true)
         {
-            return;
+            return false;
         }
 
         doingNext=true;
@@ -682,7 +712,8 @@ function loadData() {
     //loading
     var loaded=0;
     var loadedPlus=(1/order.length)*(100-7*2);
-    $('.championPortrait').on('load',function()
+    var $championPortrait=$('.championPortrait');
+    $championPortrait.on('load',function()
     {
         loaded++;
         updateProgress(loadedPlus);
@@ -699,7 +730,7 @@ function loadData() {
 
     //if its in cache it might have already loaded.
     if (loaded!==order.length) {
-        $('.championPortrait').each(function() {
+        $championPortrait.each(function() {
             if (this.complete) {
                 $(this).trigger('load');
             }
@@ -858,7 +889,7 @@ function loadData2() {
                     var $randomChampionModal=$('.randomChampionModal');
 
                     adjustModalMaxHeightAndPosition();
-                    $('.randomChampionModal').modal('show');
+                    $randomChampionModal.modal('show');
                     setTimeout(function () {
                         modalLoreFit(false);
                     }, 200);
@@ -888,6 +919,8 @@ function loadData2() {
                 }, 200);
             });
         }, 200);
+        //false so no extra events get triggered
+        return false;
     });
 }
 
@@ -1114,18 +1147,22 @@ function compareObjects(o1, o2) {
     "use strict";//strict mode
 
     var k;
+    // jshint ignore:start
     for(k in o1) {
-        if(o1[k] != o2[k]) // jshint ignore:line
+        //noinspection JSUnfilteredForInLoop
+        if(o1[k] != o2[k])
         {
             return false;
         }
     }
     for(k in o2) {
-        if(o1[k] != o2[k])// jshint ignore:line
+        //noinspection JSUnfilteredForInLoop
+        if(o1[k] != o2[k])
         {
             return false;
         }
     }
+    // jshint ignore:end
     return true;
 }
 

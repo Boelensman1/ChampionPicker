@@ -261,6 +261,7 @@ function download($url, $filename = null,$quality=null)
         //its an image, lets first reduce the filesize
         $return=imagecreatefromstring($return);
         imagejpeg($return, $filename, $quality);
+        return 1;
     }
 }
 
