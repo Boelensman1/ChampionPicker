@@ -1,5 +1,7 @@
 //init all variables
+/*jslint latedef:false*/
 /*global adjustModalMaxHeightAndPosition */
+/*global Modernizr */
 var roles = [false, false, false, false, false];
 var roleTypeOptions = ['All', 'Loose', 'Normal', 'Strict'];
 var roleType = 2;
@@ -161,9 +163,6 @@ $(function () {
 
 function reloadActive(update) {
     "use strict";//strict mode
-
-    var toHide = [];
-    var toShow = [];
 
     var $championsli=$("#champions").find("li");
     var $btnRole=$('.btn-role');
@@ -1143,26 +1142,25 @@ function trimString(s) {
     return s.substring(l, r+1);
 }
 
+
 function compareObjects(o1, o2) {
     "use strict";//strict mode
 
     var k;
-    // jshint ignore:start
     for(k in o1) {
         //noinspection JSUnfilteredForInLoop
-        if(o1[k] != o2[k])
+        if(o1[k] !== o2[k])
         {
             return false;
         }
     }
     for(k in o2) {
         //noinspection JSUnfilteredForInLoop
-        if(o1[k] != o2[k])
+        if(o1[k] !== o2[k])
         {
             return false;
         }
     }
-    // jshint ignore:end
     return true;
 }
 
