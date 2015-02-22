@@ -1,4 +1,4 @@
-/*! ChampionPick - v0.1.0 - 2015-02-11
+/*! ChampionPick - v0.1.0 - 2015-02-13
 * https://github.com/Boelensman1/ChampionPicker.github.io
 * Copyright (c) 2015 ; Licensed  */
 /*!
@@ -8,6 +8,137 @@
  */
 if("undefined"==typeof jQuery)throw new Error("Bootstrap's JavaScript requires jQuery");+function(a){"use strict";var b=a.fn.jquery.split(" ")[0].split(".");if(b[0]<2&&b[1]<9||1==b[0]&&9==b[1]&&b[2]<1)throw new Error("Bootstrap's JavaScript requires jQuery version 1.9.1 or higher")}(jQuery),+function(a){"use strict";function b(){var a=document.createElement("bootstrap"),b={WebkitTransition:"webkitTransitionEnd",MozTransition:"transitionend",OTransition:"oTransitionEnd otransitionend",transition:"transitionend"};for(var c in b)if(void 0!==a.style[c])return{end:b[c]};return!1}a.fn.emulateTransitionEnd=function(b){var c=!1,d=this;a(this).one("bsTransitionEnd",function(){c=!0});var e=function(){c||a(d).trigger(a.support.transition.end)};return setTimeout(e,b),this},a(function(){a.support.transition=b(),a.support.transition&&(a.event.special.bsTransitionEnd={bindType:a.support.transition.end,delegateType:a.support.transition.end,handle:function(b){return a(b.target).is(this)?b.handleObj.handler.apply(this,arguments):void 0}})})}(jQuery),+function(a){"use strict";function b(b){return this.each(function(){var c=a(this),e=c.data("bs.alert");e||c.data("bs.alert",e=new d(this)),"string"==typeof b&&e[b].call(c)})}var c='[data-dismiss="alert"]',d=function(b){a(b).on("click",c,this.close)};d.VERSION="3.3.2",d.TRANSITION_DURATION=150,d.prototype.close=function(b){function c(){g.detach().trigger("closed.bs.alert").remove()}var e=a(this),f=e.attr("data-target");f||(f=e.attr("href"),f=f&&f.replace(/.*(?=#[^\s]*$)/,""));var g=a(f);b&&b.preventDefault(),g.length||(g=e.closest(".alert")),g.trigger(b=a.Event("close.bs.alert")),b.isDefaultPrevented()||(g.removeClass("in"),a.support.transition&&g.hasClass("fade")?g.one("bsTransitionEnd",c).emulateTransitionEnd(d.TRANSITION_DURATION):c())};var e=a.fn.alert;a.fn.alert=b,a.fn.alert.Constructor=d,a.fn.alert.noConflict=function(){return a.fn.alert=e,this},a(document).on("click.bs.alert.data-api",c,d.prototype.close)}(jQuery),+function(a){"use strict";function b(b){return this.each(function(){var d=a(this),e=d.data("bs.button"),f="object"==typeof b&&b;e||d.data("bs.button",e=new c(this,f)),"toggle"==b?e.toggle():b&&e.setState(b)})}var c=function(b,d){this.$element=a(b),this.options=a.extend({},c.DEFAULTS,d),this.isLoading=!1};c.VERSION="3.3.2",c.DEFAULTS={loadingText:"loading..."},c.prototype.setState=function(b){var c="disabled",d=this.$element,e=d.is("input")?"val":"html",f=d.data();b+="Text",null==f.resetText&&d.data("resetText",d[e]()),setTimeout(a.proxy(function(){d[e](null==f[b]?this.options[b]:f[b]),"loadingText"==b?(this.isLoading=!0,d.addClass(c).attr(c,c)):this.isLoading&&(this.isLoading=!1,d.removeClass(c).removeAttr(c))},this),0)},c.prototype.toggle=function(){var a=!0,b=this.$element.closest('[data-toggle="buttons"]');if(b.length){var c=this.$element.find("input");"radio"==c.prop("type")&&(c.prop("checked")&&this.$element.hasClass("active")?a=!1:b.find(".active").removeClass("active")),a&&c.prop("checked",!this.$element.hasClass("active")).trigger("change")}else this.$element.attr("aria-pressed",!this.$element.hasClass("active"));a&&this.$element.toggleClass("active")};var d=a.fn.button;a.fn.button=b,a.fn.button.Constructor=c,a.fn.button.noConflict=function(){return a.fn.button=d,this},a(document).on("click.bs.button.data-api",'[data-toggle^="button"]',function(c){var d=a(c.target);d.hasClass("btn")||(d=d.closest(".btn")),b.call(d,"toggle"),c.preventDefault()}).on("focus.bs.button.data-api blur.bs.button.data-api",'[data-toggle^="button"]',function(b){a(b.target).closest(".btn").toggleClass("focus",/^focus(in)?$/.test(b.type))})}(jQuery),+function(a){"use strict";function b(b){return this.each(function(){var d=a(this),e=d.data("bs.carousel"),f=a.extend({},c.DEFAULTS,d.data(),"object"==typeof b&&b),g="string"==typeof b?b:f.slide;e||d.data("bs.carousel",e=new c(this,f)),"number"==typeof b?e.to(b):g?e[g]():f.interval&&e.pause().cycle()})}var c=function(b,c){this.$element=a(b),this.$indicators=this.$element.find(".carousel-indicators"),this.options=c,this.paused=this.sliding=this.interval=this.$active=this.$items=null,this.options.keyboard&&this.$element.on("keydown.bs.carousel",a.proxy(this.keydown,this)),"hover"==this.options.pause&&!("ontouchstart"in document.documentElement)&&this.$element.on("mouseenter.bs.carousel",a.proxy(this.pause,this)).on("mouseleave.bs.carousel",a.proxy(this.cycle,this))};c.VERSION="3.3.2",c.TRANSITION_DURATION=600,c.DEFAULTS={interval:5e3,pause:"hover",wrap:!0,keyboard:!0},c.prototype.keydown=function(a){if(!/input|textarea/i.test(a.target.tagName)){switch(a.which){case 37:this.prev();break;case 39:this.next();break;default:return}a.preventDefault()}},c.prototype.cycle=function(b){return b||(this.paused=!1),this.interval&&clearInterval(this.interval),this.options.interval&&!this.paused&&(this.interval=setInterval(a.proxy(this.next,this),this.options.interval)),this},c.prototype.getItemIndex=function(a){return this.$items=a.parent().children(".item"),this.$items.index(a||this.$active)},c.prototype.getItemForDirection=function(a,b){var c=this.getItemIndex(b),d="prev"==a&&0===c||"next"==a&&c==this.$items.length-1;if(d&&!this.options.wrap)return b;var e="prev"==a?-1:1,f=(c+e)%this.$items.length;return this.$items.eq(f)},c.prototype.to=function(a){var b=this,c=this.getItemIndex(this.$active=this.$element.find(".item.active"));return a>this.$items.length-1||0>a?void 0:this.sliding?this.$element.one("slid.bs.carousel",function(){b.to(a)}):c==a?this.pause().cycle():this.slide(a>c?"next":"prev",this.$items.eq(a))},c.prototype.pause=function(b){return b||(this.paused=!0),this.$element.find(".next, .prev").length&&a.support.transition&&(this.$element.trigger(a.support.transition.end),this.cycle(!0)),this.interval=clearInterval(this.interval),this},c.prototype.next=function(){return this.sliding?void 0:this.slide("next")},c.prototype.prev=function(){return this.sliding?void 0:this.slide("prev")},c.prototype.slide=function(b,d){var e=this.$element.find(".item.active"),f=d||this.getItemForDirection(b,e),g=this.interval,h="next"==b?"left":"right",i=this;if(f.hasClass("active"))return this.sliding=!1;var j=f[0],k=a.Event("slide.bs.carousel",{relatedTarget:j,direction:h});if(this.$element.trigger(k),!k.isDefaultPrevented()){if(this.sliding=!0,g&&this.pause(),this.$indicators.length){this.$indicators.find(".active").removeClass("active");var l=a(this.$indicators.children()[this.getItemIndex(f)]);l&&l.addClass("active")}var m=a.Event("slid.bs.carousel",{relatedTarget:j,direction:h});return a.support.transition&&this.$element.hasClass("slide")?(f.addClass(b),f[0].offsetWidth,e.addClass(h),f.addClass(h),e.one("bsTransitionEnd",function(){f.removeClass([b,h].join(" ")).addClass("active"),e.removeClass(["active",h].join(" ")),i.sliding=!1,setTimeout(function(){i.$element.trigger(m)},0)}).emulateTransitionEnd(c.TRANSITION_DURATION)):(e.removeClass("active"),f.addClass("active"),this.sliding=!1,this.$element.trigger(m)),g&&this.cycle(),this}};var d=a.fn.carousel;a.fn.carousel=b,a.fn.carousel.Constructor=c,a.fn.carousel.noConflict=function(){return a.fn.carousel=d,this};var e=function(c){var d,e=a(this),f=a(e.attr("data-target")||(d=e.attr("href"))&&d.replace(/.*(?=#[^\s]+$)/,""));if(f.hasClass("carousel")){var g=a.extend({},f.data(),e.data()),h=e.attr("data-slide-to");h&&(g.interval=!1),b.call(f,g),h&&f.data("bs.carousel").to(h),c.preventDefault()}};a(document).on("click.bs.carousel.data-api","[data-slide]",e).on("click.bs.carousel.data-api","[data-slide-to]",e),a(window).on("load",function(){a('[data-ride="carousel"]').each(function(){var c=a(this);b.call(c,c.data())})})}(jQuery),+function(a){"use strict";function b(b){var c,d=b.attr("data-target")||(c=b.attr("href"))&&c.replace(/.*(?=#[^\s]+$)/,"");return a(d)}function c(b){return this.each(function(){var c=a(this),e=c.data("bs.collapse"),f=a.extend({},d.DEFAULTS,c.data(),"object"==typeof b&&b);!e&&f.toggle&&"show"==b&&(f.toggle=!1),e||c.data("bs.collapse",e=new d(this,f)),"string"==typeof b&&e[b]()})}var d=function(b,c){this.$element=a(b),this.options=a.extend({},d.DEFAULTS,c),this.$trigger=a(this.options.trigger).filter('[href="#'+b.id+'"], [data-target="#'+b.id+'"]'),this.transitioning=null,this.options.parent?this.$parent=this.getParent():this.addAriaAndCollapsedClass(this.$element,this.$trigger),this.options.toggle&&this.toggle()};d.VERSION="3.3.2",d.TRANSITION_DURATION=350,d.DEFAULTS={toggle:!0,trigger:'[data-toggle="collapse"]'},d.prototype.dimension=function(){var a=this.$element.hasClass("width");return a?"width":"height"},d.prototype.show=function(){if(!this.transitioning&&!this.$element.hasClass("in")){var b,e=this.$parent&&this.$parent.children(".panel").children(".in, .collapsing");if(!(e&&e.length&&(b=e.data("bs.collapse"),b&&b.transitioning))){var f=a.Event("show.bs.collapse");if(this.$element.trigger(f),!f.isDefaultPrevented()){e&&e.length&&(c.call(e,"hide"),b||e.data("bs.collapse",null));var g=this.dimension();this.$element.removeClass("collapse").addClass("collapsing")[g](0).attr("aria-expanded",!0),this.$trigger.removeClass("collapsed").attr("aria-expanded",!0),this.transitioning=1;var h=function(){this.$element.removeClass("collapsing").addClass("collapse in")[g](""),this.transitioning=0,this.$element.trigger("shown.bs.collapse")};if(!a.support.transition)return h.call(this);var i=a.camelCase(["scroll",g].join("-"));this.$element.one("bsTransitionEnd",a.proxy(h,this)).emulateTransitionEnd(d.TRANSITION_DURATION)[g](this.$element[0][i])}}}},d.prototype.hide=function(){if(!this.transitioning&&this.$element.hasClass("in")){var b=a.Event("hide.bs.collapse");if(this.$element.trigger(b),!b.isDefaultPrevented()){var c=this.dimension();this.$element[c](this.$element[c]())[0].offsetHeight,this.$element.addClass("collapsing").removeClass("collapse in").attr("aria-expanded",!1),this.$trigger.addClass("collapsed").attr("aria-expanded",!1),this.transitioning=1;var e=function(){this.transitioning=0,this.$element.removeClass("collapsing").addClass("collapse").trigger("hidden.bs.collapse")};return a.support.transition?void this.$element[c](0).one("bsTransitionEnd",a.proxy(e,this)).emulateTransitionEnd(d.TRANSITION_DURATION):e.call(this)}}},d.prototype.toggle=function(){this[this.$element.hasClass("in")?"hide":"show"]()},d.prototype.getParent=function(){return a(this.options.parent).find('[data-toggle="collapse"][data-parent="'+this.options.parent+'"]').each(a.proxy(function(c,d){var e=a(d);this.addAriaAndCollapsedClass(b(e),e)},this)).end()},d.prototype.addAriaAndCollapsedClass=function(a,b){var c=a.hasClass("in");a.attr("aria-expanded",c),b.toggleClass("collapsed",!c).attr("aria-expanded",c)};var e=a.fn.collapse;a.fn.collapse=c,a.fn.collapse.Constructor=d,a.fn.collapse.noConflict=function(){return a.fn.collapse=e,this},a(document).on("click.bs.collapse.data-api",'[data-toggle="collapse"]',function(d){var e=a(this);e.attr("data-target")||d.preventDefault();var f=b(e),g=f.data("bs.collapse"),h=g?"toggle":a.extend({},e.data(),{trigger:this});c.call(f,h)})}(jQuery),+function(a){"use strict";function b(b){b&&3===b.which||(a(e).remove(),a(f).each(function(){var d=a(this),e=c(d),f={relatedTarget:this};e.hasClass("open")&&(e.trigger(b=a.Event("hide.bs.dropdown",f)),b.isDefaultPrevented()||(d.attr("aria-expanded","false"),e.removeClass("open").trigger("hidden.bs.dropdown",f)))}))}function c(b){var c=b.attr("data-target");c||(c=b.attr("href"),c=c&&/#[A-Za-z]/.test(c)&&c.replace(/.*(?=#[^\s]*$)/,""));var d=c&&a(c);return d&&d.length?d:b.parent()}function d(b){return this.each(function(){var c=a(this),d=c.data("bs.dropdown");d||c.data("bs.dropdown",d=new g(this)),"string"==typeof b&&d[b].call(c)})}var e=".dropdown-backdrop",f='[data-toggle="dropdown"]',g=function(b){a(b).on("click.bs.dropdown",this.toggle)};g.VERSION="3.3.2",g.prototype.toggle=function(d){var e=a(this);if(!e.is(".disabled, :disabled")){var f=c(e),g=f.hasClass("open");if(b(),!g){"ontouchstart"in document.documentElement&&!f.closest(".navbar-nav").length&&a('<div class="dropdown-backdrop"/>').insertAfter(a(this)).on("click",b);var h={relatedTarget:this};if(f.trigger(d=a.Event("show.bs.dropdown",h)),d.isDefaultPrevented())return;e.trigger("focus").attr("aria-expanded","true"),f.toggleClass("open").trigger("shown.bs.dropdown",h)}return!1}},g.prototype.keydown=function(b){if(/(38|40|27|32)/.test(b.which)&&!/input|textarea/i.test(b.target.tagName)){var d=a(this);if(b.preventDefault(),b.stopPropagation(),!d.is(".disabled, :disabled")){var e=c(d),g=e.hasClass("open");if(!g&&27!=b.which||g&&27==b.which)return 27==b.which&&e.find(f).trigger("focus"),d.trigger("click");var h=" li:not(.divider):visible a",i=e.find('[role="menu"]'+h+', [role="listbox"]'+h);if(i.length){var j=i.index(b.target);38==b.which&&j>0&&j--,40==b.which&&j<i.length-1&&j++,~j||(j=0),i.eq(j).trigger("focus")}}}};var h=a.fn.dropdown;a.fn.dropdown=d,a.fn.dropdown.Constructor=g,a.fn.dropdown.noConflict=function(){return a.fn.dropdown=h,this},a(document).on("click.bs.dropdown.data-api",b).on("click.bs.dropdown.data-api",".dropdown form",function(a){a.stopPropagation()}).on("click.bs.dropdown.data-api",f,g.prototype.toggle).on("keydown.bs.dropdown.data-api",f,g.prototype.keydown).on("keydown.bs.dropdown.data-api",'[role="menu"]',g.prototype.keydown).on("keydown.bs.dropdown.data-api",'[role="listbox"]',g.prototype.keydown)}(jQuery),+function(a){"use strict";function b(b,d){return this.each(function(){var e=a(this),f=e.data("bs.modal"),g=a.extend({},c.DEFAULTS,e.data(),"object"==typeof b&&b);f||e.data("bs.modal",f=new c(this,g)),"string"==typeof b?f[b](d):g.show&&f.show(d)})}var c=function(b,c){this.options=c,this.$body=a(document.body),this.$element=a(b),this.$backdrop=this.isShown=null,this.scrollbarWidth=0,this.options.remote&&this.$element.find(".modal-content").load(this.options.remote,a.proxy(function(){this.$element.trigger("loaded.bs.modal")},this))};c.VERSION="3.3.2",c.TRANSITION_DURATION=300,c.BACKDROP_TRANSITION_DURATION=150,c.DEFAULTS={backdrop:!0,keyboard:!0,show:!0},c.prototype.toggle=function(a){return this.isShown?this.hide():this.show(a)},c.prototype.show=function(b){var d=this,e=a.Event("show.bs.modal",{relatedTarget:b});this.$element.trigger(e),this.isShown||e.isDefaultPrevented()||(this.isShown=!0,this.checkScrollbar(),this.setScrollbar(),this.$body.addClass("modal-open"),this.escape(),this.resize(),this.$element.on("click.dismiss.bs.modal",'[data-dismiss="modal"]',a.proxy(this.hide,this)),this.backdrop(function(){var e=a.support.transition&&d.$element.hasClass("fade");d.$element.parent().length||d.$element.appendTo(d.$body),d.$element.show().scrollTop(0),d.options.backdrop&&d.adjustBackdrop(),d.adjustDialog(),e&&d.$element[0].offsetWidth,d.$element.addClass("in").attr("aria-hidden",!1),d.enforceFocus();var f=a.Event("shown.bs.modal",{relatedTarget:b});e?d.$element.find(".modal-dialog").one("bsTransitionEnd",function(){d.$element.trigger("focus").trigger(f)}).emulateTransitionEnd(c.TRANSITION_DURATION):d.$element.trigger("focus").trigger(f)}))},c.prototype.hide=function(b){b&&b.preventDefault(),b=a.Event("hide.bs.modal"),this.$element.trigger(b),this.isShown&&!b.isDefaultPrevented()&&(this.isShown=!1,this.escape(),this.resize(),a(document).off("focusin.bs.modal"),this.$element.removeClass("in").attr("aria-hidden",!0).off("click.dismiss.bs.modal"),a.support.transition&&this.$element.hasClass("fade")?this.$element.one("bsTransitionEnd",a.proxy(this.hideModal,this)).emulateTransitionEnd(c.TRANSITION_DURATION):this.hideModal())},c.prototype.enforceFocus=function(){a(document).off("focusin.bs.modal").on("focusin.bs.modal",a.proxy(function(a){this.$element[0]===a.target||this.$element.has(a.target).length||this.$element.trigger("focus")},this))},c.prototype.escape=function(){this.isShown&&this.options.keyboard?this.$element.on("keydown.dismiss.bs.modal",a.proxy(function(a){27==a.which&&this.hide()},this)):this.isShown||this.$element.off("keydown.dismiss.bs.modal")},c.prototype.resize=function(){this.isShown?a(window).on("resize.bs.modal",a.proxy(this.handleUpdate,this)):a(window).off("resize.bs.modal")},c.prototype.hideModal=function(){var a=this;this.$element.hide(),this.backdrop(function(){a.$body.removeClass("modal-open"),a.resetAdjustments(),a.resetScrollbar(),a.$element.trigger("hidden.bs.modal")})},c.prototype.removeBackdrop=function(){this.$backdrop&&this.$backdrop.remove(),this.$backdrop=null},c.prototype.backdrop=function(b){var d=this,e=this.$element.hasClass("fade")?"fade":"";if(this.isShown&&this.options.backdrop){var f=a.support.transition&&e;if(this.$backdrop=a('<div class="modal-backdrop '+e+'" />').prependTo(this.$element).on("click.dismiss.bs.modal",a.proxy(function(a){a.target===a.currentTarget&&("static"==this.options.backdrop?this.$element[0].focus.call(this.$element[0]):this.hide.call(this))},this)),f&&this.$backdrop[0].offsetWidth,this.$backdrop.addClass("in"),!b)return;f?this.$backdrop.one("bsTransitionEnd",b).emulateTransitionEnd(c.BACKDROP_TRANSITION_DURATION):b()}else if(!this.isShown&&this.$backdrop){this.$backdrop.removeClass("in");var g=function(){d.removeBackdrop(),b&&b()};a.support.transition&&this.$element.hasClass("fade")?this.$backdrop.one("bsTransitionEnd",g).emulateTransitionEnd(c.BACKDROP_TRANSITION_DURATION):g()}else b&&b()},c.prototype.handleUpdate=function(){this.options.backdrop&&this.adjustBackdrop(),this.adjustDialog()},c.prototype.adjustBackdrop=function(){this.$backdrop.css("height",0).css("height",this.$element[0].scrollHeight)},c.prototype.adjustDialog=function(){var a=this.$element[0].scrollHeight>document.documentElement.clientHeight;this.$element.css({paddingLeft:!this.bodyIsOverflowing&&a?this.scrollbarWidth:"",paddingRight:this.bodyIsOverflowing&&!a?this.scrollbarWidth:""})},c.prototype.resetAdjustments=function(){this.$element.css({paddingLeft:"",paddingRight:""})},c.prototype.checkScrollbar=function(){this.bodyIsOverflowing=document.body.scrollHeight>document.documentElement.clientHeight,this.scrollbarWidth=this.measureScrollbar()},c.prototype.setScrollbar=function(){var a=parseInt(this.$body.css("padding-right")||0,10);this.bodyIsOverflowing&&this.$body.css("padding-right",a+this.scrollbarWidth)},c.prototype.resetScrollbar=function(){this.$body.css("padding-right","")},c.prototype.measureScrollbar=function(){var a=document.createElement("div");a.className="modal-scrollbar-measure",this.$body.append(a);var b=a.offsetWidth-a.clientWidth;return this.$body[0].removeChild(a),b};var d=a.fn.modal;a.fn.modal=b,a.fn.modal.Constructor=c,a.fn.modal.noConflict=function(){return a.fn.modal=d,this},a(document).on("click.bs.modal.data-api",'[data-toggle="modal"]',function(c){var d=a(this),e=d.attr("href"),f=a(d.attr("data-target")||e&&e.replace(/.*(?=#[^\s]+$)/,"")),g=f.data("bs.modal")?"toggle":a.extend({remote:!/#/.test(e)&&e},f.data(),d.data());d.is("a")&&c.preventDefault(),f.one("show.bs.modal",function(a){a.isDefaultPrevented()||f.one("hidden.bs.modal",function(){d.is(":visible")&&d.trigger("focus")})}),b.call(f,g,this)})}(jQuery),+function(a){"use strict";function b(b){return this.each(function(){var d=a(this),e=d.data("bs.tooltip"),f="object"==typeof b&&b;(e||"destroy"!=b)&&(e||d.data("bs.tooltip",e=new c(this,f)),"string"==typeof b&&e[b]())})}var c=function(a,b){this.type=this.options=this.enabled=this.timeout=this.hoverState=this.$element=null,this.init("tooltip",a,b)};c.VERSION="3.3.2",c.TRANSITION_DURATION=150,c.DEFAULTS={animation:!0,placement:"top",selector:!1,template:'<div class="tooltip" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div>',trigger:"hover focus",title:"",delay:0,html:!1,container:!1,viewport:{selector:"body",padding:0}},c.prototype.init=function(b,c,d){this.enabled=!0,this.type=b,this.$element=a(c),this.options=this.getOptions(d),this.$viewport=this.options.viewport&&a(this.options.viewport.selector||this.options.viewport);for(var e=this.options.trigger.split(" "),f=e.length;f--;){var g=e[f];if("click"==g)this.$element.on("click."+this.type,this.options.selector,a.proxy(this.toggle,this));else if("manual"!=g){var h="hover"==g?"mouseenter":"focusin",i="hover"==g?"mouseleave":"focusout";this.$element.on(h+"."+this.type,this.options.selector,a.proxy(this.enter,this)),this.$element.on(i+"."+this.type,this.options.selector,a.proxy(this.leave,this))}}this.options.selector?this._options=a.extend({},this.options,{trigger:"manual",selector:""}):this.fixTitle()},c.prototype.getDefaults=function(){return c.DEFAULTS},c.prototype.getOptions=function(b){return b=a.extend({},this.getDefaults(),this.$element.data(),b),b.delay&&"number"==typeof b.delay&&(b.delay={show:b.delay,hide:b.delay}),b},c.prototype.getDelegateOptions=function(){var b={},c=this.getDefaults();return this._options&&a.each(this._options,function(a,d){c[a]!=d&&(b[a]=d)}),b},c.prototype.enter=function(b){var c=b instanceof this.constructor?b:a(b.currentTarget).data("bs."+this.type);return c&&c.$tip&&c.$tip.is(":visible")?void(c.hoverState="in"):(c||(c=new this.constructor(b.currentTarget,this.getDelegateOptions()),a(b.currentTarget).data("bs."+this.type,c)),clearTimeout(c.timeout),c.hoverState="in",c.options.delay&&c.options.delay.show?void(c.timeout=setTimeout(function(){"in"==c.hoverState&&c.show()},c.options.delay.show)):c.show())},c.prototype.leave=function(b){var c=b instanceof this.constructor?b:a(b.currentTarget).data("bs."+this.type);return c||(c=new this.constructor(b.currentTarget,this.getDelegateOptions()),a(b.currentTarget).data("bs."+this.type,c)),clearTimeout(c.timeout),c.hoverState="out",c.options.delay&&c.options.delay.hide?void(c.timeout=setTimeout(function(){"out"==c.hoverState&&c.hide()},c.options.delay.hide)):c.hide()},c.prototype.show=function(){var b=a.Event("show.bs."+this.type);if(this.hasContent()&&this.enabled){this.$element.trigger(b);var d=a.contains(this.$element[0].ownerDocument.documentElement,this.$element[0]);if(b.isDefaultPrevented()||!d)return;var e=this,f=this.tip(),g=this.getUID(this.type);this.setContent(),f.attr("id",g),this.$element.attr("aria-describedby",g),this.options.animation&&f.addClass("fade");var h="function"==typeof this.options.placement?this.options.placement.call(this,f[0],this.$element[0]):this.options.placement,i=/\s?auto?\s?/i,j=i.test(h);j&&(h=h.replace(i,"")||"top"),f.detach().css({top:0,left:0,display:"block"}).addClass(h).data("bs."+this.type,this),this.options.container?f.appendTo(this.options.container):f.insertAfter(this.$element);var k=this.getPosition(),l=f[0].offsetWidth,m=f[0].offsetHeight;if(j){var n=h,o=this.options.container?a(this.options.container):this.$element.parent(),p=this.getPosition(o);h="bottom"==h&&k.bottom+m>p.bottom?"top":"top"==h&&k.top-m<p.top?"bottom":"right"==h&&k.right+l>p.width?"left":"left"==h&&k.left-l<p.left?"right":h,f.removeClass(n).addClass(h)}var q=this.getCalculatedOffset(h,k,l,m);this.applyPlacement(q,h);var r=function(){var a=e.hoverState;e.$element.trigger("shown.bs."+e.type),e.hoverState=null,"out"==a&&e.leave(e)};a.support.transition&&this.$tip.hasClass("fade")?f.one("bsTransitionEnd",r).emulateTransitionEnd(c.TRANSITION_DURATION):r()}},c.prototype.applyPlacement=function(b,c){var d=this.tip(),e=d[0].offsetWidth,f=d[0].offsetHeight,g=parseInt(d.css("margin-top"),10),h=parseInt(d.css("margin-left"),10);isNaN(g)&&(g=0),isNaN(h)&&(h=0),b.top=b.top+g,b.left=b.left+h,a.offset.setOffset(d[0],a.extend({using:function(a){d.css({top:Math.round(a.top),left:Math.round(a.left)})}},b),0),d.addClass("in");var i=d[0].offsetWidth,j=d[0].offsetHeight;"top"==c&&j!=f&&(b.top=b.top+f-j);var k=this.getViewportAdjustedDelta(c,b,i,j);k.left?b.left+=k.left:b.top+=k.top;var l=/top|bottom/.test(c),m=l?2*k.left-e+i:2*k.top-f+j,n=l?"offsetWidth":"offsetHeight";d.offset(b),this.replaceArrow(m,d[0][n],l)},c.prototype.replaceArrow=function(a,b,c){this.arrow().css(c?"left":"top",50*(1-a/b)+"%").css(c?"top":"left","")},c.prototype.setContent=function(){var a=this.tip(),b=this.getTitle();a.find(".tooltip-inner")[this.options.html?"html":"text"](b),a.removeClass("fade in top bottom left right")},c.prototype.hide=function(b){function d(){"in"!=e.hoverState&&f.detach(),e.$element.removeAttr("aria-describedby").trigger("hidden.bs."+e.type),b&&b()}var e=this,f=this.tip(),g=a.Event("hide.bs."+this.type);return this.$element.trigger(g),g.isDefaultPrevented()?void 0:(f.removeClass("in"),a.support.transition&&this.$tip.hasClass("fade")?f.one("bsTransitionEnd",d).emulateTransitionEnd(c.TRANSITION_DURATION):d(),this.hoverState=null,this)},c.prototype.fixTitle=function(){var a=this.$element;(a.attr("title")||"string"!=typeof a.attr("data-original-title"))&&a.attr("data-original-title",a.attr("title")||"").attr("title","")},c.prototype.hasContent=function(){return this.getTitle()},c.prototype.getPosition=function(b){b=b||this.$element;var c=b[0],d="BODY"==c.tagName,e=c.getBoundingClientRect();null==e.width&&(e=a.extend({},e,{width:e.right-e.left,height:e.bottom-e.top}));var f=d?{top:0,left:0}:b.offset(),g={scroll:d?document.documentElement.scrollTop||document.body.scrollTop:b.scrollTop()},h=d?{width:a(window).width(),height:a(window).height()}:null;return a.extend({},e,g,h,f)},c.prototype.getCalculatedOffset=function(a,b,c,d){return"bottom"==a?{top:b.top+b.height,left:b.left+b.width/2-c/2}:"top"==a?{top:b.top-d,left:b.left+b.width/2-c/2}:"left"==a?{top:b.top+b.height/2-d/2,left:b.left-c}:{top:b.top+b.height/2-d/2,left:b.left+b.width}},c.prototype.getViewportAdjustedDelta=function(a,b,c,d){var e={top:0,left:0};if(!this.$viewport)return e;var f=this.options.viewport&&this.options.viewport.padding||0,g=this.getPosition(this.$viewport);if(/right|left/.test(a)){var h=b.top-f-g.scroll,i=b.top+f-g.scroll+d;h<g.top?e.top=g.top-h:i>g.top+g.height&&(e.top=g.top+g.height-i)}else{var j=b.left-f,k=b.left+f+c;j<g.left?e.left=g.left-j:k>g.width&&(e.left=g.left+g.width-k)}return e},c.prototype.getTitle=function(){var a,b=this.$element,c=this.options;return a=b.attr("data-original-title")||("function"==typeof c.title?c.title.call(b[0]):c.title)},c.prototype.getUID=function(a){do a+=~~(1e6*Math.random());while(document.getElementById(a));return a},c.prototype.tip=function(){return this.$tip=this.$tip||a(this.options.template)},c.prototype.arrow=function(){return this.$arrow=this.$arrow||this.tip().find(".tooltip-arrow")},c.prototype.enable=function(){this.enabled=!0},c.prototype.disable=function(){this.enabled=!1},c.prototype.toggleEnabled=function(){this.enabled=!this.enabled},c.prototype.toggle=function(b){var c=this;b&&(c=a(b.currentTarget).data("bs."+this.type),c||(c=new this.constructor(b.currentTarget,this.getDelegateOptions()),a(b.currentTarget).data("bs."+this.type,c))),c.tip().hasClass("in")?c.leave(c):c.enter(c)},c.prototype.destroy=function(){var a=this;clearTimeout(this.timeout),this.hide(function(){a.$element.off("."+a.type).removeData("bs."+a.type)})};var d=a.fn.tooltip;a.fn.tooltip=b,a.fn.tooltip.Constructor=c,a.fn.tooltip.noConflict=function(){return a.fn.tooltip=d,this}}(jQuery),+function(a){"use strict";function b(b){return this.each(function(){var d=a(this),e=d.data("bs.popover"),f="object"==typeof b&&b;(e||"destroy"!=b)&&(e||d.data("bs.popover",e=new c(this,f)),"string"==typeof b&&e[b]())})}var c=function(a,b){this.init("popover",a,b)};if(!a.fn.tooltip)throw new Error("Popover requires tooltip.js");c.VERSION="3.3.2",c.DEFAULTS=a.extend({},a.fn.tooltip.Constructor.DEFAULTS,{placement:"right",trigger:"click",content:"",template:'<div class="popover" role="tooltip"><div class="arrow"></div><h3 class="popover-title"></h3><div class="popover-content"></div></div>'}),c.prototype=a.extend({},a.fn.tooltip.Constructor.prototype),c.prototype.constructor=c,c.prototype.getDefaults=function(){return c.DEFAULTS},c.prototype.setContent=function(){var a=this.tip(),b=this.getTitle(),c=this.getContent();a.find(".popover-title")[this.options.html?"html":"text"](b),a.find(".popover-content").children().detach().end()[this.options.html?"string"==typeof c?"html":"append":"text"](c),a.removeClass("fade top bottom left right in"),a.find(".popover-title").html()||a.find(".popover-title").hide()},c.prototype.hasContent=function(){return this.getTitle()||this.getContent()},c.prototype.getContent=function(){var a=this.$element,b=this.options;return a.attr("data-content")||("function"==typeof b.content?b.content.call(a[0]):b.content)},c.prototype.arrow=function(){return this.$arrow=this.$arrow||this.tip().find(".arrow")},c.prototype.tip=function(){return this.$tip||(this.$tip=a(this.options.template)),this.$tip};var d=a.fn.popover;a.fn.popover=b,a.fn.popover.Constructor=c,a.fn.popover.noConflict=function(){return a.fn.popover=d,this}}(jQuery),+function(a){"use strict";function b(c,d){var e=a.proxy(this.process,this);this.$body=a("body"),this.$scrollElement=a(a(c).is("body")?window:c),this.options=a.extend({},b.DEFAULTS,d),this.selector=(this.options.target||"")+" .nav li > a",this.offsets=[],this.targets=[],this.activeTarget=null,this.scrollHeight=0,this.$scrollElement.on("scroll.bs.scrollspy",e),this.refresh(),this.process()}function c(c){return this.each(function(){var d=a(this),e=d.data("bs.scrollspy"),f="object"==typeof c&&c;e||d.data("bs.scrollspy",e=new b(this,f)),"string"==typeof c&&e[c]()})}b.VERSION="3.3.2",b.DEFAULTS={offset:10},b.prototype.getScrollHeight=function(){return this.$scrollElement[0].scrollHeight||Math.max(this.$body[0].scrollHeight,document.documentElement.scrollHeight)},b.prototype.refresh=function(){var b="offset",c=0;a.isWindow(this.$scrollElement[0])||(b="position",c=this.$scrollElement.scrollTop()),this.offsets=[],this.targets=[],this.scrollHeight=this.getScrollHeight();var d=this;this.$body.find(this.selector).map(function(){var d=a(this),e=d.data("target")||d.attr("href"),f=/^#./.test(e)&&a(e);return f&&f.length&&f.is(":visible")&&[[f[b]().top+c,e]]||null}).sort(function(a,b){return a[0]-b[0]}).each(function(){d.offsets.push(this[0]),d.targets.push(this[1])})},b.prototype.process=function(){var a,b=this.$scrollElement.scrollTop()+this.options.offset,c=this.getScrollHeight(),d=this.options.offset+c-this.$scrollElement.height(),e=this.offsets,f=this.targets,g=this.activeTarget;if(this.scrollHeight!=c&&this.refresh(),b>=d)return g!=(a=f[f.length-1])&&this.activate(a);if(g&&b<e[0])return this.activeTarget=null,this.clear();for(a=e.length;a--;)g!=f[a]&&b>=e[a]&&(!e[a+1]||b<=e[a+1])&&this.activate(f[a])},b.prototype.activate=function(b){this.activeTarget=b,this.clear();var c=this.selector+'[data-target="'+b+'"],'+this.selector+'[href="'+b+'"]',d=a(c).parents("li").addClass("active");d.parent(".dropdown-menu").length&&(d=d.closest("li.dropdown").addClass("active")),d.trigger("activate.bs.scrollspy")},b.prototype.clear=function(){a(this.selector).parentsUntil(this.options.target,".active").removeClass("active")};var d=a.fn.scrollspy;a.fn.scrollspy=c,a.fn.scrollspy.Constructor=b,a.fn.scrollspy.noConflict=function(){return a.fn.scrollspy=d,this},a(window).on("load.bs.scrollspy.data-api",function(){a('[data-spy="scroll"]').each(function(){var b=a(this);c.call(b,b.data())})})}(jQuery),+function(a){"use strict";function b(b){return this.each(function(){var d=a(this),e=d.data("bs.tab");e||d.data("bs.tab",e=new c(this)),"string"==typeof b&&e[b]()})}var c=function(b){this.element=a(b)};c.VERSION="3.3.2",c.TRANSITION_DURATION=150,c.prototype.show=function(){var b=this.element,c=b.closest("ul:not(.dropdown-menu)"),d=b.data("target");if(d||(d=b.attr("href"),d=d&&d.replace(/.*(?=#[^\s]*$)/,"")),!b.parent("li").hasClass("active")){var e=c.find(".active:last a"),f=a.Event("hide.bs.tab",{relatedTarget:b[0]}),g=a.Event("show.bs.tab",{relatedTarget:e[0]});if(e.trigger(f),b.trigger(g),!g.isDefaultPrevented()&&!f.isDefaultPrevented()){var h=a(d);this.activate(b.closest("li"),c),this.activate(h,h.parent(),function(){e.trigger({type:"hidden.bs.tab",relatedTarget:b[0]}),b.trigger({type:"shown.bs.tab",relatedTarget:e[0]})})}}},c.prototype.activate=function(b,d,e){function f(){g.removeClass("active").find("> .dropdown-menu > .active").removeClass("active").end().find('[data-toggle="tab"]').attr("aria-expanded",!1),b.addClass("active").find('[data-toggle="tab"]').attr("aria-expanded",!0),h?(b[0].offsetWidth,b.addClass("in")):b.removeClass("fade"),b.parent(".dropdown-menu")&&b.closest("li.dropdown").addClass("active").end().find('[data-toggle="tab"]').attr("aria-expanded",!0),e&&e()
 }var g=d.find("> .active"),h=e&&a.support.transition&&(g.length&&g.hasClass("fade")||!!d.find("> .fade").length);g.length&&h?g.one("bsTransitionEnd",f).emulateTransitionEnd(c.TRANSITION_DURATION):f(),g.removeClass("in")};var d=a.fn.tab;a.fn.tab=b,a.fn.tab.Constructor=c,a.fn.tab.noConflict=function(){return a.fn.tab=d,this};var e=function(c){c.preventDefault(),b.call(a(this),"show")};a(document).on("click.bs.tab.data-api",'[data-toggle="tab"]',e).on("click.bs.tab.data-api",'[data-toggle="pill"]',e)}(jQuery),+function(a){"use strict";function b(b){return this.each(function(){var d=a(this),e=d.data("bs.affix"),f="object"==typeof b&&b;e||d.data("bs.affix",e=new c(this,f)),"string"==typeof b&&e[b]()})}var c=function(b,d){this.options=a.extend({},c.DEFAULTS,d),this.$target=a(this.options.target).on("scroll.bs.affix.data-api",a.proxy(this.checkPosition,this)).on("click.bs.affix.data-api",a.proxy(this.checkPositionWithEventLoop,this)),this.$element=a(b),this.affixed=this.unpin=this.pinnedOffset=null,this.checkPosition()};c.VERSION="3.3.2",c.RESET="affix affix-top affix-bottom",c.DEFAULTS={offset:0,target:window},c.prototype.getState=function(a,b,c,d){var e=this.$target.scrollTop(),f=this.$element.offset(),g=this.$target.height();if(null!=c&&"top"==this.affixed)return c>e?"top":!1;if("bottom"==this.affixed)return null!=c?e+this.unpin<=f.top?!1:"bottom":a-d>=e+g?!1:"bottom";var h=null==this.affixed,i=h?e:f.top,j=h?g:b;return null!=c&&c>=e?"top":null!=d&&i+j>=a-d?"bottom":!1},c.prototype.getPinnedOffset=function(){if(this.pinnedOffset)return this.pinnedOffset;this.$element.removeClass(c.RESET).addClass("affix");var a=this.$target.scrollTop(),b=this.$element.offset();return this.pinnedOffset=b.top-a},c.prototype.checkPositionWithEventLoop=function(){setTimeout(a.proxy(this.checkPosition,this),1)},c.prototype.checkPosition=function(){if(this.$element.is(":visible")){var b=this.$element.height(),d=this.options.offset,e=d.top,f=d.bottom,g=a("body").height();"object"!=typeof d&&(f=e=d),"function"==typeof e&&(e=d.top(this.$element)),"function"==typeof f&&(f=d.bottom(this.$element));var h=this.getState(g,b,e,f);if(this.affixed!=h){null!=this.unpin&&this.$element.css("top","");var i="affix"+(h?"-"+h:""),j=a.Event(i+".bs.affix");if(this.$element.trigger(j),j.isDefaultPrevented())return;this.affixed=h,this.unpin="bottom"==h?this.getPinnedOffset():null,this.$element.removeClass(c.RESET).addClass(i).trigger(i.replace("affix","affixed")+".bs.affix")}"bottom"==h&&this.$element.offset({top:g-b-f})}};var d=a.fn.affix;a.fn.affix=b,a.fn.affix.Constructor=c,a.fn.affix.noConflict=function(){return a.fn.affix=d,this},a(window).on("load",function(){a('[data-spy="affix"]').each(function(){var c=a(this),d=c.data();d.offset=d.offset||{},null!=d.offsetBottom&&(d.offset.bottom=d.offsetBottom),null!=d.offsetTop&&(d.offset.top=d.offsetTop),b.call(c,d)})})}(jQuery);
++function ($) {
+  'use strict';
+
+  // SIDEBAR PUBLIC CLASS DEFINITION
+  // ================================
+
+  var Sidebar = function (element, options) {
+    this.$element      = $(element)
+    this.options       = $.extend({}, Sidebar.DEFAULTS, options)
+    this.transitioning = null
+
+    if (this.options.parent) this.$parent = $(this.options.parent)
+    if (this.options.toggle) this.toggle()
+  }
+
+  Sidebar.DEFAULTS = {
+    toggle: true
+  }
+
+  Sidebar.prototype.show = function () {
+    if (this.transitioning || this.$element.hasClass('sidebar-open')) return
+
+
+    var startEvent = $.Event('show.bs.sidebar')
+    this.$element.trigger(startEvent);
+    if (startEvent.isDefaultPrevented()) return
+
+    this.$element
+      .addClass('sidebar-open')
+
+    this.transitioning = 1
+
+    var complete = function () {
+      this.$element
+      this.transitioning = 0
+      this.$element.trigger('shown.bs.sidebar')
+    }
+
+    if(!$.support.transition) return complete.call(this)
+
+    this.$element
+      .one($.support.transition.end, $.proxy(complete, this))
+      .emulateTransitionEnd(400)
+  }
+
+  Sidebar.prototype.hide = function () {
+    if (this.transitioning || !this.$element.hasClass('sidebar-open')) return
+
+    var startEvent = $.Event('hide.bs.sidebar')
+    this.$element.trigger(startEvent)
+    if(startEvent.isDefaultPrevented()) return
+
+    this.$element
+      .removeClass('sidebar-open')
+
+    this.transitioning = 1
+
+    var complete = function () {
+      this.transitioning = 0
+      this.$element
+        .trigger('hidden.bs.sidebar')
+    }
+
+    if (!$.support.transition) return complete.call(this)
+
+    this.$element
+      .one($.support.transition.end, $.proxy(complete, this))
+      .emulateTransitionEnd(400)
+  }
+
+  Sidebar.prototype.toggle = function () {
+    this[this.$element.hasClass('sidebar-open') ? 'hide' : 'show']()
+  }
+
+  var old = $.fn.sidebar
+
+  $.fn.sidebar = function (option) {
+    return this.each(function (){
+      var $this = $(this)
+      var data = $this.data('bs.sidebar')
+      var options = $.extend({}, Sidebar.DEFAULTS, $this.data(), typeof options == 'object' && option)
+
+      if (!data && options.toggle && option == 'show') option = !option
+      if (!data) $this.data('bs.sidebar', (data = new Sidebar(this, options)))
+      if (typeof option == 'string') data[option]()
+    })
+  }
+
+  $.fn.sidebar.Constructor = Sidebar
+
+  $.fn.sidebar.noConflict = function () {
+    $.fn.sidebar = old
+    return this
+  }
+
+  $(document).on('click.bs.sidebar.data-api', '[data-toggle="sidebar"]', function (e) {
+    var $this = $(this), href
+    var target = $this.attr('data-target')
+        || e.preventDefault()
+        || (href = $this.attr('href')) && href.replace(/.*(?=#[^\s]+$)/, '')
+    var $target = $(target)
+    var data = $target.data('bs.sidebar')
+    var option = data ? 'toggle' : $this.data()
+
+    $target.sidebar(option)
+  })
+
+  $('html').on('click.bs.sidebar.autohide', function(event){
+    var $this = $(event.target);
+    var isButtonOrSidebar = $this.is('.sidebar, [data-toggle="sidebar"]') || $this.parents('.sidebar, [data-toggle="sidebar"]').length;
+    if (isButtonOrSidebar) {
+      return;
+    } else {
+      var $target = $('.sidebar');
+      $target.each(function(i, trgt) {
+        var $trgt = $(trgt);
+        if($trgt.data('bs.sidebar') && $trgt.hasClass('sidebar-open')) {
+            $trgt.sidebar('hide');
+        }
+      })
+    }
+  });
+}(jQuery);
+
+/*!
+ * Bootstrap Confirmation 2.1.2
+ * Copyright 2013 Nimit Suwannagate <ethaizone@hotmail.com>
+ * Copyright 2014 Damien "Mistic" Sorel <http://www.strangeplanet.fr>
+ * Licensed under the Apache License, Version 2.0 (the "License")
+ */
+!function(a){"use strict";function b(a){for(var b=window,c=a.split("."),d=c.pop(),e=0,f=c.length;f>e;e++)b=b[c[e]];return function(){b[d].call(this)}}if(!a.fn.popover)throw new Error("Confirmation requires popover.js");var c=function(b,c){this.init("confirmation",b,c);var d=this;this.options.selector||(this.$element.attr("href")&&(this.options.href=this.$element.attr("href"),this.$element.removeAttr("href"),this.$element.attr("target")&&(this.options.target=this.$element.attr("target"))),this.$element.on(d.options.trigger,function(a,b){b||(a.preventDefault(),a.stopPropagation(),a.stopImmediatePropagation())}),this.$element.on("confirmed.bs.confirmation",function(){a(this).trigger(d.options.trigger,[!0])}),this.$element.on("show.bs.confirmation",function(){d.options.singleton&&a(d.options._selector).not(a(this)).filter(function(){return void 0!==a(this).data("bs.confirmation")}).confirmation("hide")})),this.options._isDelegate||(this.eventBody=!1,this.uid=this.$element[0].id||this.getUID("group_"),this.$element.on("shown.bs.confirmation",function(){if(d.options.popout&&!d.eventBody){{a(this)}d.eventBody=a("body").on("click.bs.confirmation."+d.uid,function(b){a(d.options._selector).is(b.target)||(a(d.options._selector).filter(function(){return void 0!==a(this).data("bs.confirmation")}).confirmation("hide"),a("body").off("click.bs."+d.uid),d.eventBody=!1)})}}))};c.DEFAULTS=a.extend({},a.fn.popover.Constructor.DEFAULTS,{placement:"top",title:"Are you sure?",html:!0,href:!1,popout:!1,singleton:!1,target:"_self",onConfirm:a.noop,onCancel:a.noop,btnOkClass:"btn-xs btn-primary",btnOkIcon:"glyphicon glyphicon-ok",btnOkLabel:"Yes",btnCancelClass:"btn-xs btn-default",btnCancelIcon:"glyphicon glyphicon-remove",btnCancelLabel:"No",template:'<div class="popover confirmation"><div class="arrow"></div><h3 class="popover-title"></h3><div class="popover-content text-center"><div class="btn-group"><a class="btn" data-apply="confirmation"></a><a class="btn" data-dismiss="confirmation"></a></div></div></div>'}),c.prototype=a.extend({},a.fn.popover.Constructor.prototype),c.prototype.constructor=c,c.prototype.getDefaults=function(){return c.DEFAULTS},c.prototype.init=function(b,c,d){a.fn.popover.Constructor.prototype.init.call(this,b,c,d),this.options._isDelegate=!1,d.selector?this.options._selector=this._options._selector=d._root_selector+" "+d.selector:d._selector?(this.options._selector=d._selector,this.options._isDelegate=!0):this.options._selector=d._root_selector},c.prototype.setContent=function(){var b=this,c=this.tip(),d=this.options;c.find(".popover-title")[d.html?"html":"text"](this.getTitle()),c.find('[data-apply="confirmation"]').addClass(d.btnOkClass).html(d.btnOkLabel).prepend(a("<i></i>").addClass(d.btnOkIcon)," ").off("click").one("click",function(){b.getOnConfirm.call(b).call(b.$element),b.$element.trigger("confirmed.bs.confirmation"),b.leave(b)}),d.href&&c.find('[data-apply="confirmation"]').attr({href:d.href,target:d.target}),c.find('[data-dismiss="confirmation"]').addClass(d.btnCancelClass).html(d.btnCancelLabel).prepend(a("<i></i>").addClass(d.btnCancelIcon)," ").off("click").one("click",function(){b.getOnCancel.call(b).call(b.$element),b.$element.trigger("canceled.bs.confirmation"),b.leave(b)}),c.removeClass("fade top bottom left right in"),c.find(".popover-title").html()||c.find(".popover-title").hide()},c.prototype.getOnConfirm=function(){return this.$element.attr("data-on-confirm")?b(this.$element.attr("data-on-confirm")):this.options.onConfirm},c.prototype.getOnCancel=function(){return this.$element.attr("data-on-cancel")?b(this.$element.attr("data-on-cancel")):this.options.onCancel};var d=a.fn.confirmation;a.fn.confirmation=function(b){var d="object"==typeof b&&b||{};return d._root_selector=this.selector,this.each(function(){var e=a(this),f=e.data("bs.confirmation");(f||"destroy"!=b)&&(f||e.data("bs.confirmation",f=new c(this,d)),"string"==typeof b&&f[b]())})},a.fn.confirmation.Constructor=c,a.fn.confirmation.noConflict=function(){return a.fn.confirmation=d,this}}(jQuery);
 /*!
 * FitText.js 1.2
 *
@@ -1878,1184 +2009,6 @@ $special = $event.special.debouncedresize = {
 	};
 }));
 
-//init all variables
-/*jslint latedef:false*/
-/*global adjustModalMaxHeightAndPosition */
-/*global Modernizr */
-var roles = [false, false, false, false, false];
-var roleTypeOptions = ['All', 'Loose', 'Normal', 'Strict'];
-var roleType = 2;
-var rolesPos = ['Toplane', 'Jungle', 'Midlane', 'Marksman', 'Support'];
-var rolesJSON;
-
-var champions = [];
-var order = [];
-var largeNames = [];
-var championsDisabled;
-var champPlayed = {};
-
-var free2play = [];
-var enableF2P = true;
-var free2playError=false;
-var free2playURL="http://wwbtestserver.cloudapp.net:8080/free2play.json";
-
-var doingRandom=true;
-var doingNext=false;
-var randomChamp;
-var randomChampId;
-var champsExcluded;
-
-var loading = 7; //countdown till all JSON is loaded
-var loadingProgress=0; //the progress bar
-
-var DOMReady=false;
-var region='EUW';
-
-//set pnotify styling and options
-/* global PNotify */
-PNotify.prototype.options.styling = "bootstrap3";
-PNotify.prototype.options.delay = 3000;//3 seconds
-
-//init easy storage
-//var ns = $.initNamespaceStorage('championPicker');
-//check if we support localstorage
-if (Modernizr.localstorage) {
-    var storage = $.localStorage;
-}
-else
-{
-    //no, lets do cookies
-    var storage = $.cookieStorage;
-}
-if (storage.isSet('championsDisabled'))
-{
-championsDisabled = storage.get('championsDisabled');
-}
-else
-{
-    championsDisabled=null;
-}
-
-if (storage.isSet('roleType')) {
-    roleType = storage.get('roleType');
-} else {
-    roleType = 2;
-    storage.set('roleType', roleType);
-}
-
-$('.roleType').html(roleTypeOptions[roleType] + ' <span class="caret"></span>');
-
-
-if (storage.isSet('enableF2P')) {
-
-    enableF2P = storage.get('enableF2P');
-} else {
-    enableF2P = true;
-    storage.set('enableF2P', enableF2P);
-}
-
-
-if (!enableF2P) {
-    var $free2play=$('.free2play');
-    $free2play.toggleClass('btn-success');
-    $free2play.toggleClass('btn-default');
-}
-
-//load from storage (or from JSON)
-if (storage.isSet('champions')) {
-    champions = storage.get('champions');
-
-    loading--;
-    updateProgress(2);
-    if (!loading)//check if we are loading to load everything
-    {
-        loadData();
-    }
-} else {
-    //load the champion data
-    loadChampionData();
-}
-
-if (storage.isSet('order')) {
-    order = storage.get('order');
-
-    loading--;
-    updateProgress(2);
-    if (!loading)//check if we are loading to load everything
-    {
-        loadData();
-    }
-} else {
-    loadOrderData();
-
-}
-if (storage.isSet('free2play')) {
-    free2play = storage.get('free2play');
-
-    loading--;
-    updateProgress(2);
-    if (!loading)//check if we are loading to load everything
-    {
-        loadData();
-    }
-} else {
-    //load f2p
-    loadF2PData();
-}
-
-if (storage.isSet('rolesJSON')) {
-    rolesJSON = storage.get('rolesJSON');
-
-    loading -= (roleTypeOptions.length - 1);
-    updateProgress(2 * (roleTypeOptions.length - 1));
-    if (!loading)//check if we are loading to load everything
-    {
-        loadData();
-    }
-} else {
-
-    //init rolesJSON
-    rolesJSON=[];
-
-    //load roles
-    loadRoleData();
-}
-
-$(function () {
-    "use strict";//strict mode
-
-    //DOM completed loading!
-    DOMReady=true;
-
-    if (free2playError)
-    {
-        showFree2PlayError();
-    }
-
-    loading--;
-
-    updateProgress(2);
-    if (!loading)//check if we are loading to load everything
-    {
-        loadData();
-    }
-});
-
-function reloadActive(update) {
-    "use strict";//strict mode
-
-    var $championsli=$("#champions").find("li");
-    var $btnRole=$('.btn-role');
-    //check if all buttons are on or off:
-    if ((roles[0] && roles[1] && roles[2] && roles[3] && roles[4]) || (!roles[0] && !roles[1] && !roles[2] && !roles[3] && !roles[4])) {
-        //activate everything
-        $championsli.addClass('toShow');
-        $championsli.removeClass('toHide');
-
-        //toggle the appropriate button
-        if (roles[0]) {
-            $btnRole.addClass('active');
-        }
-        else
-        {
-            $btnRole.removeClass('active');
-        }
-
-        if (update) {
-            updateShowHide();
-        }
-        return true;
-    }
-
-    //de-activate everything
-    $championsli.addClass('toHide');
-    $championsli.removeClass('toShow');
-    $btnRole.removeClass('active');
-
-    //update roleType
-    if (roleType === 0) {
-        roleType = 2;
-        storage.set('roleType', roleType);
-    }
-    $('.roleType').html(roleTypeOptions[roleType] + ' <span class="caret"></span>');
-
-    //check if all buttons are off:
-    if (!roles[0] && !roles[1] && !roles[2] && !roles[3] && !roles[4]) {
-        if (update) {
-            updateShowHide();
-        }
-        return true;
-    }
-
-    //if its not we have to some real work
-    processRoles(update);
-    return true;
-}
-
-function processRoles(update) {
-    "use strict";//strict mode
-
-    var index,index2;
-    for (index = 0; index < roles.length; ++index) {
-        if (roles[index]) {
-            //activate the button
-            $('.role_' + index).addClass('active');
-
-            //we have to activate all champions who have this role
-            for (index2 = 0; index2 < rolesJSON[roleType][index].length; ++index2) {
-                var $championDiv=$('[data-championId=' + rolesJSON[roleType][index][index2] + ']');
-                $championDiv.addClass('toShow');
-                $championDiv.removeClass('toHide');
-            }
-        }
-    }
-    if (update)
-    {
-    updateShowHide();
-    }
-}
-
-function updateShowHide() {
-    "use strict";//strict mode
-
-    $('.toShow').show();
-    $('.toHide').hide();
-}
-
-function champTextFit() {
-    "use strict";//strict mode
-
-    var index,$label;
-    //numbers are where bootstrap swithes
-    if ($(window).width() > 992 || $(window).width() < 512) {
-        for (index = 0; index < largeNames.length; ++index) {
-            $label = $('#champ' + largeNames[index] + ' .championLabel');
-            //0.6 and 11 are semi-randomly chosen but seem to fit
-            $label.fitText(0.6 * ($label.html().length) / 11);
-        }
-    } else {
-        for (index = 0; index < largeNames.length; ++index) {
-            $label = $('#champ' + largeNames[index] + ' .championLabel');
-            $label.removeAttr('style');
-        }
-    }
-}
-$(window).on("debouncedresize", function () {
-    "use strict";//strict mode
-
-    champTextFit();
-    //320=where bootstrap swtiches
-    if ($(window).height() >= 320) {
-        adjustModalMaxHeightAndPosition();
-    }
-    modalLoreFit(false);
-});
-
-function modalLoreFit(animate) {
-    "use strict";//strict mode
-
-    var width = $('.randomChampionDialog').width();
-    var height = width * 0.590;//aspect ratio of splashes
-    var $randomChampionModalLore=$('.randomChampionModalLore');
-    var $randomChampionModalLinks=$('.randomChampionModalLinks');
-    var $randomChampionModalLinks2=$('.randomChampionModalLinks2');
-
-    height -= 110;//height of title
-    height -= 50;//height of bottom button
-
-    if ($(window).width() >= 450) {
-        //update visibility
-        $randomChampionModalLore.show();
-        $randomChampionModalLinks.show();
-        $randomChampionModalLinks2.hide();
-
-        height -= 70;//height of buttons
-        if (animate) {
-            $randomChampionModalLore.transition({height: (height) + 'px'},
-                adjustModalMaxHeightAndPosition);
-        }
-        else {
-            $randomChampionModalLore.height(height);
-            adjustModalMaxHeightAndPosition();
-        }
-    }
-    else {
-        //update visibility
-        $randomChampionModalLore.hide();
-        $randomChampionModalLinks.hide();
-        $randomChampionModalLinks2.show();
-
-        height -= 40;//margins
-        if (animate) {
-            $randomChampionModalLinks2.transition({height: (height) + 'px'},
-                adjustModalMaxHeightAndPosition);
-        }
-        else {
-            $randomChampionModalLinks2.height(height);
-            adjustModalMaxHeightAndPosition();
-        }
-    }
-}
-
-function updateFree2Play() {
-    "use strict";//strict mode
-
-    var $Free2PlayDis;
-    if (enableF2P) {
-        $Free2PlayDis=$('.Free2Play.disabled');
-        $Free2PlayDis.addClass('disabled_f2p');
-        $Free2PlayDis.removeClass('disabled');
-    }
-    else {
-        $Free2PlayDis=$('.Free2Play.disabled');
-        $Free2PlayDis.addClass('disabled');
-        $Free2PlayDis.removeClass('disabled_f2p');
-    }
-    //update f2p
-    storage.set('enableF2P',enableF2P);
-}
-
-function loadChampionData() {
-    "use strict";//strict mode
-
-    $.getJSON("data/champions.json", function (championsJSON) {
-        champions = championsJSON;
-        storage.set('champions', champions);
-        loading--;
-        updateProgress(2);
-        if (!loading)//check if we are loading to load everything
-        {
-            loadData();
-        }
-    });
-}
-
-function loadOrderData() {
-    "use strict";//strict mode
-
-    $.getJSON("data/order.json", function (orderJSON) {
-        order = orderJSON;
-        storage.set('order', order);
-        loading--;
-        updateProgress(2);
-        if (!loading)//check if we are loading to load everything
-        {
-            loadData();
-        }
-    });
-}
-
-function loadRoleData()
-{
-    "use strict";//strict mode
-
-    var filename,index; //so we know what data we are parsing
-    for (index = 1; index < roleTypeOptions.length; ++index) {
-        filename = 'data/roles' + roleTypeOptions[index] + '.json';
-        //lets load it
-        $.ajax({
-            dataType: "json",
-            url: filename,
-            success: loadRole,
-            context: {index: index}
-        });
-    }
-}
-function loadRole(rolesJson) {
-    "use strict";//strict mode
-
-    rolesJSON[this.index] = rolesJson; // jshint ignore:line
-    loading--;
-    updateProgress(2);
-
-    if (!loading)//check if we are loading to load everything
-    {
-        loadData();
-    }
-}
-
-function loadF2PData() {
-    "use strict";//strict mode
-
-    //get free2play
-    $.getJSON(free2playURL, function (free2playJSON) {
-        if (free2playJSON.errors[region]===true)
-        {
-            if ((DOMReady===true) && (free2playError===false))
-            {
-                //show error now
-                free2playError=true;
-                showFree2PlayError();
-            }
-            else
-            {
-                //if not, handle this when it is
-                free2playError=true;
-            }
-        }
-
-        free2play=free2playJSON.free2play[region];
-        storage.set('free2play', free2play);
-
-        loading--;
-        updateProgress(2);
-        if (!loading)//check if we are loading to load everything
-        {
-            loadData();
-        }
-    }).error(function(){
-        //something went wrong! Lets check if the dom is ready
-        //If free2playError is true, it has already been showed sometime, so do not show it again.
-        if ((DOMReady===true) && (free2playError===false))
-        {
-            //show error now
-            free2playError=true;
-            showFree2PlayError();
-        }
-        else
-        {
-            //if not, handle this when it is
-            free2playError=true;
-        }
-
-        //lets still do the rest, so we can continue loading
-        //if we have data, lets use it instead of the online
-        free2play = storage.get('free2play');
-        if (free2play===null)
-        {
-            free2play=[];
-        }
-
-        loading--;
-        updateProgress(2);
-        if (!loading)//check if we are loading to load everything
-        {
-            loadData();
-        }
-
-    });
-}
-function loadData() {
-    "use strict";//strict mode
-
-    //save the roles
-    storage.set('rolesJSON',rolesJSON);
-
-
-    //reload the data after 2 seconds
-    setTimeout(function()
-    {
-        loadChampionData();
-        loadOrderData();
-        loadRoleData();
-        loadF2PData();
-    },2000);
-
-
-    var i,index,divId,html='';
-    for (i = 0; i < order.length; ++i) {
-        index = order[i];
-        divId = champions[index].name.replace(/\W/g, '');
-        champions[index].shortName = divId;
-        if (champions[index].name.length > 8) {
-            largeNames.push(divId);
-        }
-
-        //Insert the champion, first don't display because its still loading
-        html += '<li style="display:none" id="champ' + divId + '" class="col-lg-1 col-md-1 col-sm-2 col-xs-3 champion toShow showSearch" data-championId="' + index + '"><img class="img-responsive championPortrait" src="' + champions[index].iconSRC + '"><span class="label label-default center-block championLabel">' + champions[index].name + '</span></li>';
-    }
-    $('#champions').append(html);
-
-    //init modal
-    $('.randomChampionModal').modal({
-        show: false
-    });
-
-
-    //make some big champion names smaller on big scree
-    champTextFit();
-
-    //check if we have champions
-    if (championsDisabled === null) {
-        championsDisabled = {};
-        for (i = 0; i < order.length; ++i) {
-            index = order[i];
-            championsDisabled[index] = false;
-        }
-        storage.set('championsDisabled', championsDisabled);
-    }
-
-
-    //get champion playcount
-    champPlayed = storage.get('champPlayed');
-    if (champPlayed === null) {
-        champPlayed = {};
-        for (i = 0; i < order.length; ++i) {
-            index = order[i];
-            champPlayed[index] = 0;
-        }
-        storage.set('champPlayed', champPlayed);
-    }
-
-    //update disabled
-    for (i = 0; i < order.length; ++i) {
-        index = order[i];
-        if (championsDisabled[index]) {
-            $('[data-championId=' + index + ']').addClass('disabled');
-        }
-        else {
-            $('[data-championId=' + index + ']').addClass('notDisabled');
-        }
-    }
-
-    //free 2play
-    var $championDiv;
-    for (index = 0; index < free2play.length; ++index) {
-        $championDiv=$('[data-championId=' + free2play[index] + ']');
-        $championDiv.addClass('Free2Play');
-        $championDiv.find('span').removeClass('label-default');
-        $championDiv.find('span').addClass('label-success');
-    }
-    updateFree2Play();
-
-    //load the champ click events
-    $('.champion').click(function () {
-        //toggle the classes
-        $(this).toggleClass('notDisabled');
-
-        var champId = $(this).data('championid');
-
-        var disabled;
-        if ($(this).hasClass('Free2Play')) {
-            //if free 2 play enabled, only half disable it
-            if (enableF2P)
-            {
-            $(this).toggleClass('disabled_f2p');
-            disabled = $(this).hasClass('disabled_f2p');
-            }
-            else
-            {
-                //fully disable
-                $(this).toggleClass('disabled');
-                disabled = $(this).hasClass('disabled');
-            }
-        }
-        else {
-            $(this).toggleClass('disabled');
-            disabled = $(this).hasClass('disabled');
-        }
-
-        championsDisabled[champId] = disabled;
-        storage.set('championsDisabled', championsDisabled);
-    });
-
-    $('.randomChampionDontHaveButton').click(randomChampionDontHave);
-
-    $('.randomChampionNextButton').click(randomChampionNew);
-
-    function randomChampionDontHave()
-    {
-        //set champion to not have
-        $('[data-championId=' + randomChampId+ ']').click();
-
-        randomChampionNew();
-
-    }
-    function randomChampionNew(){
-        //check if we are not mid animation.
-        if (doingNext===true)
-        {
-            return false;
-        }
-
-        doingNext=true;
-        //apparently he does not have or like this champion. Lets decrease the playcount
-        champPlayed[randomChampId] -= 1;
-
-        //lets add it to the excluded champions
-        champsExcluded.push(randomChampId);
-
-        var random=getRandomChampion(champsExcluded);
-        var randomRole,options;
-        if (random===false)
-        {
-            //something went wrong, there are no options!
-            //this is probably because someone clicked on "i don't have this champion. So lets hide the modal.
-            $('.randomChampionModal').modal('hide');
-            //and notify the user
-
-            var notice = new PNotify({
-                title: 'No champions',
-                text: 'There are no champions left to choose from.',
-                opacity: 0.9,
-                icon: 'glyphicon glyphicon-envelope',
-                nonblock: {
-                    nonblock: true,
-                    nonblock_opacity: 0.2
-                },
-                history: {
-                    history: false
-                }
-            });
-            notice.get().click(function() {
-                notice.options.animation='none';
-                notice.remove();
-            });
-
-            doingRandom=false;
-            doingNext=false;
-            return false;
-
-        }
-        else{
-            randomChampId=random[0];
-            randomRole=random[1];
-            options=random[2];
-            randomChamp = champions[randomChampId];
-        }
-
-        //update its playcount
-        champPlayed[random] += 1;
-        storage.set('champPlayed', champPlayed);
-
-        //clone the modal
-        var $randomChampionModal=$('.randomChampionDialog');
-        var $randomChampionModal2=$randomChampionModal.clone();
-
-        //change the champion
-        updateModal($randomChampionModal2,randomChamp,randomChampId,rolesPos[randomRole],options.length);
-
-        //rotate and hide the modal
-        $randomChampionModal2.css('opacity',0);
-        $randomChampionModal2.css('transform','perspective(550px) rotateY(180deg)');
-
-        //insert the modal
-        $randomChampionModal2.insertAfter('.randomChampionDialog');
-
-        //do the transformation.
-        /* fade out and rotate 3 times */
-        $randomChampionModal.transition({
-            opacity: 0,
-            perspective: 550,
-            rotateY: 540
-        }, 1000);
-        $randomChampionModal2.transition({
-            opacity: 1,
-            perspective: 550,
-            rotateY: 360
-        }, 1000,  function (){
-            $randomChampionModal.remove();
-
-            //reset the click events
-            $('.randomChampionDontHaveButton').click(randomChampionDontHave);
-
-            $('.randomChampionNextButton').click(randomChampionNew);
-
-            //reset the mid animation counter
-            doingNext=false;
-        });
-    }
-    //load search button
-    $('#championSearch').keyup(function() {
-        var val=$('#championSearch').val().toLowerCase();
-        var $champion=$('.champion');
-        if (val.length===0)
-        {
-            $champion.removeClass('hiddenSearch');
-            $champion.addClass('showSearch');
-        }
-        else
-        {
-            val=val.split("|");
-            var searchresults=[];
-            for (i = 0; i < val.length; ++i) {
-                var subresult=searchFor(val[i]);
-                $.merge(searchresults,subresult);
-            }
-            //disable all champions
-            $champion.addClass('hiddenSearch');
-            $champion.removeClass('showSearch');
-            var $championDiv;
-            for (i = 0; i < searchresults.length; ++i) {
-                $championDiv=$('[data-championId=' + searchresults[i] + ']');
-                $championDiv.removeClass('hiddenSearch');
-                $championDiv.addClass('showSearch');
-            }
-        }
-    });
-
-    //update active
-    reloadActive(false);
-
-
-    //loading
-    var loaded=0;
-    var loadedPlus=(1/order.length)*(100-7*2);
-    var $championPortrait=$('.championPortrait');
-    $championPortrait.on('load',function()
-    {
-        loaded++;
-        updateProgress(loadedPlus);
-        if ($(this).parent().hasClass('toShow'))
-        {
-            $(this).parent().show();
-        }
-        if (loaded===order.length)
-        {
-            $('#ProgressContainer').remove();
-            loadData2();
-        }
-    });
-
-    //if its in cache it might have already loaded.
-    if (loaded!==order.length) {
-        $championPortrait.each(function() {
-            if (this.complete) {
-                $(this).trigger('load');
-            }
-    });
-    }
-
-    //enable random button
-    doingRandom=false;
-}
-
-function loadData2() {
-
-    "use strict";//strict mode
-
-    //the free2play button
-    $('.free2play').click(function () {
-        var $free2play=$('.free2play');
-        $free2play.toggleClass('btn-success');
-        $free2play.toggleClass('btn-default');
-        enableF2P = !enableF2P;
-        updateFree2Play();
-    });
-
-    //load the selection buttons
-    $('.roles button').click(function () {
-        //get class
-        var roleId = $(this).data('roleid');
-        //var $roleBtnClass = $('.role_' + roleId);
-
-        //switch roles
-        roles[roleId] = !roles[roleId];
-        storage.set('roles', roles);
-        //reload which champs should be active
-        reloadActive(true);
-    });
-
-    $('.dropdownRole li a').click(function () {
-        //update roleType
-        roleType = $(this).data('roleid');
-        storage.set('roleType', roleType);
-        $('.roleType').html(roleTypeOptions[roleType] + ' <span class="caret"></span>');
-        reloadActive(true);
-    });
-
-
-    $('#random').click(function () {
-        //check if we are not already busy with the previous one
-        if (doingRandom)
-        {
-            return false;
-        }
-        doingRandom=true;
-
-        //reset the excluded champions
-        champsExcluded=[];
-
-        var random=getRandomChampion([]);//no excluded champions
-        if (random===false)
-        {
-            //something went wrong, no champions
-            doingRandom=false;
-            //send a message
-            var notice=new PNotify({
-                title: 'No possible champions.',
-                text: 'Please enable at least 1 champion.',
-                opacity: 0.9,
-                type: 'error',
-                icon: 'glyphicon glyphicon-warning-sign',
-                nonblock: {
-                    nonblock: true,
-                    nonblock_opacity: 0.2
-                },
-                history: {
-                    history: false
-                }
-            });
-            notice.get().click(function() {
-                notice.options.animation='none';
-                notice.remove();
-            });
-
-            return false;
-        }
-        randomChampId=random[0];
-        var randomRole=random[1];
-        var options=random[2];
-        //because options is later padded
-        var totalOptions=options.length;
-        randomChamp = champions[randomChampId];
-
-
-        //remove this champion from the option selection if there are enough champions
-        if (options.length > 8) {
-            options.splice(options.indexOf(randomChampId), 1);
-        }
-
-        //update its playcount
-        champPlayed[randomChampId] += 1;
-        storage.set('champPlayed', champPlayed);
-
-
-        var $randomDiv = $('#randomtest');
-        $randomDiv.empty();
-        $('.randomChampionModalLore,.randomChampionModalLinks2').height(0);
-        $randomDiv.css('transform', 'translate(200px,0px)');
-        //champs before
-        var location = Math.min(Math.max(20, options.length - 10), 35) + Math.floor(Math.random() * 10);
-
-        //max is location, + 10 at the end
-        if (options.length <= location+10) {
-            var len = options.length;
-            //not enough options, fill it up!
-            while (options.length <= location+10) {
-                var key = Math.floor(Math.random() * len);
-                options.push(options[key]);
-            }
-        }
-
-        shuffle(options);
-
-        //insert the champion at the correct location
-        options[location] = randomChampId;
-        var index,html='';
-        for (index = 0; index <= location + 10; ++index) {
-            if (options[index]!==-1)
-            {
-                html+=('<img src="' + champions[options[index]].iconSRC + '">');
-            }
-        }
-        $randomDiv.append(html);
-
-        setTimeout(function () {
-            /* fade out and rotate 3 times */
-            $('#randomButton').transition({
-                opacity: 0,
-                perspective: 550,
-                rotateX: 180
-            }, 1000);
-            $('#randomSelecter').transition({
-                opacity: 1,
-                perspective: 550,
-                rotateX: 360
-            }, 1000);
-
-            $randomDiv.transition({
-                x: -(location) * 100 + $('#randomSelecterChild').width() / 2 + 400 - ((Math.random() * 70) + 15)
-            }, 3000, 'cubic-bezier(.6,-.28,.48,1)', function () {
-
-                var $randomChampionDialog=$('.randomChampionDialog');
-                //set rotation
-                $randomChampionDialog.css('transform','perspective(550px) rotateY(360deg)');
-
-                updateModal($randomChampionDialog,randomChamp,randomChampId,rolesPos[randomRole],totalOptions);
-
-                setTimeout(function () {
-                    var $randomChampionModal=$('.randomChampionModal');
-
-                    adjustModalMaxHeightAndPosition();
-                    $randomChampionModal.modal('show');
-                    setTimeout(function () {
-                        modalLoreFit(false);
-                    }, 200);
-
-                    //sometimes above does not work, then use this one:
-                    $randomChampionModal.on('shown.bs.modal', function () {
-                        modalLoreFit(true);
-                    });
-
-                    //we can random again after the modal closes
-                    $randomChampionModal.on('hidden.bs.modal', function () {
-                        doingRandom=false;
-                    });
-
-                    setTimeout(function () {
-                        $('#randomButton').transition({
-                            opacity: 1,
-                            perspective: 550,
-                            rotateX: 0
-                        }, 1000);
-                        $('#randomSelecter').transition({
-                            opacity: 0,
-                            perspective: 550,
-                            rotateX: 180
-                        }, 1000);
-                    }, 1000);
-                }, 200);
-            });
-        }, 200);
-        //false so no extra events get triggered
-        return false;
-    });
-}
-
-function updateModal(divId, randomChamp,randomChampId,role,totalOptions)
-{
-    "use strict";//strict mode
-
-    divId.find('.randomChampionModalTitle').html(randomChamp.name + ': ' + randomChamp.title);
-    divId.find('.randomChampionModalRole').html(role);
-    divId.find('.randomChampionModalLore p').html(randomChamp.description);
-
-    //probuilds
-    divId.find('.randomChampionModalProbuildLink').attr("href",'http://www.probuilds.net/champions/' + randomChamp.shortName);
-
-    //mobafire
-    divId.find('.randomChampionModalMobafireLink').attr("href",randomChamp.mobafireURL);
-
-    //lolwiki
-    divId.find('.randomChampionModalLoLWikiLink').attr("href",'http://leagueoflegends.wikia.com/wiki/' + randomChamp.name);
-
-    divId.find('.randomChampionModalBackground').css('background-image', 'url(' + randomChamp.splashSRC + ')');
-
-    //enable both buttons
-    divId.find('.randomChampionDontHaveButton').prop("disabled",false);
-    divId.find('.randomChampionNextButton').prop("disabled",false);
-
-    //check if its a free 2 play champion that has been disabled
-    if (enableF2P===true)//otherwise the champ would not have been chosen
-    {
-        if (free2play.indexOf(randomChampId)!==-1)
-        {
-            //okay, the champion is free2play, now lets see if its disabled
-            if (championsDisabled[randomChampId]===true)
-            {
-                //okay, its already disabled, no use of the "i dont have this champion button now"
-                divId.find('.randomChampionDontHaveButton').prop("disabled",true);
-            }
-        }
-    }
-    //check if we have no other option to switch to
-    if (totalOptions===1)
-    {
-        divId.find('.randomChampionNextButton').prop("disabled",true);
-    }
-}
-
-function updateProgress(loadProgress)
-{
-    "use strict";//strict mode
-
-    loadingProgress+=loadProgress;
-    $("#loadingProgress").css('width',loadingProgress+'%');
-}
-
-//knuth-shuffle
-function shuffle(array) {
-    "use strict";//strict mode
-
-    var currentIndex = array.length, temporaryValue, randomIndex;
-
-    // While there remain elements to shuffle...
-    while (0 !== currentIndex) {
-
-        // Pick a remaining element...
-        randomIndex = Math.floor(Math.random() * currentIndex);
-        currentIndex -= 1;
-
-        // And swap it with the current element.
-        temporaryValue = array[currentIndex];
-        array[currentIndex] = array[randomIndex];
-        array[randomIndex] = temporaryValue;
-    }
-
-    return array;
-}
-
-
-function getRandomChampion(excluded)
-{
-
-    "use strict";//strict mode
-
-    var $optionDivs=$('.toShow.notDisabled.showSearch, .toShow.disabled_f2p.showSearch');
-
-    //check if we have options:
-    if ($optionDivs.length===0)
-    {
-        return false;
-    }
-
-    //Get all possible champions for all roles
-    var options = [];//all options, including not chosen lanes
-    var realOptions = [[],[],[],[],[]];//the real options
-    var champId = 0;
-
-    //now lets see what champions we haven't played or played the least:
-    var leastPlayed = Number.MAX_VALUE;
-    $optionDivs.each(function () {
-        champId = $(this).data('championid');
-
-        //check if not excluded
-        if (excluded.indexOf(champId)===-1)
-        {
-            options.push(champId);
-
-            //if smaller, replace the list
-            if (champPlayed[champId]<leastPlayed)
-            {
-                //reset
-                realOptions = [[],[],[],[],[]];//the real options
-                leastPlayed=champPlayed[champId];
-            }
-
-            //if just as much (or smaller), add to the list
-            if (champPlayed[champId]<=leastPlayed)
-            {
-                //go through all roles
-                var i;
-                for (i=0;i<5;++i) {
-                    if (rolesJSON[roleType][i].indexOf(champId) !== -1)
-                    {
-                        realOptions[i].push(champId);
-                    }
-                }
-            }
-        }
-    });
-
-    var rolesFiltered=roles.slice(0);//copy
-
-    //count the amount of options
-    if ((realOptions[0].length+realOptions[1].length+realOptions[2].length+realOptions[3].length+realOptions[4].length)===0)
-    {
-        //something went wrong, we have no options!
-        return false;
-    }
-
-    //if all roles are deselected it counts as all roles being selected
-    if (!roles[0] && !roles[1] && !roles[2] && !roles[3] && !roles[4])
-    {
-        rolesFiltered=[true,true,true,true,true];
-    }
-
-    //filter the roles where there is no champion for
-    var i;
-    for (i=0;i<5;++i) {
-        if (realOptions[i].length === 0)
-        {
-            //no champions for this role
-            rolesFiltered[i]=false;
-        }
-    }
-
-    // choose a role
-    var randomRole = Math.floor(Math.random() * 5);
-
-    //make sure the role chosen is actually wanted
-    while (!rolesFiltered[randomRole]) {
-        randomRole = Math.floor(Math.random() * 5);
-    }
-
-    //go to the correct options
-    realOptions=realOptions[randomRole];
-
-    //lets get a random option
-    var randomId=realOptions[Math.floor(Math.random()*realOptions.length)];
-
-    return [randomId,randomRole,options];
-}
-
-function showFree2PlayError()
-{
-    "use strict";//strict mode
-
-    var notice = new PNotify({
-        title: 'Riot server error',
-        text: 'Failed to get free to play data from riot. Data may be missing or out of date.',
-        opacity: 0.9,
-        icon: 'glyphicon glyphicon-envelope',
-        nonblock: {
-            nonblock: true,
-            nonblock_opacity: 0.2
-        },
-        history: {
-            history: false
-        }
-    });
-    notice.get().click(function() {
-        notice.options.animation='none';
-        notice.remove();
-    });
-}
-
-function searchFor(toSearch) {
-    "use strict";//strict mode
-
-    var results = [];
-    toSearch = trimString(toSearch); // trim it
-    for(var i=0; i<order.length; i++) {
-            if(champions[order[i]].nameLower.indexOf(toSearch)!==-1) {
-                if(!itemExists(results, champions[order[i]])) {
-                    results.push(order[i]);
-                }
-            }
-    }
-    return results;
-}
-
-function trimString(s) {
-    "use strict";//strict mode
-
-    var l=0, r=s.length -1;
-    while(l < s.length && s[l] === ' ')
-    {
-        l++;
-    }
-    while(r > l && s[r] === ' '){
-        r-=1;
-    }
-    return s.substring(l, r+1);
-}
-
-
-function compareObjects(o1, o2) {
-    "use strict";//strict mode
-
-    var k;
-    for(k in o1) {
-        //noinspection JSUnfilteredForInLoop
-        if(o1[k] !== o2[k])
-        {
-            return false;
-        }
-    }
-    for(k in o2) {
-        //noinspection JSUnfilteredForInLoop
-        if(o1[k] !== o2[k])
-        {
-            return false;
-        }
-    }
-    return true;
-}
-
-function itemExists(haystack, needle) {
-    "use strict";//strict mode
-
-    for(var i=0; i<haystack.length; i++)
-    {
-        if(compareObjects(haystack[i], needle))
-        {
-            return true;
-        }
-    }
-    return false;
-}
 function adjustModalMaxHeightAndPosition(){
     $('.modal').each(function(){
         if($(this).hasClass('in') === false){

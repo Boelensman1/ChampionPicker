@@ -15,6 +15,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <link rel="stylesheet" href="dist/ChampionPick.min.css">
+    <link rel="stylesheet" href="css/main.css">
 
     <script src="dist/modernizr.min.js"></script>
 </head>
@@ -26,12 +27,12 @@
 <nav class="navbar navbar-inverse navbar-fixed-top" id="main-navbar" role="navigation">
     <div class="container">
         <div class="navbar-header">
-        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse" id="settings-btn">
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-        </button>
             <a class="navbar-brand" href="#">Champion Picker</a>
+            <button type="button" class="navbar-toggle toggle-right" data-toggle="sidebar" data-target=".sidebar-right">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
         </div>
         <div class="collapse navbar-collapse" style="display:none !important" id="navbar-collapse">
             <p>
@@ -41,14 +42,13 @@
     </div>
 </nav>
 
-
 <!-- Modal -->
 <div class="modal fade randomChampionModal" tabindex="-1" role="dialog">
     <div class="modal-dialog randomChampionDialog">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title randomChampionModalTitle">Champname</h4>
+                <h3 class="modal-title randomChampionModalTitle">Champname</h3>
                 <h4 class="randomChampionModalRole">ChampRole</h4>
             </div>
             <div class="modal-body randomChampionModalBody">
@@ -113,7 +113,7 @@
                     <span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu dropdownRole" role="menu">
-                    <li><a data-roleId="0" href="#">All</a></li>
+                    <li><a data-roleId="0" href="#" class="btn-all">All</a></li>
                     <li><a data-roleId="1" href="#">Loose</a></li>
                     <li><a data-roleId="2" href="#">Normal</a></li>
                     <li><a data-roleId="3" href="#">Strict</a></li>
@@ -138,7 +138,7 @@
                     <span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu dropdownRole col-xs-12" role="menu">
-                    <li><a data-roleId="0" href="#">All</a></li>
+                    <li><a data-roleId="0" href="#" class="btn-all">All</a></li>
                     <li><a data-roleId="1" href="#">Loose</a></li>
                     <li><a data-roleId="2" href="#">Normal</a></li>
                     <li><a data-roleId="3" href="#">Strict</a></li>
@@ -150,10 +150,10 @@
         <div class="visible-xs-block col-xs-12"><p></p></div>
 
         <div class="col-md-2 col-sm-3  hidden-xs">
-            <p><a class="btn btn-success btn-block free2play" onclick="this.blur();" href="#" role="button">Free To Play</a></p>
+            <p><button class="btn btn-success btn-block free2play" data-text="Free To Play" onclick="this.blur();" href="#" role="button"><p>Free To Play</p></button></p>
         </div>
         <div class="visible-xs-block col-xs-5">
-            <p><a class="btn btn-success btn-block free2play" onclick="this.blur();" href="#" role="button">Free2Play</a></p>
+            <p><button class="btn btn-success btn-block free2play" data-text="Free2Play" onclick="this.blur();" href="#" role="button"><p>Free2Play</p></button></p>
         </div>
         <div class=" col-md-4 col-sm-12 col-xs-7">
             <form role="form">
@@ -175,6 +175,62 @@
 
         <!--here come the champions-->
         <ul id="champions"></ul>
+
+
+        <!--settings-->
+        <div class="col-xs-7 col-sm-3 col-md-3 sidebar sidebar-right sidebar-animate">
+            <ul class="nav navbar-stacked">
+                <div class="form-horizontal">
+                    <fieldset>
+
+                        <!-- Button -->
+                        <div class="col-xs-12" style="padding: 0px;">
+                            <button id="btn-force-reload" data-toggle="confirmation" data-placement="left" data-singleton="true" data-popout="true" data-container="body" onclick="this.blur();" class="btn btn-primary btn-block">Reload</button>
+                        </div>
+
+                        <div class="col-xs-12">
+                            <p></p>
+                        </div>
+
+                        <!-- Button (Double) -->
+                        <div class="form-group">
+                            <label class="col-xs-12" for="btn-reset-champions">Reset</label>
+                            <div class="col-xs-12">
+                                <button id="btn-reset-playcount" data-toggle="confirmation" data-singleton="true" data-popout="true" data-container="body" onclick="this.blur();" class="btn btn-warning col-md-6 col-xs-12">Playcount</button>
+                                <div class="visible-xs-block visible-sm-block">&nbsp;</div>
+                                <button id="btn-reset-champions" data-toggle="confirmation" data-singleton="true" data-popout="true" data-container="body" onclick="this.blur();" class="btn btn-danger col-md-6 col-xs-12">Enabled</button>
+                            </div>
+                        </div>
+
+                        <!-- Prepended text-->
+                        <div class="form-group">
+                            <label class="col-xs-12" for="settingsExport">Export & Import</label>
+                            <div class="col-xs-12">
+                                <div class="input-group">
+                                    <span class="input-group-addon">export</span>
+                                    <input id="settingsExport" data-toggle="confirmation" data-singleton="true" data-popout="true" data-container="body" class="form-control" placeholder="placeholder" type="text">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Button Drop Down -->
+                        <div class="form-group">
+                            <div class="col-xs-12">
+                                <div class="input-group">
+                                    <input id="settingsImport" name="buttondropdown" class="form-control" placeholder="paste here" type="text">
+                                    <div class="input-group-btn">
+                                        <button type="button" onclick="this.blur();" id="settingsImportButton" class="btn btn-default">
+                                            Import
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </fieldset>
+                </div>
+            </ul>
+        </div>
     </div>
 </div>
 
@@ -211,6 +267,7 @@
 <script>window.jQuery || document.write('<script src="bower_components/jquery/dist/jquery.min.js"><\/script>')</script>
 
 <script src="dist/ChampionPick.min.js" async></script>
+<script src="js/main.js" async></script>
 
 <!-- Google Analytics-->
 <script>

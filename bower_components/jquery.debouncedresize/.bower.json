@@ -31,6 +31,5 @@
   },
   "_source": "git://github.com/AndrewDryga/jQuery.DebouncedResize.git",
   "_target": "~1.0.1",
-  "_originalSource": "jquery.debouncedresize",
-  "_direct": true
+  "_originalSource": "jquery.debouncedresize"
 }

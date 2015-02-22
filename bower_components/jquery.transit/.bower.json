@@ -23,6 +23,5 @@
   },
   "_source": "git://github.com/rstacruz/jquery.transit.git",
   "_target": "~0.9.12",
-  "_originalSource": "jquery.transit",
-  "_direct": true
+  "_originalSource": "jquery.transit"
 }

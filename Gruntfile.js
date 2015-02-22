@@ -18,6 +18,8 @@ module.exports = function (grunt) {
             },
             dist: {
                 src: ['bower_components/bootstrap/dist/js/bootstrap.min.js',
+                    'bower_components/bootstrap-sidebar/dist/js/sidebar.js',
+                    'bower_components/bootstrap-confirmation2/bootstrap-confirmation.min.js',
                     'bower_components/FitText.js/jquery.fittext.js',
                     'bower_components/jquery.debouncedresize/js/jquery.debouncedresize.js',
                     'bower_components/jquery.transit/jquery.transit.js',
@@ -25,7 +27,7 @@ module.exports = function (grunt) {
                     'bower_components/jQuery-Storage-API/jquery.storageapi.min.js',
                     'bower_components/pnotify/pnotify.core.js',
                     'bower_components/pnotify/pnotify.nonblock.js',
-                    'js/main.js',
+                    //'js/main.js',
                     'js/extra/centerModal.js'],
                 dest: 'dist/<%= pkg.name %>.js'
             }
@@ -34,9 +36,11 @@ module.exports = function (grunt) {
             dist: {
                 src: ['bower_components/bootstrap/dist/css/bootstrap.min.css',
                     'bower_components/bootstrap/dist/css/bootstrap-theme.min.css',
+                    'bower_components/bootstrap-sidebar/dist/css/sidebar.css',
                     'bower_components/pnotify/pnotify.core.css',
                     'bower_components/pnotify/pnotify.nonblock.css',
-                    "css/*.css"],
+                    "css/*.css"
+                ],
                 dest: "dist/<%= pkg.name %>.css"
             }
         },
@@ -89,6 +93,14 @@ module.exports = function (grunt) {
                 src: 'Gruntfile.js'
             }
         },
+        copy: {
+            files: {
+                cwd: 'bower_components/bootstrap/dist/fonts/',  // set working folder / root to copy
+                src: '*',           // copy all files and subfolders
+                dest: 'dist/fonts/',    // destination folder
+                expand: true           // required when using cwd
+            }
+        },
         watch: {
             gruntfile: {
                 files: '<%= jshint.gruntfile.src %>',
@@ -104,8 +116,9 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-cssmin');
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-contrib-watch');
+    grunt.loadNpmTasks('grunt-contrib-copy');
 
     // Default task.
-    grunt.registerTask('default', ['jshint', 'concat','concat_css', 'uglify','cssmin']);
+    grunt.registerTask('default', ['jshint', 'concat','concat_css','copy', 'uglify','cssmin']);
 
 };
