@@ -511,10 +511,7 @@ function loadData() {
         //reload the data after 5 seconds
         setTimeout(function () {
             loading=6;
-            loadChampionData();
-            loadOrderData();
-            loadF2PData();
-            loadRoleData();
+            forceReload();
         }, 5000);
 
         //init everything

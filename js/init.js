@@ -356,9 +356,9 @@ function init()
     });
 
     //define the settings buttons
-    $('#btn-force-reload').confirmation({onConfirm:function(){
+    $('#btn-force-reload').click(function(){
         forceReload();
-    }});
+    });
 
     $('#btn-reset-playcount').confirmation({onConfirm:function(){
         var i;
