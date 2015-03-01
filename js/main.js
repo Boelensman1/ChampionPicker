@@ -1,7 +1,8 @@
-//init all variables
-/*jslint latedef:false*/
 /*global adjustModalMaxHeightAndPosition */
 /*global Modernizr */
+/*jshint latedef:false, unused: false, undef:false */
+
+//init all variables
 var roles = [false, false, false, false, false];
 var roleTypeOptions = ['All', 'Loose', 'Normal', 'Strict'];
 var roleType = 2;
@@ -180,8 +181,8 @@ $(function () {
     loading--;
     updateProgress(2);
 
-    //load the init script
-    $.getScript("js/init.js", function(){
+    //load the later scripts
+    $.getScript("dist/ChampionPick-after.min.js", function(){
         loading--;
 
         updateProgress(2);
@@ -499,147 +500,6 @@ function loadF2PData() {
         }
 
     });
-}
-function loadData() {
-    "use strict";//strict mode
-
-    //save the roles
-    storage.set('rolesJSON', rolesJSON);
-
-    if (loadedOnce===false) {
-        loadedOnce=true;
-        //reload the data after 5 seconds
-        setTimeout(function () {
-            loading=6;
-            forceReload();
-        }, 5000);
-
-        //init everything
-        init();
-    }
-    else
-    {
-        //empty, so we don't get double everything
-        $('#champions').empty();
-    }
-
-
-    var i, index, divId, html = '';
-    for (i = 0; i < order.length; ++i) {
-        index = order[i];
-        divId = champions[index].name.replace(/\W/g, '');
-        champions[index].shortName = divId;
-        if (champions[index].name.length > 8) {
-            largeNames.push(divId);
-        }
-
-        //Insert the champion, first don't display because its still loading
-        html += '<li style="display:none" id="champ' + divId + '" class="col-lg-1 col-md-1 col-sm-2 col-xs-3 champion toShow showSearch showF2P" data-championId="' + index + '"><img class="img-responsive championPortrait" src="' + champions[index].iconSRC + '"><span class="label label-default center-block championLabel">' + champions[index].name + '</span></li>';
-    }
-    $('#champions').append(html);
-
-    //update active
-    //loading
-    var loaded = 0;
-    var loadedPlus = (100-16)*1/(order.length);//16 == loading * 2;
-    var $championPortrait = $('.championPortrait');
-    $championPortrait.on('load', function () {
-        loaded++;
-        updateProgress(loadedPlus);
-        if ($(this).parent().hasClass('toShow')) {
-            $(this).parent().show();
-        }
-        if (loaded === order.length) {
-            $('#ProgressContainer').hide();
-            //make some big champion names smaller on big screen
-            champTextFit();
-        }
-    });
-
-    //if its in cache it might have already loaded.
-    if (loaded !== order.length) {
-        $championPortrait.each(function () {
-            if (this.complete) {
-                $(this).trigger('load');
-            }
-        });
-    }
-    reloadActive(false);
-
-    //check if we have champions
-    if (storage.isSet('championsDisabled') && !storage.isEmpty('championsDisabled')) {
-        championsDisabled = storage.get('championsDisabled');
-    }
-    else{
-        championsDisabled = {};
-        for (i = 0; i < order.length; ++i) {
-            index = order[i];
-            championsDisabled[index] = false;
-        }
-        storage.set('championsDisabled', championsDisabled);
-    }
-
-
-    //get champion playcount
-    if (storage.isSet('champPlayed') && !storage.isEmpty('champPlayed')) {
-        champPlayed = storage.get('champPlayed');
-    } else {
-        champPlayed = {};
-        storage.set('champPlayed', champPlayed);
-    }
-
-    //update disabled
-    for (i = 0; i < order.length; ++i) {
-        index = order[i];
-        if (championsDisabled[index]) {
-            $('[data-championId=' + index + ']').addClass('disabled');
-        }
-        else {
-            $('[data-championId=' + index + ']').addClass('notDisabled');
-        }
-    }
-
-    //free 2play
-    var $championDiv;
-    for (index = 0; index < free2play.length; ++index) {
-        $championDiv = $('[data-championId=' + free2play[index] + ']');
-        $championDiv.addClass('Free2Play');
-        $championDiv.find('span').removeClass('label-default');
-        $championDiv.find('span').addClass('label-success');
-    }
-    updateFree2Play();
-
-    //load the champ click events
-    $('.champion').click(function () {
-        //toggle the classes
-        $(this).toggleClass('notDisabled');
-
-        var champId = $(this).data('championid');
-
-        var disabled;
-        if ($(this).hasClass('Free2Play')) {
-            //if free 2 play enabled, only half disable it
-            if (free2playState === 1) {
-                $(this).toggleClass('disabled_f2p');
-                disabled = $(this).hasClass('disabled_f2p');
-            }
-            else {
-                //fully disable
-                $(this).toggleClass('disabled');
-                disabled = $(this).hasClass('disabled');
-            }
-        }
-        else {
-            $(this).toggleClass('disabled');
-            disabled = $(this).hasClass('disabled');
-        }
-
-        championsDisabled[champId] = disabled;
-        storage.set('championsDisabled', championsDisabled);
-    });
-
-    //enable random button
-    doingRandom = false;
 }
 
 function updateModal(divId, randomChamp, randomChampId, role, totalOptions) {

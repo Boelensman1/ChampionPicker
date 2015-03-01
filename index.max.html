@@ -15,7 +15,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <link rel="stylesheet" href="dist/ChampionPick.min.css">
-    <link rel="stylesheet" href="css/main.css">
+    <!--<link rel="stylesheet" href="css/main.css">-->
 
     <script src="dist/modernizr.min.js"></script>
 </head>
@@ -178,7 +178,7 @@
 
 
         <!--settings-->
-        <div class="col-xs-7 col-sm-3 col-md-3 sidebar sidebar-right sidebar-animate">
+        <div class="col-xs-7 col-sm-3 col-md-3 sidebar sidebar-right sidebar-animate" id="sidebarSettings">
             <ul class="nav navbar-stacked">
                 <div class="form-horizontal">
                     <fieldset>
@@ -196,9 +196,9 @@
                         <div class="form-group">
                             <label class="col-xs-12" for="btn-reset-champions">Reset</label>
                             <div class="col-xs-12">
-                                <button id="btn-reset-playcount" data-toggle="confirmation" data-singleton="true" data-popout="true" data-container="body" onclick="this.blur();" class="btn btn-warning col-md-6 col-xs-12">Playcount</button>
+                                <button id="btn-reset-playcount" data-toggle="confirmation" data-singleton="true" data-popout="true" data-container="#sidebarSettings" onclick="this.blur();" class="btn btn-warning col-md-6 col-xs-12">Playcount</button>
                                 <div class="visible-xs-block visible-sm-block">&nbsp;</div>
-                                <button id="btn-reset-champions" data-toggle="confirmation" data-singleton="true" data-popout="true" data-container="body" onclick="this.blur();" class="btn btn-danger col-md-6 col-xs-12">Enabled</button>
+                                <button id="btn-reset-champions" data-toggle="confirmation" data-singleton="true" data-popout="true" data-container="#sidebarSettings" onclick="this.blur();" class="btn btn-danger  col-md-6 col-xs-12">Enabled</button>
                             </div>
                         </div>
 
@@ -208,7 +208,7 @@
                             <div class="col-xs-12">
                                 <div class="input-group">
                                     <span class="input-group-addon">export</span>
-                                    <input id="settingsExport" data-toggle="confirmation" data-singleton="true" data-popout="true" data-container="body" class="form-control" placeholder="placeholder" type="text">
+                                    <input id="settingsExport" data-toggle="confirmation" data-singleton="true" data-popout="true" data-container="#sidebarSettings" class="form-control" placeholder="placeholder" type="text">
                                 </div>
                             </div>
                         </div>
@@ -238,21 +238,30 @@
     <!-- Example row of columns -->
     <div class="row">
         <div class="col-md-6">
-            <h2>Help</h2>
+            <h2>Disclaimer</h2>
 
-            <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris
-                condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis
-                euismod. Donec sed odio dui. </p>
+            <p>This product is not endorsed, certified or otherwise approved in any way by Riot Games, Inc. or any of its affiliates.
+                <br>
+                In no event will we be liable for any loss or damage including without limitation,
+                indirect or consequential loss or damage,or any loss or damage whatsoever arising from loss of data or profits arising out of,
+                or in connection with, the use of this website.
+                <br>
+                Through this website you are able to link to other websites which are not under the control of ChampionPick.
+                We have no control over the nature, content and availability of those sites.
+                The inclusion of any links does not necessarily imply a recommendation or endorse the views expressed within them.
+            </p>
 
         </div>
         <div class="col-md-6">
+            <h2>Info</h2>
+
+            <p>To enable or disable a champion, click on it.
+                The random function takes into account how often every champion was randomly picked to make sure you will play every champion you own.</p>
+
             <h2>Contact</h2>
-
-            <p>Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula
-                porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut
-                fermentum massa justo sit amet risus.</p>
-
-            <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
+            <p>If you have any questions or would like to hire me for a project,
+                contact me at <a href="mailto:EMAIL" id="email">EMAIL</a>.
+            If you would like to to help me pay my student loans you can <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=3DCY2JTBW8T3Y">donate</a>, which would be greatly appreciated!</p>
         </div>
     </div>
 
@@ -267,7 +276,7 @@
 <script>window.jQuery || document.write('<script src="bower_components/jquery/dist/jquery.min.js"><\/script>')</script>
 
 <script src="dist/ChampionPick.min.js" async></script>
-<script src="js/main.js" async></script>
+<!--<script src="js/main.js" async></script>-->
 
 <!-- Google Analytics-->
 <script>
