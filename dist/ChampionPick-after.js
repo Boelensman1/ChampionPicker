@@ -916,7 +916,7 @@ function loadData() {
         var disabled;
         if ($(this).hasClass('Free2Play')) {
             //if free 2 play enabled, only half disable it
-            if (free2playState === 1) {
+            if (free2playState !== 0) {
                 $(this).toggleClass('disabled_f2p');
                 disabled = $(this).hasClass('disabled_f2p');
             }

@@ -1617,6 +1617,10 @@ function updateFree2Play() {
 
             $Free2PlayChampions.removeClass('hiddenF2P');
             $Free2PlayChampions.addClass('showF2P');
+            
+            $Free2PlayChampions = $('.Free2Play.disabled');
+            $Free2PlayChampions.addClass('disabled_f2p');
+            $Free2PlayChampions.removeClass('disabled');
         }
     }
     //update f2p
