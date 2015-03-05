@@ -1272,9 +1272,30 @@ else {
     championsDisabled = null;
 }
 
+
 if (storage.isSet('roleType')) {
     roleType = storage.get('roleType');
 } else {
+    //roleType is not set, so this prob. the first time the user went to this website
+    var notice = new PNotify({
+        title: 'Info',
+        text: 'Click on a champion to disable it.',
+        opacity: 0.9,
+        icon: 'glyphicon glyphicon-envelope',
+        nonblock: {
+            nonblock: true,
+            nonblock_opacity: 0.2
+        },
+        history: {
+            history: false
+        },
+        delay: 10000
+    });
+    notice.get().click(function () {
+        notice.options.animation = 'none';
+        notice.remove();
+    });
+
     roleType = 2;
     storage.set('roleType', roleType);
 }
