@@ -1,0 +1,37 @@
+{
+  "engines": {
+    "node": ">= 0.10.0"
+  },
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-concat-css": "^0.3.1",
+    "grunt-contrib-concat": "^0.5.0",
+    "grunt-contrib-copy": "^0.7.0",
+    "grunt-contrib-cssmin": "^0.12.1",
+    "grunt-contrib-htmlmin": "^0.4.0",
+    "grunt-contrib-jshint": "^0.11.0",
+    "grunt-contrib-uglify": "^0.7.0",
+    "grunt-contrib-watch": "^0.6.1",
+    "grunt-init": "^0.3.2",
+    "grunt-yui-compressor": "^0.3.3",
+    "install": "^0.1.8",
+    "npm": "^2.5.0"
+  },
+  "name": "ChampionPick",
+  "description": "A website for picking a random league of legends champion.",
+  "version": "0.1.0",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://Boelensman1@github.com/Boelensman1/ChampionPicker.github.io.git"
+  },
+  "author": "Wigger Boelens",
+  "license": "Commercial",
+  "bugs": {
+    "url": "https://github.com/Boelensman1/ChampionPicker.github.io/issues"
+  },
+  "homepage": "https://github.com/Boelensman1/ChampionPicker.github.io"
+}
