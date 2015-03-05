@@ -1,4 +1,4 @@
-/*! ChampionPick - v0.1.0 - 2015-03-01
+/*! ChampionPick - v0.1.0 - 2015-03-05
 * https://github.com/Boelensman1/ChampionPicker.github.io
 * Copyright (c) 2015 ; Licensed  */
 /*!
