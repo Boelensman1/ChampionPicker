@@ -17,7 +17,7 @@
     "tests"
   ],
   "dependencies": {
-    "bootstrap": "~3.3.2",
+    "bootstrap": "~3.3.4",
     "pnotify": "~2.0.1",
     "bootstrap-sidebar": "~0.2.2",
     "jquery-textfill": "~0.6.0",
