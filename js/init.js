@@ -3,74 +3,155 @@
 function loadData() {
     "use strict";//strict mode
 
+    //disable random button
+    doingRandom = true;
+
     //save the roles
     storage.set('rolesJSON', rolesJSON);
 
-    if (loadedOnce===false) {
-        loadedOnce=true;
+    var firstLoad = false;
+    if (loadedOnce === false) {
+        loadedOnce = true;
+        firstLoad = true;
         //reload the data after 5 seconds
         setTimeout(function () {
-            loading=6;
             forceReload();
         }, 5000);
 
         //init everything
         init();
     }
-    else
-    {
-        //empty, so we don't get double everything
-        $('#champions').empty();
-    }
 
+    //if this is the second time, only updat the champions if they changed
+    var i, index, $champions = $('#champions');
+    if (firstLoad && order.length !== $champions.find('li').length) {
+        var divId, newhtml, html = '';
+        for (i = 0; i < order.length; ++i) {
+            index = order[i];
+            divId = champions[index].name.replace(/\W/g, '');
+            champions[index].shortName = divId;
+            if (champions[index].name.length > 8) {
+                largeNames.push(divId);
+            }
 
-    var i, index, divId, html = '';
-    for (i = 0; i < order.length; ++i) {
-        index = order[i];
-        divId = champions[index].name.replace(/\W/g, '');
-        champions[index].shortName = divId;
-        if (champions[index].name.length > 8) {
-            largeNames.push(divId);
+            //Insert the champion, first don't display because its still loading
+            newhtml = '<li ';
+            if (firstLoad) {
+                newhtml += 'style="display:none" ';
+            }
+
+            newhtml += 'id="champ' + divId + '" class="col-lg-1 col-md-1 col-sm-2 col-xs-3 champion toShow showSearch showF2P ';
+
+            //check if disabled
+            if (championsDisabled[index]) {
+                newhtml += 'disabled '; //adds this class
+            }
+            else {
+                newhtml += 'notDisabled '; //adds this class
+            }
+
+            //check if free2play
+            var isfree2play = free2play.indexOf(index) > -1;
+            if (isfree2play) {
+                newhtml += 'Free2Play '; //adds this class
+            }
+
+            newhtml += '" data-championId="' + index + '"><img class="img-responsive championPortrait" src="' + champions[index].iconSRC + '"><span class="label center-block championLabel ';
+
+            if (isfree2play) {
+                newhtml += 'label-success';
+            }
+            else {
+                newhtml += 'label-default';
+            }
+
+            newhtml += '">' + champions[index].name + '</span></li>';
+
+            html += newhtml;
         }
 
-        //Insert the champion, first don't display because its still loading
-        html += '<li style="display:none" id="champ' + divId + '" class="col-lg-1 col-md-1 col-sm-2 col-xs-3 champion toShow showSearch showF2P" data-championId="' + index + '"><img class="img-responsive championPortrait" src="' + champions[index].iconSRC + '"><span class="label label-default center-block championLabel">' + champions[index].name + '</span></li>';
-    }
-    $('#champions').append(html);
 
-    //update active
-    //loading
-    var loaded = 0;
-    var loadedPlus = (100-16)*1/(order.length);//16 == loading * 2;
-    var $championPortrait = $('.championPortrait');
-    $championPortrait.on('load', function () {
-        loaded++;
-        updateProgress(loadedPlus);
-        if ($(this).parent().hasClass('toShow')) {
-            $(this).parent().show();
+        //apply the chagnes
+        if (!firstLoad) {
+            //empty, so we don't get double everything
+            $champions.empty();
         }
-        if (loaded === order.length) {
+        $champions.append(html);
+
+        //load the portraits
+        if (firstLoad) {
+            var loaded = 0;
+            var loadedPlus = (100 - 16) / (order.length);//16 == loading * 2;
+            var $championPortrait = $('.championPortrait');
+            $championPortrait.on('load', function () {
+                loaded++;
+                updateProgress(loadedPlus);
+                if ($(this).parent().hasClass('toShow')) {
+                    $(this).parent().show();
+                }
+                if (loaded === order.length) {
+                    $('#ProgressContainer').hide();
+                    //make some big champion names smaller on big screen
+                    champTextFit();
+                }
+            });
+
+            //if its in cache it might have already loaded.
+            if (loaded !== order.length) {
+                $championPortrait.each(function () {
+                    if (this.complete) {
+                        $(this).trigger('load');
+                    }
+                });
+            }
+        }
+        else {
             $('#ProgressContainer').hide();
             //make some big champion names smaller on big screen
             champTextFit();
         }
-    });
 
-    //if its in cache it might have already loaded.
-    if (loaded !== order.length) {
-        $championPortrait.each(function () {
-            if (this.complete) {
-                $(this).trigger('load');
+        //load the champ click events
+        $('.champion').click(function () {
+            //toggle the classes
+            $(this).toggleClass('notDisabled');
+
+            var champId = $(this).data('championid');
+
+            var disabled;
+            if ($(this).hasClass('Free2Play')) {
+                //if free 2 play enabled, only half disable it
+                if (free2playState !== 0) {
+                    $(this).toggleClass('disabled_f2p');
+                    disabled = $(this).hasClass('disabled_f2p');
+                }
+                else {
+                    //fully disable
+                    $(this).toggleClass('disabled');
+                    disabled = $(this).hasClass('disabled');
+                }
             }
+            else {
+                $(this).toggleClass('disabled');
+                disabled = $(this).hasClass('disabled');
+            }
+
+            championsDisabled[champId] = disabled;
+            storage.set('championsDisabled', championsDisabled);
         });
     }
+    else {
+        $('#ProgressContainer').hide();
+    }
+
+    //DOM is now ready, lets load some aditional stuff, start by checking search etc.
     reloadActive(false);
 
     //check if we have champions
     if (storage.isSet('championsDisabled') && !storage.isEmpty('championsDisabled')) {
         championsDisabled = storage.get('championsDisabled');
     }
-    else{
+    else {
         championsDisabled = {};
         for (i = 0; i < order.length; ++i) {
             index = order[i];
@@ -88,64 +169,12 @@ function loadData() {
         storage.set('champPlayed', champPlayed);
     }
 
-    //update disabled
-    for (i = 0; i < order.length; ++i) {
-        index = order[i];
-        if (championsDisabled[index]) {
-            $('[data-championId=' + index + ']').addClass('disabled');
-        }
-        else {
-            $('[data-championId=' + index + ']').addClass('notDisabled');
-        }
-    }
-
-    //free 2play
-    var $championDiv;
-    for (index = 0; index < free2play.length; ++index) {
-        $championDiv = $('[data-championId=' + free2play[index] + ']');
-        $championDiv.addClass('Free2Play');
-        $championDiv.find('span').removeClass('label-default');
-        $championDiv.find('span').addClass('label-success');
-    }
-    updateFree2Play();
-
-    //load the champ click events
-    $('.champion').click(function () {
-        //toggle the classes
-        $(this).toggleClass('notDisabled');
-
-        var champId = $(this).data('championid');
-
-        var disabled;
-        if ($(this).hasClass('Free2Play')) {
-            //if free 2 play enabled, only half disable it
-            if (free2playState !== 0) {
-                $(this).toggleClass('disabled_f2p');
-                disabled = $(this).hasClass('disabled_f2p');
-            }
-            else {
-                //fully disable
-                $(this).toggleClass('disabled');
-                disabled = $(this).hasClass('disabled');
-            }
-        }
-        else {
-            $(this).toggleClass('disabled');
-            disabled = $(this).hasClass('disabled');
-        }
-
-        championsDisabled[champId] = disabled;
-        storage.set('championsDisabled', championsDisabled);
-    });
-
     //enable random button
     doingRandom = false;
 }
 
 
-
-function init()
-{
+function init() {
     'use strict';
 
     //init modal
@@ -218,9 +247,8 @@ function init()
         }
 
         //update its playcount
-        if (champPlayed[random]===undefined)
-        {
-            champPlayed[random]=0;
+        if (champPlayed[random] === undefined) {
+            champPlayed[random] = 0;
         }
         champPlayed[random] += 1;
         storage.set('champPlayed', champPlayed);
@@ -333,7 +361,7 @@ function init()
     });
 
     //load the selection buttons
-    $('.roles button').click(function () {
+    $('.btn-role').click(function () {
         //get class
         var roleId = $(this).data('roleid');
 
@@ -403,9 +431,8 @@ function init()
         }
 
         //update its playcount
-        if (champPlayed[randomChampId]===undefined)
-        {
-            champPlayed[randomChampId]=0;
+        if (champPlayed[randomChampId] === undefined) {
+            champPlayed[randomChampId] = 0;
         }
         champPlayed[randomChampId] += 1;
         storage.set('champPlayed', champPlayed);
@@ -502,69 +529,73 @@ function init()
     });
 
     //define the settings buttons
-    $('#btn-force-reload').click(function(){
+    $('#btn-force-reload').click(function () {
         forceReload();
     });
 
-    $('#btn-reset-playcount').confirmation({onConfirm:function(){
-        var i;
-        champPlayed = {};
-        storage.set('champPlayed', champPlayed);
+    $('#btn-reset-playcount').confirmation({
+        onConfirm: function () {
+            var i;
+            champPlayed = {};
+            storage.set('champPlayed', champPlayed);
 
 
-        var notice = new PNotify({
-            title: 'Playcount',
-            text: 'The playcount has been reset.',
-            opacity: 0.9,
-            icon: 'glyphicon glyphicon-envelope',
-            nonblock: {
-                nonblock: true,
-                nonblock_opacity: 0.2
-            },
-            history: {
-                history: false
-            }
-        });
+            var notice = new PNotify({
+                title: 'Playcount',
+                text: 'The playcount has been reset.',
+                opacity: 0.9,
+                icon: 'glyphicon glyphicon-envelope',
+                nonblock: {
+                    nonblock: true,
+                    nonblock_opacity: 0.2
+                },
+                history: {
+                    history: false
+                }
+            });
 
-        notice.get().click(function () {
-            notice.options.animation = 'none';
-            notice.remove();
-        });
-    }});
+            notice.get().click(function () {
+                notice.options.animation = 'none';
+                notice.remove();
+            });
+        }
+    });
 
-    $('#btn-reset-champions').confirmation({onConfirm:function(){
-        championsDisabled=[];
-        storage.set('championsDisabled', championsDisabled);
-        forceReload();
-    }});
+    $('#btn-reset-champions').confirmation({
+        onConfirm: function () {
+            championsDisabled = [];
+            storage.set('championsDisabled', championsDisabled);
+            forceReload();
+        }
+    });
 
     //load export data
-    $('.sidebar').on('show.bs.sidebar',function(){
-        var i, exportString={};
+    $('.sidebar').on('show.bs.sidebar', function () {
+        var i, exportString = {};
         for (i = 0; i < exportKeys.length; ++i) {
-            exportString[exportKeys[i]]=storage.get(exportKeys[i]);
+            exportString[exportKeys[i]] = storage.get(exportKeys[i]);
         }
         $('#settingsExport').val(JSON.stringify(exportString));
     });
 
     //on click select all
-    $('#settingsExport').click(function(){
+    $('#settingsExport').click(function () {
         this.setSelectionRange(0, this.value.length);
     });
 
     //on double click, copy
-    $('#settingsExport').dblclick(function(){
+    $('#settingsExport').dblclick(function () {
 
     });
 
     //on click import
-    $('#settingsImportButton').click(function(){
-        var i,key, keys, json=JSON.parse($('#settingsImport').val());
-        keys=Object.keys(json);
+    $('#settingsImportButton').click(function () {
+        var i, key, keys, json = JSON.parse($('#settingsImport').val());
+        keys = Object.keys(json);
         for (i = 0; i < keys.length; ++i) {
-            key=keys[i];
+            key = keys[i];
             storage.set(key, json[key]);
-            window[key]=json[key];
+            window[key] = json[key];
         }
         forceReload();
     });

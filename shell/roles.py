@@ -1,21 +1,12 @@
+#!/usr/bin/python
+
 from unicurses import *
 import os
 import json
 import sys
 
-if (len(sys.argv) > 2 or len(sys.argv) == 1):
-    print 'Usage: roles.py { strict | normal | loose }'
-    sys.exit(1)
-if str(sys.argv[1]) == 'strict':
-    datafilename = 'rolesStrict.json'
-elif str(sys.argv[1]) == 'normal':
-    datafilename = 'rolesNormal.json'
-elif str(sys.argv[1]) == 'loose':
-    datafilename = 'rolesLoose.json'
-else:
-    print 'Usage: roles.py { strict | normal | loose }'
-    sys.exit(1)
-    
+datafilename='roles.json'
+
 #get the champions
 basepath = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 #print basepath
