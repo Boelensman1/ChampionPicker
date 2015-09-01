@@ -4,8 +4,7 @@
 
 //init all variables
 var roles = [false, false, false, false, false];
-var roleTypeOptions = ['All', 'Loose', 'Normal', 'Strict'];
-var roleType = 2;
+var rolesSane = true;
 var rolesPos = ['Toplane', 'Jungle', 'Midlane', 'Marksman', 'Support'];
 var rolesJSON;
 
@@ -27,29 +26,28 @@ var randomChamp;
 var randomChampId;
 var champsExcluded;
 
-var loading = 8; //countdown till all JSON is loaded
+var loadSteps=6;
+var loading = loadSteps; //countdown till all JSON is loaded
 var loadedOnce=false;
 var loadingProgress = 0; //the progress bar
+
+var firstTime=false;
 
 var DOMReady = false;
 var region = 'EUW';
 
-var exportKeys=['champPlayed', 'free2playState', 'roleType', 'roles','championsDisabled'];
-
-//set pnotify styling and options
-/* global PNotify */
-PNotify.prototype.options.styling = "bootstrap3";
-PNotify.prototype.options.delay = 3000;//3 seconds
+var exportKeys=['champPlayed', 'free2playState', 'roles','championsDisabled'];
 
 //init easy storage
 //var ns = $.initNamespaceStorage('championPicker');
 //check if we support localstorage
+var storage;
 if (Modernizr.localstorage) {
-    var storage = $.localStorage;
+    storage = $.localStorage;
 }
 else {
     //no, lets do cookies
-    var storage = $.cookieStorage;
+    storage = $.cookieStorage;
 }
 if (storage.isSet('championsDisabled')) {
     championsDisabled = storage.get('championsDisabled');
@@ -59,35 +57,21 @@ else {
 }
 
 
-if (storage.isSet('roleType')) {
-    roleType = storage.get('roleType');
+if (storage.isSet('rolesSane')) {
+    rolesSane = storage.get('rolesSane');
+    updateSaneRoles();
 } else {
-    //roleType is not set, so this prob. the first time the user went to this website
-    var notice = new PNotify({
-        title: 'Info',
-        text: 'Click on a champion to disable it.',
-        opacity: 0.9,
-        icon: 'glyphicon glyphicon-envelope',
-        nonblock: {
-            nonblock: true,
-            nonblock_opacity: 0.2
-        },
-        history: {
-            history: false
-        },
-        delay: 10000
-    });
-    notice.get().click(function () {
-        notice.options.animation = 'none';
-        notice.remove();
-    });
-
-    roleType = 2;
-    storage.set('roleType', roleType);
+    //rolesSane is not set, so this prob. the first time the user went to this website
+    firstTime =true;
+    rolesSane = true;
+    storage.set('rolesSane', rolesSane);
 }
 
-$('.roleType').html(roleTypeOptions[roleType] + ' <span class="caret"></span>');
-
+//set rolesSane element to the correct state
+if (!rolesSane)
+{
+    $('btn-role-sane').removeClass('active');
+}
 
 if (storage.isSet('free2playState')) {
 
@@ -126,7 +110,6 @@ switch (free2playState) {
 //reset the button
 free2playTimout = setTimeout(function () {
     'use strict';
-
     $free2play.find('p').text($free2play.data('text'));
 }, 1000);
 
@@ -175,8 +158,8 @@ if (storage.isSet('free2play')) {
 if (storage.isSet('rolesJSON')) {
     rolesJSON = storage.get('rolesJSON');
 
-    loading -= (roleTypeOptions.length - 1);
-    updateProgress(2 * (roleTypeOptions.length - 1));
+    loading--;
+    updateProgress(2);
     if (!loading)//check if we are loading to load everything
     {
         loadData();
@@ -204,6 +187,33 @@ $(function () {
 
     //load the later scripts
     $.getScript("dist/ChampionPick-after.min.js", function(){
+        //set pnotify styling and options
+        /* global PNotify */
+        PNotify.prototype.options.styling = "bootstrap3";
+        PNotify.prototype.options.delay = 3000;//3 seconds
+
+        if (firstTime)
+        {
+            var notice = new PNotify({
+                title: 'Info',
+                text: 'Click on a champion to disable it.',
+                opacity: 0.9,
+                icon: 'glyphicon glyphicon-envelope',
+                nonblock: {
+                    nonblock: true,
+                    nonblock_opacity: 0.2
+                },
+                history: {
+                    history: false
+                },
+                delay: 10000
+            });
+            notice.get().click(function () {
+                notice.options.animation = 'none';
+                notice.remove();
+            });
+        }
+
         loading--;
 
         updateProgress(2);
@@ -220,13 +230,13 @@ function reloadActive(update) {
 
     var $championsli = $("#champions").find("li");
     var $btnRole = $('.btn-role');
-    //check if all buttons are on or off:
+    //check if all buttons are on or off
     if ((roles[0] && roles[1] && roles[2] && roles[3] && roles[4]) || (!roles[0] && !roles[1] && !roles[2] && !roles[3] && !roles[4])) {
         //activate everything
         $championsli.addClass('toShow');
         $championsli.removeClass('toHide');
 
-        //toggle the appropriate button
+        //check if all buttons are on or off
         if (roles[0]) {
             $btnRole.addClass('active');
         }
@@ -234,31 +244,27 @@ function reloadActive(update) {
             $btnRole.removeClass('active');
         }
 
-        //show the all button
-        $('.btn-all').show();
-
-
         if (update) {
             updateShowHide();
         }
         return true;
     }
 
-
-    //update roleType, can't have a role selecten and ALL at the same time.
-    if (roleType === 0) {
-        roleType = 2;
-        storage.set('roleType', roleType);
+    //if roles are non-sane, everything is shown
+    if (rolesSane) {
+        //de-activate everything
+        $championsli.addClass('toHide');
+        $championsli.removeClass('toShow');
     }
-    $('.btn-all').hide();
+    else
+    {
+        //activate everything
+        $championsli.addClass('toShow');
+        $championsli.removeClass('toHide');
+    }
 
-
-    //de-activate everything
-    $championsli.addClass('toHide');
-    $championsli.removeClass('toShow');
+    //deactivate all buttons
     $btnRole.removeClass('active');
-
-    $('.roleType').html(roleTypeOptions[roleType] + ' <span class="caret"></span>');
 
     //if its not we have to some real work
     processRoles(update);
@@ -274,11 +280,14 @@ function processRoles(update) {
             //activate the button
             $('.role_' + index).addClass('active');
 
-            //we have to activate all champions who have this role
-            for (index2 = 0; index2 < rolesJSON[roleType][index].length; ++index2) {
-                var $championDiv = $('[data-championId=' + rolesJSON[roleType][index][index2] + ']');
-                $championDiv.addClass('toShow');
-                $championDiv.removeClass('toHide');
+            //we have to activate all champions who have this role, if insane roles is not selected
+            if (rolesSane)
+            {
+                for (index2 = 0; index2 < rolesJSON[index].length; ++index2) {
+                    var $championDiv = $('[data-championId=' + rolesJSON[index][index2] + ']');
+                    $championDiv.addClass('toShow');
+                    $championDiv.removeClass('toHide');
+                }
             }
         }
     }
@@ -329,18 +338,11 @@ function modalLoreFit(animate) {
     var width = $('.randomChampionDialog').width();
     var height = width * 0.590;//aspect ratio of splashes
     var $randomChampionModalLore = $('.randomChampionModalLore');
-    var $randomChampionModalLinks = $('.randomChampionModalLinks');
-    var $randomChampionModalLinks2 = $('.randomChampionModalLinks2');
 
     height -= 110;//height of title
     height -= 50;//height of bottom button
 
     if ($(window).width() >= 450) {
-        //update visibility
-        $randomChampionModalLore.show();
-        $randomChampionModalLinks.show();
-        $randomChampionModalLinks2.hide();
-
         height -= 70;//height of buttons
         if (animate) {
             $randomChampionModalLore.transition({height: (height) + 'px'},
@@ -352,18 +354,10 @@ function modalLoreFit(animate) {
         }
     }
     else {
-        //update visibility
-        $randomChampionModalLore.hide();
-        $randomChampionModalLinks.hide();
-        $randomChampionModalLinks2.show();
-
-        height -= 40;//margins
         if (animate) {
-            $randomChampionModalLinks2.transition({height: (height) + 'px'},
-                adjustModalMaxHeightAndPosition);
+                adjustModalMaxHeightAndPosition();
         }
         else {
-            $randomChampionModalLinks2.height(height);
             adjustModalMaxHeightAndPosition();
         }
     }
@@ -445,32 +439,24 @@ function loadOrderData() {
 
 function loadRoleData() {
     "use strict";//strict mode
-
-    var filename, index; //so we know what data we are parsing
-    for (index = 1; index < roleTypeOptions.length; ++index) {
-        filename = 'data/roles' + roleTypeOptions[index] + '.json';
+        var filename = 'data/roles.json';
         //lets load it
         $.ajax({
             dataType: "json",
-            url: filename,
-            success: loadRole,
-            context: {index: index}
-        });
-    }
+            url: filename
+        }).success(function(roles)
+            {
+                rolesJSON = roles;
+                console.log(rolesJSON);
+                loading--;
+                updateProgress(2);
+
+                if (!loading)//check if we are loading to load everything
+                {
+                    loadData();
+                }}
+        );
 }
-function loadRole(rolesJson) {
-    "use strict";//strict mode
-
-    rolesJSON[this.index] = rolesJson; // jshint ignore:line
-    loading--;
-    updateProgress(2);
-
-    if (!loading)//check if we are loading to load everything
-    {
-        loadData();
-    }
-}
-
 function loadF2PData() {
     "use strict";//strict mode
 
@@ -535,13 +521,16 @@ function updateModal(divId, randomChamp, randomChampId, role, totalOptions) {
     divId.find('.randomChampionModalLore p').html(randomChamp.description);
 
     //probuilds
-    divId.find('.randomChampionModalProbuildLink').attr("href", 'http://www.probuilds.net/champions/' + randomChamp.shortName);
+    divId.find('.randomChampionModalProbuildLink').attr("href", randomChamp.probuildsURL);
 
     //mobafire
     divId.find('.randomChampionModalMobafireLink').attr("href", randomChamp.mobafireURL);
 
+    //champion.gg
+    divId.find('.randomChampionModalChampionggLink').attr("href", randomChamp.championggURL);
+
     //lolwiki
-    divId.find('.randomChampionModalLoLWikiLink').attr("href", 'http://leagueoflegends.wikia.com/wiki/' + randomChamp.name);
+    divId.find('.randomChampionModalLoLWikiLink').attr("href", randomChamp.lolwikiURL);
 
     divId.find('.randomChampionModalBackground').css('background-image', 'url(' + randomChamp.splashSRC + ')');
 
@@ -566,10 +555,10 @@ function updateModal(divId, randomChamp, randomChampId, role, totalOptions) {
     }
 }
 
-function updateProgress(loadProgress) {
+function updateProgress(loadProgressIncrease) {
     "use strict";//strict mode
 
-    loadingProgress += loadProgress;
+    loadingProgress += loadProgressIncrease;
     $("#loadingProgress").css('width', loadingProgress + '%');
 }
 
@@ -640,7 +629,8 @@ function getRandomChampion(excluded) {
                 //go through all roles
                 var i;
                 for (i = 0; i < 5; ++i) {
-                    if (roleType===0 || rolesJSON[roleType][i].indexOf(champId) !== -1) {
+                    //if roles are insane, add him to every role
+                    if (!rolesSane || rolesJSON[i].indexOf(champId) !== -1) {
                         realOptions[i].push(champId);
                     }
                 }
@@ -648,13 +638,13 @@ function getRandomChampion(excluded) {
         }
     });
 
-    var rolesFiltered = roles.slice(0);//copy
-
     //count the amount of options
     if ((realOptions[0].length + realOptions[1].length + realOptions[2].length + realOptions[3].length + realOptions[4].length) === 0) {
         //something went wrong, we have no options!
         return false;
     }
+
+    var rolesFiltered = roles.slice(0);//copy
 
     //if all roles are deselected it counts as all roles being selected
     if (!roles[0] && !roles[1] && !roles[2] && !roles[3] && !roles[4]) {
@@ -727,7 +717,8 @@ function forceReload()
 {
     "use strict";
 
-    loading = 6; //countdown till all JSON is loaded, one les than normal because DOM does not need to load.
+    //countdown till all JSON is loaded, one les than normal because DOM does not need to load.
+    loading = loadSteps-2;
     loadingProgress = 2; //the progress bar, 2 because dom is already loaded
     updateProgress(0);
 
@@ -737,6 +728,22 @@ function forceReload()
     loadF2PData();
     loadRoleData();
 }
+
+function updateSaneRoles()
+{
+    "use strict";
+    var $btnrolesame=$('.btn-role-sane');
+    if (rolesSane)
+    {
+        $btnrolesame.addClass('active');
+        $btnrolesame.text('Sane Roles');
+    }
+    else{
+        $btnrolesame.removeClass('active');
+        $btnrolesame.text('Insane Roles');
+    }
+}
+
 function trimString(s) {
     "use strict";//strict mode
 

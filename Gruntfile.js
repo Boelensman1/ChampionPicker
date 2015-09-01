@@ -1,5 +1,6 @@
 /*global module:false*/
 module.exports = function (grunt) {
+    'use strict';
 
     // Project configuration.
     grunt.initConfig({
@@ -15,51 +16,59 @@ module.exports = function (grunt) {
         concat: {
             options: {
                 banner: '<%= banner %>',
-                stripBanners: true
+                stripBanners: true,
             },
-            dist: {
-                src: ['bower_components/bootstrap/dist/js/bootstrap.min.js',
+            components: {
+                src: ['bower_components/bootstrap-sass/assets/javascripts/bootstrap.min.js',
                     'bower_components/bootstrap-sidebar/dist/js/sidebar.js',
                     'bower_components/jquery.debouncedresize/js/jquery.debouncedresize.js',
                     'bower_components/jquery-cookie/jquery.cookie.js',
-                    'bower_components/jQuery-Storage-API/jquery.storageapi.min.js',
+                    'bower_components/jQuery-Storage-API/jquery.storageapi.min.js'],
+                dest: 'dist/<%= pkg.name %>-components.js'
+            },
+            componentsAfter: {
+                src: ['bower_components/bootstrap-sass/dist/js/bootstrap.min.js',
                     'bower_components/pnotify/pnotify.core.js',
                     'bower_components/pnotify/pnotify.nonblock.js',
-                    'js/main.js'],
-                dest: 'dist/<%= pkg.name %>.js'
-            },
-            dist2: {
-                src: ['bower_components/bootstrap-confirmation2/bootstrap-confirmation.min.js',
+                    'bower_components/bootstrap-confirmation2/bootstrap-confirmation.min.js',
                     'bower_components/FitText.js/jquery.fittext.js',
                     'bower_components/jquery.transit/jquery.transit.js',
-                    'js/init.js',
                     'js/extra/centerModal.js'],
-                dest: 'dist/<%= pkg.name %>-after.js'
+                dest: 'dist/<%= pkg.name %>-componentsAfter.js'
             }
-        },  concat_css: {
+        }, concat_css: {
             options: {},
             dist: {
-                src: ['bower_components/bootstrap/dist/css/bootstrap.min.css',
-                    'bower_components/bootstrap/dist/css/bootstrap-theme.min.css',
+                src: [
+                    'dist/<%= pkg.name %>.css',
+                    'bower_components/bootstrap/dist/css/bootstrap-theme.css',
                     'bower_components/bootstrap-sidebar/dist/css/sidebar.css',
                     'bower_components/pnotify/pnotify.core.css',
-                    'bower_components/pnotify/pnotify.nonblock.css',
-                    "css/*.css"
+                    'bower_components/pnotify/pnotify.nonblock.css'
                 ],
                 dest: "dist/<%= pkg.name %>.css"
             }
         },
         uglify: {
             options: {
-                banner: '<%= banner %>'
+                drop_console: true
             },
-            dist: {
-                src: '<%= concat.dist.dest %>',
-                dest: 'dist/<%= pkg.name %>.min.js'
+            components: {
+                src: '<%= concat.components.dest %>',
+                dest: 'dist/<%= pkg.name %>-components.min.js'
             },
-            dist2: {
-                src: '<%= concat.dist2.dest %>',
+            componentsAfter: {
+                src: '<%= concat.componentsAfter.dest %>',
                 dest: 'dist/<%= pkg.name %>-after.min.js'
+            },
+            init: {
+                options: {
+                    sourceMap: true,
+                    banner: '<%= banner %>'
+                },
+                files: {
+                    'dist/<%= pkg.name %>-init.min.js': ['js/init.js']
+                }
             },
             modernizr: {
                 files: {
@@ -74,7 +83,7 @@ module.exports = function (grunt) {
             },
             target: {
                 files: {
-                    'dist/ChampionPick.min.css': ['dist/ChampionPick.css']
+                    'dist/<%= pkg.name %>.min.css': ['dist/<%= pkg.name %>.css']
                 }
             }
         },
@@ -113,12 +122,40 @@ module.exports = function (grunt) {
                 src: 'Gruntfile.js'
             }
         },
+        clean: {
+            dist: {
+                src: ["fonts", "dist"]
+            }
+        },
         copy: {
-            files: {
-                cwd: 'bower_components/bootstrap/dist/fonts/',  // set working folder / root to copy
-                src: '*',           // copy all files and subfolders
-                dest: 'dist/fonts/',    // destination folder
-                expand: true           // required when using cwd
+            dist: {
+                files: [{
+                    cwd: 'bower_components/bootstrap-sass/assets/fonts/',  // set working folder / root to copy
+                    src: '*',           // copy all files and subfolders
+                    dest: 'fonts/',    // destination folder
+                    expand: true           // required when using cwd
+                }]
+            },
+            watch: {
+                files: {
+                    'dist/<%= pkg.name %>.min.css': 'dist/<%= pkg.name %>.css',
+                    'dist/<%= pkg.name %>.min.js': 'js/main.js',
+                    'dist/<%= pkg.name %>-init.min.js': 'js/init.js',
+                    'dist/<%= pkg.name %>-components.min.js': 'dist/<%= pkg.name %>-components.js',
+                    'dist/<%= pkg.name %>-after.min.js': 'dist/<%= pkg.name %>-componentsAfter.js',
+                    'dist/modernizr.min.js': 'bower_components/modernizr/modernizr.js',
+                    'index.html': 'index.max.html'
+                }
+            }
+        },
+        sass: {
+            options: {
+                sourceMap: true
+            },
+            dist: {
+                files: {
+                    'dist/<%= pkg.name %>.css': 'sass/main.scss'
+                }
             }
         },
         watch: {
@@ -128,15 +165,15 @@ module.exports = function (grunt) {
             },
             js: {
                 files: 'js/*.js',
-                tasks: ['jshint', 'concat', 'uglify']
+                tasks: ['jshint', 'concat', 'copy:watch']
             },
-            css: {
-                files: 'css/*.css',
-                tasks: ['concat_css', 'cssmin']
+            sass: {
+                files: 'sass/*.scss',
+                tasks: ['sass','concat_css', 'copy:watch']
             },
             html: {
                 files: 'index.max.html',
-                tasks: ['htmlmin:dist']
+                tasks: ['copy:watch']
             }
         }
     });
@@ -150,10 +187,12 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-contrib-htmlmin');
+    grunt.loadNpmTasks('grunt-contrib-clean');
+    grunt.loadNpmTasks('grunt-sass');
 
 
     // Default task.
-    grunt.registerTask('default', ['jshint', 'concat','concat_css','copy', 'uglify','cssmin','htmlmin']);
-    grunt.registerTask('start watch', ['default','watch']);
+    grunt.registerTask('default', ['clean', 'jshint', 'concat', 'sass','concat_css', 'sass', 'copy:dist', 'uglify', 'cssmin', 'htmlmin']);
+    grunt.registerTask('start watch', ['clean', 'jshint', 'concat', 'sass','concat_css', 'copy:dist', 'copy:watch', 'watch']);
 
 };

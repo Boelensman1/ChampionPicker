@@ -149,11 +149,11 @@
       .one('click', function(e) {
         that.getOnConfirm.call(that).call(that.$element);
         that.$element.trigger('confirmed.bs.confirmation');
-        that.leave(that);
+        that.$element.confirmation('hide');
       });
 
     // add href to confirm button if needed
-    if (o.href) {
+    if (o.href && o.href != "#") {
       $tip.find('[data-apply="confirmation"]').attr({
         href: o.href,
         target: o.target
@@ -169,7 +169,7 @@
       .one('click', function(e) {
         that.getOnCancel.call(that).call(that.$element);
         that.$element.trigger('canceled.bs.confirmation');
-        that.leave(that);
+        that.$element.confirmation('hide');
       });
 
     $tip.removeClass('fade top bottom left right in');
