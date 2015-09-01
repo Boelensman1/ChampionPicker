@@ -17,19 +17,19 @@
     "tests"
   ],
   "dependencies": {
-    "bootstrap": "~3.3.4",
-    "pnotify": "~2.0.1",
+    "FitText.js": "~1.2.0",
+    "bootstrap-confirmation2": "~2.1.2",
+    "bootstrap-sass": "~3.3.5",
     "bootstrap-sidebar": "~0.2.2",
+    "jQuery-Storage-API": "~1.7.3",
+    "jquery-cookie": "~1.4.1",
     "jquery-textfill": "~0.6.0",
     "jquery.debouncedresize": "~1.0.1",
     "jquery.transit": "~0.9.12",
-    "jQuery-Storage-API": "~1.7.3",
     "modernizr": "~2.8.3",
-    "FitText.js": "~1.2.0",
-    "jquery-cookie": "~1.4.1",
-    "bootstrap-confirmation2": "~2.1.2"
+    "pnotify": "~2.0.1"
   },
   "resolutions": {
-    "bootstrap": "~3.3.2"
+    "bootstrap": ">=3.2.0"
   }
 }
