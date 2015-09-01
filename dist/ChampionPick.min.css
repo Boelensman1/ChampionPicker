@@ -6276,15 +6276,16 @@ div {
   margin-top: 1px;
   margin-bottom: 10px; }
 
-@media (max-width: 1199px) {
-  .randomChampionModalLinks div {
-    text-align: center; } }
-
-@media (min-width: 992px) {
-  .randomChampionModalLinks div:first-child {
-    text-align: left; }
-  .randomChampionModalLinks div:last-child {
-    text-align: right; } }
+.randomChampionModalLinks {
+  z-index: 1; }
+  @media (max-width: 1199px) {
+    .randomChampionModalLinks div {
+      text-align: center; } }
+  @media (min-width: 992px) {
+    .randomChampionModalLinks div:first-child {
+      text-align: left; }
+    .randomChampionModalLinks div:last-child {
+      text-align: right; } }
 
 /*# sourceMappingURL=ChampionPick.css.map */
 /*!

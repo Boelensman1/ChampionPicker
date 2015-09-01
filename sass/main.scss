@@ -273,16 +273,19 @@ div {
   margin-bottom: 10px;
 }
 
-.randomChampionModalLinks div {
-  @media (max-width: $screen-md-max) {
-    text-align: center;
-  }
-  @media (min-width: $screen-md-min) {
-    &:first-child {
-      text-align: left;
+.randomChampionModalLinks {
+  z-index: 1; //fix pointer events in safari
+  div {
+    @media (max-width: $screen-md-max) {
+      text-align: center;
     }
-    &:last-child {
-      text-align: right;
+    @media (min-width: $screen-md-min) {
+      &:first-child {
+        text-align: left;
+      }
+      &:last-child {
+        text-align: right;
+      }
     }
   }
 }
