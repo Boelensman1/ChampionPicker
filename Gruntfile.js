@@ -192,7 +192,7 @@ module.exports = function (grunt) {
 
 
     // Default task.
-    grunt.registerTask('dist', ['clean', 'jshint', 'concat', 'sass','concat_css', 'sass', 'copy:dist', 'uglify', 'cssmin', 'htmlmin']);
+    grunt.registerTask('default', ['clean', 'jshint', 'concat', 'sass','concat_css', 'sass', 'copy:dist', 'uglify', 'cssmin', 'htmlmin']);
     grunt.registerTask('start watch', ['clean', 'jshint', 'concat', 'sass','concat_css', 'copy:dist', 'copy:watch', 'watch']);
 
 };
