@@ -372,11 +372,13 @@ function init() {
         reloadActive(true);
     });
 
-    $('.dropdownRole li a').click(function () {
-        //update roleType
-        roleType = $(this).data('roleid');
-        storage.set('roleType', roleType);
-        $('.roleType').html(roleTypeOptions[roleType] + ' <span class="caret"></span>');
+    //load the sane role button
+    var $btnrolesame=$('.btn-role-sane');
+    $btnrolesame.click(function () {
+        //swap
+        rolesSane=!$btnrolesame.hasClass('active');
+        storage.set('rolesSane', rolesSane);
+        updateSaneRoles();
         reloadActive(true);
     });
 
@@ -583,10 +585,10 @@ function init() {
         this.setSelectionRange(0, this.value.length);
     });
 
-    //on double click, copy
+    /* TODO on double click, copy
     $('#settingsExport').dblclick(function () {
 
-    });
+    });*/
 
     //on click import
     $('#settingsImportButton').click(function () {

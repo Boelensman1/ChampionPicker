@@ -5,7 +5,6 @@
 //init all variables
 var roles = [false, false, false, false, false];
 var rolesSane = true;
-var roleType = 2;
 var rolesPos = ['Toplane', 'Jungle', 'Midlane', 'Marksman', 'Support'];
 var rolesJSON;
 
@@ -37,7 +36,7 @@ var firstTime=false;
 var DOMReady = false;
 var region = 'EUW';
 
-var exportKeys=['champPlayed', 'free2playState', 'roleType', 'roles','championsDisabled'];
+var exportKeys=['champPlayed', 'free2playState', 'roles','championsDisabled'];
 
 //init easy storage
 //var ns = $.initNamespaceStorage('championPicker');
@@ -59,11 +58,12 @@ else {
 
 
 if (storage.isSet('rolesSane')) {
-    roleType = storage.get('rolesSane');
+    rolesSane = storage.get('rolesSane');
+    updateSaneRoles();
 } else {
     //rolesSane is not set, so this prob. the first time the user went to this website
     firstTime =true;
-    roleType = true;
+    rolesSane = true;
     storage.set('rolesSane', rolesSane);
 }
 
@@ -230,13 +230,13 @@ function reloadActive(update) {
 
     var $championsli = $("#champions").find("li");
     var $btnRole = $('.btn-role');
-    //check if all buttons are on or off:
+    //check if all buttons are on or off
     if ((roles[0] && roles[1] && roles[2] && roles[3] && roles[4]) || (!roles[0] && !roles[1] && !roles[2] && !roles[3] && !roles[4])) {
         //activate everything
         $championsli.addClass('toShow');
         $championsli.removeClass('toHide');
 
-        //toggle the appropriate button
+        //check if all buttons are on or off
         if (roles[0]) {
             $btnRole.addClass('active');
         }
@@ -250,20 +250,21 @@ function reloadActive(update) {
         return true;
     }
 
-
-    //de-activate everything
-    $championsli.addClass('toHide');
-    $championsli.removeClass('toShow');
-    $btnRole.removeClass('active');
-
-
-    //set rolesSane element to the correct state
-    var $btnSaneRoles=$('btn-role-sane');
-    $btnSaneRoles.addClass('active');
-    if (!rolesSane)
-    {
-        $btnSaneRoles.removeClass('active');
+    //if roles are non-sane, everything is shown
+    if (rolesSane) {
+        //de-activate everything
+        $championsli.addClass('toHide');
+        $championsli.removeClass('toShow');
     }
+    else
+    {
+        //activate everything
+        $championsli.addClass('toShow');
+        $championsli.removeClass('toHide');
+    }
+
+    //deactivate all buttons
+    $btnRole.removeClass('active');
 
     //if its not we have to some real work
     processRoles(update);
@@ -279,11 +280,14 @@ function processRoles(update) {
             //activate the button
             $('.role_' + index).addClass('active');
 
-            //we have to activate all champions who have this role
-            for (index2 = 0; index2 < rolesJSON[index].length; ++index2) {
-                var $championDiv = $('[data-championId=' + rolesJSON[index][index2] + ']');
-                $championDiv.addClass('toShow');
-                $championDiv.removeClass('toHide');
+            //we have to activate all champions who have this role, if insane roles is not selected
+            if (rolesSane)
+            {
+                for (index2 = 0; index2 < rolesJSON[index].length; ++index2) {
+                    var $championDiv = $('[data-championId=' + rolesJSON[index][index2] + ']');
+                    $championDiv.addClass('toShow');
+                    $championDiv.removeClass('toHide');
+                }
             }
         }
     }
@@ -625,7 +629,8 @@ function getRandomChampion(excluded) {
                 //go through all roles
                 var i;
                 for (i = 0; i < 5; ++i) {
-                    if (roleType===0 || rolesJSON[i].indexOf(champId) !== -1) {
+                    //if roles are insane, add him to every role
+                    if (!rolesSane || rolesJSON[i].indexOf(champId) !== -1) {
                         realOptions[i].push(champId);
                     }
                 }
@@ -722,6 +727,21 @@ function forceReload()
     loadOrderData();
     loadF2PData();
     loadRoleData();
+}
+
+function updateSaneRoles()
+{
+    "use strict";
+    var $btnrolesame=$('.btn-role-sane');
+    if (rolesSane)
+    {
+        $btnrolesame.addClass('active');
+        $btnrolesame.text('Sane Roles');
+    }
+    else{
+        $btnrolesame.removeClass('active');
+        $btnrolesame.text('Insane Roles');
+    }
 }
 
 function trimString(s) {
