@@ -70,6 +70,15 @@ module.exports = function (grunt) {
                     'dist/<%= pkg.name %>-init.min.js': ['js/init.js']
                 }
             },
+            main: {
+                options: {
+                    sourceMap: true,
+                    banner: '<%= banner %>'
+                },
+                files: {
+                    'dist/<%= pkg.name %>.min.js': ['js/main.js']
+                }
+            },
             modernizr: {
                 files: {
                     'dist/modernizr.min.js': 'bower_components/modernizr/modernizr.js'
@@ -192,7 +201,7 @@ module.exports = function (grunt) {
 
 
     // Default task.
-    grunt.registerTask('default', ['clean', 'jshint', 'concat', 'sass','concat_css', 'sass', 'copy:dist', 'uglify', 'cssmin', 'htmlmin']);
+    grunt.registerTask('default', ['clean', 'jshint', 'concat', 'sass','concat_css', 'copy:dist', 'uglify', 'cssmin', 'htmlmin']);
     grunt.registerTask('start watch', ['clean', 'jshint', 'concat', 'sass','concat_css', 'copy:dist', 'copy:watch', 'watch']);
 
 };
