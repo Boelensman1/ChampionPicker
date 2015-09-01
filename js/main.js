@@ -36,7 +36,7 @@ var firstTime=false;
 var DOMReady = false;
 var region = 'EUW';
 
-var exportKeys=['champPlayed', 'free2playState', 'roles','championsDisabled'];
+var exportKeys=['champPlayed', 'free2playState', 'rolesSane','roles','championsDisabled'];
 
 //init easy storage
 //var ns = $.initNamespaceStorage('championPicker');
