@@ -209,9 +209,9 @@
                 <li class="form-horizontal">
                     <fieldset>
 
-                        <!-- Button -->
-                        <div class="col-xs-12" style="padding: 0px;">
-                            <button id="btn-force-reload" onclick="this.blur();" class="btn btn-primary btn-block">
+                        <!-- Button, z-index to 1 to fix a bug in safari -->
+                        <div class="col-xs-12" style="z-index:1;padding: 0;">
+                            <button id="btn-force-reload" class="btn btn-primary btn-block">
                                 Reload
                             </button>
                         </div>
@@ -221,17 +221,17 @@
                         </div>
 
                         <!-- Button (Double) -->
-                        <div class="form-group" style="pointer-events: none;">
+                        <div class="form-group">
                             <label class="col-xs-12" for="btn-reset-champions">Reset</label>
 
                             <div class="col-xs-12">
                                 <button id="btn-reset-playcount" data-toggle="confirmation" data-singleton="true"
-                                        data-popout="true" data-container="#sidebarSettings" onclick="this.blur();"
+                                        data-popout="true" data-container="#sidebarSettings"
                                         class="btn btn-warning col-md-6 col-xs-12">Playcount
                                 </button>
                                 <div class="visible-xs-block visible-sm-block">&nbsp;</div>
                                 <button id="btn-reset-champions" data-toggle="confirmation" data-singleton="true"
-                                        data-popout="true" data-container="#sidebarSettings" onclick="this.blur();"
+                                        data-popout="true" data-container="#sidebarSettings"
                                         class="btn btn-danger  col-md-6 col-xs-12">Enabled
                                 </button>
                             </div>
@@ -259,7 +259,7 @@
                                            placeholder="paste here" type="text">
 
                                     <div class="input-group-btn">
-                                        <button type="button" onclick="this.blur();" id="settingsImportButton"
+                                        <button type="button" id="settingsImportButton"
                                                 class="btn btn-default">
                                             Import
                                         </button>
