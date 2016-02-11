@@ -57,7 +57,6 @@ function loadData() {
             }
 
             // add the image and the label
-            console.log(champions[index]);
             newhtml += '" data-championId="' + index + '"><img class="img-responsive championPortrait" src="' + champions[index].iconUrl + '"><span class="label center-block championLabel ';
 
             if (isfree2play) {
