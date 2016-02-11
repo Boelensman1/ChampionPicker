@@ -35,5 +35,9 @@
   "bugs": {
     "url": "https://github.com/Boelensman1/ChampionPicker.github.io/issues"
   },
-  "homepage": "https://github.com/Boelensman1/ChampionPicker.github.io"
+  "homepage": "https://github.com/Boelensman1/ChampionPicker.github.io",
+  "dependencies": {
+    "grunt": "^0.4.5",
+    "node-sass": "^3.4.2"
+  }
 }
