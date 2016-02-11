@@ -1,0 +1,3 @@
+module.exports = {
+  dbPass: 'abcabc',
+};
