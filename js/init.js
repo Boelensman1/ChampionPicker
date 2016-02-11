@@ -56,7 +56,9 @@ function loadData() {
                 newhtml += 'Free2Play '; //adds this class
             }
 
-            newhtml += '" data-championId="' + index + '"><img class="img-responsive championPortrait" src="' + champions[index].iconSRC + '"><span class="label center-block championLabel ';
+            // add the image and the label
+            console.log(champions[index]);
+            newhtml += '" data-championId="' + index + '"><img class="img-responsive championPortrait" src="' + champions[index].iconUrl + '"><span class="label center-block championLabel ';
 
             if (isfree2play) {
                 newhtml += 'label-success';
@@ -464,7 +466,7 @@ function init() {
         var index, html = '';
         for (index = 0; index <= location + 10; ++index) {
             if (options[index] !== -1) {
-                html += ('<img src="' + champions[options[index]].iconSRC + '">');
+                html += ('<img src="' + champions[options[index]].iconUrl + '">');
             }
         }
         $randomDiv.append(html);

@@ -82,7 +82,7 @@ function download(url, dest, callback) {
 function processChampion(champion) {
   return q.Promise(function(resolve, reject, notify) {
     let champ = champion.get();
-    champ.namelower = champ.name.toLowerCase();
+    champ.nameLower = champ.name.toLowerCase();
     champ.nameShort = champ.name.replace(/\W/, ''); // remove spaces
     champ.iconUrl = champ.championIcon.url; // remove spaces
     champ.splashUrl = champ.championSplash.url; // remove spaces
