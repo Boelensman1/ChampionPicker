@@ -610,3 +610,6 @@ function init() {
         $("#email").attr("href", "mailto:" + emailJSON[0]);
     });
 }
+
+// ok, now lets load the main file
+$.getScript("dist/ChampionPick.min.js");
