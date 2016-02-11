@@ -532,7 +532,7 @@ function updateModal(divId, randomChamp, randomChampId, role, totalOptions) {
     //lolwiki
     divId.find('.randomChampionModalLoLWikiLink').attr("href", randomChamp.lolwikiURL);
 
-    divId.find('.randomChampionModalBackground').css('background-image', 'url(' + randomChamp.splashSRC + ')');
+    divId.find('.randomChampionModalBackground').css('background-image', 'url(' + randomChamp.splashUrl + ')');
 
     //enable both buttons
     divId.find('.randomChampionDontHaveButton').prop("disabled", false);

@@ -103,7 +103,8 @@ module.exports = function (grunt) {
                     collapseWhitespace: true
                 },
                 files: {                                   // Dictionary of files
-                    'index.html': 'index.max.html'     // 'destination': 'source'
+                    'index.html': 'index.max.html',     // 'destination': 'source'
+                    'team.html': 'team.max.html'
                 }
             }
         },
@@ -153,7 +154,8 @@ module.exports = function (grunt) {
                     'dist/<%= pkg.name %>-components.min.js': 'dist/<%= pkg.name %>-components.js',
                     'dist/<%= pkg.name %>-after.min.js': 'dist/<%= pkg.name %>-componentsAfter.js',
                     'dist/modernizr.min.js': 'bower_components/modernizr/modernizr.js',
-                    'index.html': 'index.max.html'
+                    'index.html': 'index.max.html',
+                    'team.html': 'team.max.html'
                 }
             }
         },
@@ -181,7 +183,7 @@ module.exports = function (grunt) {
                 tasks: ['sass','concat_css', 'copy:watch']
             },
             html: {
-                files: 'index.max.html',
+                files: ['index.max.html','team.max.html'],
                 tasks: ['copy:watch']
             }
         }
