@@ -610,5 +610,9 @@ function init() {
     });
 }
 
-// ok, now lets load the main file
-$.getScript("dist/ChampionPick.min.js");
+$(function() {
+    'use strict';
+
+    // ok, now lets load the main file
+    $.getScript("dist/ChampionPick.min.js");
+});
